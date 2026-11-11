@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bedikot</title>
+<meta name="description" content="Rappels des bedikot pendant les 7 jours propres">
+<meta name="theme-color" content="#7B4B94">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bedikot">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+  :root {
+    --bg: #FAF7FC; --card: #FFFFFF; --ink: #2D2433; --soft: #76697D; --accent: #7B4B94;
+    --accent-soft: #EFE6F4; --ok: #2E8B57; --warn: #B4572E; --line: #E8E0EC;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 520px; margin: 0 auto;
+    padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 40px); display: grid; gap: 12px; }
+  h1 { font-size: 30px; margin: 8px 0 0; }
+  h2 { font-size: 18px; margin: 0 0 6px; }
+  .sub { color: var(--soft); margin: 0 0 4px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .card.focus { border: 2px solid var(--accent); }
+  .soft { color: var(--soft); margin: 0 0 8px; }
+  .hint { color: var(--soft); font-size: 13px; margin: 8px 0 0; }
+  .big { font-size: 26px; font-weight: 700; color: var(--accent); margin: 0 0 2px; }
+  .z { display: flex; justify-content: space-between; text-align: center; }
+  .z div { flex: 1; } .z small { color: var(--soft); font-size: 12px; display: block; }
+  .z b { font-size: 24px; } .z .acc { color: var(--accent); }
+  button { font: inherit; border: 0; cursor: pointer; }
+  .btn { width: 100%; background: var(--accent); color: #fff; font-size: 18px; font-weight: 700;
+    border-radius: 14px; padding: 16px; margin-top: 8px; }
+  .btn:active, .sbtn:active { opacity: .8; }
+  .sbtn { background: var(--accent-soft); color: var(--accent); font-weight: 600; border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .day { border-top: 1px solid var(--line); padding: 8px 0; }
+  .day b { display: block; margin-bottom: 2px; }
+  .slot { display: flex; gap: 8px; align-items: center; padding: 4px 0; width: 100%; background: none; text-align: left; color: var(--ink); }
+  .slot i { font-style: normal; width: 22px; font-size: 18px; color: var(--soft); }
+  .slot.done i { color: var(--ok); }
+  .set { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 0; }
+  .set span { flex: 1; }
+  .step { display: flex; align-items: center; gap: 6px; }
+  .step button { width: 34px; height: 34px; border-radius: 17px; background: var(--accent-soft); color: var(--accent); font-size: 20px; font-weight: 700; }
+  .step output { min-width: 64px; text-align: center; font-weight: 600; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .link { background: none; color: var(--accent); font-weight: 600; padding: 8px; }
+  .install ol { margin: 8px 0 0; padding-left: 20px; } .install li { margin: 4px 0; }
+  .err { color: var(--warn); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <h1>Bedikot</h1>
+    <p class="sub" id="where">📍 Bonneuil-sur-Marne</p>
+  </div>
+
+  <section class="card install" id="install" hidden>
+    <h2>Installer l'app sur l'iPhone</h2>
+    <p class="soft">Les rappels ne marchent que si l'app est sur l'écran d'accueil.</p>
+    <ol>
+      <li>Ouvre ce lien dans <b>Safari</b>.</li>
+      <li>Appuie sur le bouton <b>Partager</b> (carré avec une flèche ⬆︎).</li>
+      <li>Choisis <b>« Sur l'écran d'accueil »</b>, puis <b>Ajouter</b>.</li>
+      <li>Ouvre <b>Bedikot</b> depuis l'écran d'accueil.</li>
+    </ol>
+  </section>
+
+  <section class="card" id="zcard" hidden>
+    <div class="z">
+      <div><small>Alot hachahar</small><b id="zAlot">--:--</b></div>
+      <div><small>Nets</small><b id="zNetz">--:--</b></div>
+      <div><small>Chkia</small><b class="acc" id="zShkia">--:--</b></div>
+    </div>
+  </section>
+
+  <section class="card" id="enable" hidden>
+    <h2>Activer les rappels</h2>
+    <p class="soft">Autorise les notifications et la position (pour calculer la chkia là où tu es).</p>
+    <button class="btn" id="enableBtn">Activer les notifications</button>
+    <p class="hint err" id="enableErr" hidden></p>
+  </section>
+
+  <section class="card" id="seven">
+    <h2>7 jours propres</h2>
+    <div id="sevenOn" hidden>
+      <p class="big" id="dayNum"></p>
+      <p class="soft" id="hefsekTxt"></p>
+      <div class="row">
+        <button class="sbtn" data-shift="-1">‹ Veille</button>
+        <button class="sbtn" data-shift="1">Lendemain ›</button>
+        <button class="sbtn" id="stopBtn">Arrêter</button>
+      </div>
+    </div>
+    <div id="sevenOff">
+      <p class="soft" id="offTxt">Aucune période en cours.</p>
+      <button class="btn" id="startToday">Hefsek tahara aujourd'hui</button>
+      <button class="sbtn" id="startYesterday">C'était hier</button>
+    </div>
+  </section>
+
+  <section class="card focus" id="current" hidden>
+    <h2 id="curTitle"></h2>
+    <p class="soft" id="curTxt"></p>
+    <button class="btn" id="curDone">C'est fait ✓</button>
+  </section>
+
+  <section class="card" id="prog" hidden>
+    <h2>Programme</h2>
+    <div id="days"></div>
+    <p class="hint">Touche une ligne pour la cocher ou la décocher.</p>
+  </section>
+
+  <button class="link" id="toggleSet">Réglages</button>
+  <section class="card" id="settings" hidden>
+    <div class="set"><span>Rappel le jour du hefsek</span><input type="checkbox" id="hefsekRem"></div>
+    <div class="set"><span>Rappel du soir avant la chkia</span><div class="step" data-k="before_shkia" data-step="5" data-min="5" data-max="120"><button>−</button><output></output><button>+</button></div></div>
+    <div class="set"><span id="alotLbl">Rappel du matin avant alot</span><div class="step" data-k="before_alot" data-step="5" data-min="-120" data-max="60"><button>−</button><output></output><button>+</button></div></div>
+    <div class="set"><span>Répéter toutes les</span><div class="step" data-k="repeat_every" data-step="5" data-min="5" data-max="60"><button>−</button><output></output><button>+</button></div></div>
+    <div class="set"><span>Répéter le matin pendant</span><div class="step" data-k="morning_window" data-step="30" data-min="0" data-max="360"><button>−</button><output></output><button>+</button></div></div>
+    <button class="sbtn" id="gpsBtn">Mettre à jour ma position</button>
+    <button class="sbtn" id="bonneuilBtn">Utiliser Bonneuil-sur-Marne</button>
+    <button class="sbtn" id="testBtn">Envoyer une notification d'essai</button>
+    <p class="hint" id="testTxt"></p>
+    <p class="hint">Horaires selon Roger Stioui (comme Torah-Box) : chkia au coucher du soleil, alot hachahar à 16,1°. Les rappels du soir s'arrêtent à la chkia.</p>
+  </section>
+</main>
+
+<script>
+const API = 'https://qddkzkqhzbbwrfledovv.supabase.co/functions/v1/bedikot';
+const BONNEUIL = { place: 'Bonneuil-sur-Marne', lat: 48.7714, lon: 2.4875, tz: 'Europe/Paris' };
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+let S = null; // état renvoyé par le serveur
+let focusSlot = new URLSearchParams(location.search).get('slot');
+
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+const pushOK = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+
+async function api(action, data = {}) {
+  const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, id: store.get('bedikot.id'), ...data }) });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || 'erreur');
+  if (j.id) { store.set('bedikot.id', j.id); store.set('bedikot.state', JSON.stringify(j)); }
+  return j;
+}
+
+const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+const fmtDay = (k) => { const [y, m, d] = k.split('-').map(Number); const dt = new Date(Date.UTC(y, m - 1, d, 12)); return `${JOURS[dt.getUTCDay()]} ${d} ${MOIS[m - 1]}`; };
+const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+const tz = () => (S && S.tz) || 'Europe/Paris';
+const hhmm = (iso) => new Intl.DateTimeFormat('fr-FR', { timeZone: tz(), hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+const todayKey = () => new Intl.DateTimeFormat('en-CA', { timeZone: tz(), year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+const addDays = (k, n) => { const d = new Date(k + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const diffDays = (a, b) => Math.round((Date.parse(a + 'T12:00:00Z') - Date.parse(b + 'T12:00:00Z')) / 864e5);
+const fmtDur = (m) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')}`);
+
+function render() {
+  $('install').hidden = !(isIOS && !standalone);
+  const ready = !!S;
+  $('enable').hidden = !(standalone || !isIOS) || (S && S.has_push) || !pushOK;
+  if (!pushOK && standalone) { $('enable').hidden = false; $('enableBtn').hidden = true; showErr("Ce téléphone ne permet pas les notifications web (iOS 16.4 minimum)."); }
+  if (!ready) return;
+
+  $('where').textContent = `📍 ${S.place} · ${fmtDay(todayKey())}`;
+  if (S.zmanim_today) {
+    $('zcard').hidden = false;
+    $('zAlot').textContent = hhmm(S.zmanim_today.alot);
+    $('zNetz').textContent = hhmm(S.zmanim_today.netz);
+    $('zShkia').textContent = hhmm(S.zmanim_today.shkia);
+  }
+
+  const now = Date.now();
+  const today = todayKey();
+  const h = S.hefsek_date;
+  const idx = h ? diffDays(today, h) : null;
+  const active = h && idx <= 7;
+  $('sevenOn').hidden = !active;
+  $('sevenOff').hidden = !!active;
+  if (active) {
+    $('dayNum').textContent = idx === 0 ? 'Jour du hefsek tahara' : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
+    $('hefsekTxt').textContent = `Hefsek tahara : ${fmtDay(h)}`;
+  } else {
+    $('offTxt').textContent = h ? 'Les 7 jours sont terminés. Mazal tov !' : 'Aucune période en cours.';
+  }
+
+  // bedika en cours : aujourd'hui, pas faite, entre 1 h avant le 1er rappel et la chkia
+  const plan = active ? S.plan : [];
+  let cur = plan.find((p) => p.id === focusSlot && !S.done[p.id]);
+  if (!cur) cur = plan.find((p) => p.day === today && !S.done[p.id] && now >= Date.parse(p.times[0]) - 3600e3 && now <= Date.parse(p.end));
+  $('current').hidden = !cur;
+  if (cur) {
+    const name = cur.kind === 'hefsek' ? 'Hefsek tahara' : cur.kind === 'matin' ? 'Bedika du matin' : 'Bedika du soir';
+    $('curTitle').textContent = cur.kind === 'hefsek' ? name : `${name} · ${cur.label}`;
+    if (cur.kind === 'matin') {
+      $('curTxt').textContent = now < Date.parse(cur.zmanim.alot) ? `À partir de alot hachahar, ${hhmm(cur.zmanim.alot)}.` : `Depuis alot hachahar (${hhmm(cur.zmanim.alot)}).`;
+    } else {
+      const left = Math.round((Date.parse(cur.zmanim.shkia) - now) / 60000);
+      $('curTxt').textContent = left > 0 ? `Avant la chkia à ${hhmm(cur.zmanim.shkia)} (dans ${fmtDur(left)}).` : 'La chkia est passée.';
+    }
+    $('curDone').onclick = () => setDone(cur.id, true);
+  }
+
+  // programme
+  $('prog').hidden = !plan.length;
+  const byDay = {};
+  for (const p of plan) (byDay[p.day] = byDay[p.day] || []).push(p);
+  $('days').innerHTML = '';
+  for (const [day, slots] of Object.entries(byDay)) {
+    const el = document.createElement('div');
+    el.className = 'day';
+    el.innerHTML = `<b>${cap(fmtDay(day))} · ${slots[0].label}</b>`;
+    for (const sl of slots) {
+      const done = !!S.done[sl.id];
+      const past = !done && now > Date.parse(sl.end);
+      const b = document.createElement('button');
+      b.className = 'slot' + (done ? ' done' : '');
+      const what = sl.kind === 'matin' ? `Matin · rappel ${hhmm(sl.times[0])}, alot ${hhmm(sl.zmanim.alot)}` : `${sl.kind === 'hefsek' ? 'Hefsek' : 'Soir'} · rappel ${hhmm(sl.times[0])}, chkia ${hhmm(sl.zmanim.shkia)}`;
+      b.innerHTML = `<i>${done ? '✓' : past ? '✗' : '○'}</i><span>${what}</span>`;
+      b.onclick = () => setDone(sl.id, !done);
+      el.appendChild(b);
+    }
+    $('days').appendChild(el);
+  }
+
+  // réglages
+  $('hefsekRem').checked = S.settings.hefsek_reminder;
+  document.querySelectorAll('.step').forEach((st) => {
+    const v = S.settings[st.dataset.k];
+    st.querySelector('output').textContent = `${st.dataset.k === 'before_alot' ? Math.abs(v) : v} min`;
+  });
+  $('alotLbl').textContent = S.settings.before_alot >= 0 ? 'Rappel du matin avant alot' : 'Rappel du matin après alot';
+}
+
+function showErr(t) { $('enableErr').hidden = !t; $('enableErr').textContent = t || ''; }
+
+async function setDone(slot, value) {
+  S.done[slot] = value ? new Date().toISOString() : undefined; if (!value) delete S.done[slot];
+  if (slot === focusSlot) focusSlot = null;
+  render();
+  try { S = await api('done', { slot, value }); render(); } catch (e) { alert("Pas de connexion : réessaie dans un instant."); }
+  if (value && 'serviceWorker' in navigator) {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (reg) (await reg.getNotifications({ tag: slot })).forEach((n) => n.close());
+  }
+}
+
+function urlB64(s) {
+  const pad = '='.repeat((4 - (s.length % 4)) % 4);
+  const b = atob((s + pad).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from([...b].map((c) => c.charCodeAt(0)));
+}
+
+function position() {
+  return new Promise((res) => {
+    if (!navigator.geolocation) return res(null);
+    navigator.geolocation.getCurrentPosition(
+      (p) => res({ place: 'Ma position', lat: +p.coords.latitude.toFixed(4), lon: +p.coords.longitude.toFixed(4), tz: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Paris' }),
+      () => res(null),
+      { timeout: 15000, maximumAge: 6 * 3600e3 },
+    );
+  });
+}
+
+async function enable() {
+  showErr('');
+  $('enableBtn').disabled = true;
+  $('enableBtn').textContent = 'Activation…';
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') throw new Error("Notifications refusées. Va dans Réglages › Notifications › Bedikot pour les autoriser.");
+    const reg = await navigator.serviceWorker.register('sw.js');
+    await navigator.serviceWorker.ready;
+    const { publicKey } = await api('vapid');
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64(publicKey) });
+    const pos = (await position()) || BONNEUIL;
+    S = await api('save', { sub: sub.toJSON(), ...pos });
+    render();
+  } catch (e) {
+    showErr(e.message || String(e));
+  } finally {
+    $('enableBtn').disabled = false;
+    $('enableBtn').textContent = 'Activer les notifications';
+  }
+}
+
+async function save(patch) {
+  try { S = await api('save', patch); render(); } catch (e) { alert("Pas de connexion : réessaie dans un instant."); }
+}
+
+$('enableBtn').onclick = enable;
+$('startToday').onclick = () => save({ hefsek_date: todayKey() });
+$('startYesterday').onclick = () => save({ hefsek_date: addDays(todayKey(), -1) });
+document.querySelectorAll('[data-shift]').forEach((b) => (b.onclick = () => save({ hefsek_date: addDays(S.hefsek_date, +b.dataset.shift) })));
+$('stopBtn').onclick = () => { if (confirm('Arrêter les rappels des 7 jours ?')) save({ hefsek_date: null }); };
+$('toggleSet').onclick = () => { $('settings').hidden = !$('settings').hidden; $('toggleSet').textContent = $('settings').hidden ? 'Réglages' : 'Masquer les réglages'; };
+$('hefsekRem').onchange = (e) => save({ hefsek_reminder: e.target.checked });
+document.querySelectorAll('.step').forEach((st) => {
+  const [minus, , plus] = st.children;
+  const k = st.dataset.k, step = +st.dataset.step, min = +st.dataset.min, max = +st.dataset.max;
+  minus.onclick = () => save({ [k]: Math.max(min, S.settings[k] - step) });
+  plus.onclick = () => save({ [k]: Math.min(max, S.settings[k] + step) });
+});
+$('gpsBtn').onclick = async () => { const p = await position(); if (p) save(p); else alert('Position indisponible. Vérifie que Safari a accès à la localisation.'); };
+$('bonneuilBtn').onclick = () => save(BONNEUIL);
+$('testBtn').onclick = async () => {
+  $('testTxt').textContent = 'Envoi…';
+  try { const r = await api('test'); $('testTxt').textContent = r.ok ? 'Envoyée : elle doit arriver dans quelques secondes.' : "Échec de l'envoi."; }
+  catch (e) { $('testTxt').textContent = e.message; }
+};
+
+navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', (e) => { if (e.data && e.data.slot) { focusSlot = e.data.slot; render(); } });
+
+async function refresh() {
+  try {
+    S = store.get('bedikot.id') ? await api('state') : await api('save', BONNEUIL);
+  } catch (e) {
+    if (String(e.message) === 'inconnu') { store.del('bedikot.id'); return refresh(); }
+    const cached = store.get('bedikot.state');
+    if (cached) S = JSON.parse(cached);
+  }
+  render();
+}
+
+(async () => {
+  const cached = store.get('bedikot.state');
+  if (cached) { try { S = JSON.parse(cached); } catch {} }
+  render();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  await refresh();
+  document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && refresh());
+  setInterval(render, 30000);
+})();
+</script>
+</body>
+</html>
