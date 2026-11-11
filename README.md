@@ -4,7 +4,7 @@ Petites applications web personnelles, une par dossier, publiées sur GitHub Pag
 
 | Dossier | App | Lien |
 | --- | --- | --- |
-| `bedikot/` | Rappels des bedikot (7 jours propres), à ajouter sur l'écran d'accueil de l'iPhone | https://jonathanazoulay01-eng.github.io/apps/bedikot/ |
+| `bedikot/` | Rappels des bedikot (7 jours propres), à ajouter sur l'écran d'accueil de l'iPhone | https://jonathanazoulay01-eng.github.io/Apps/bedikot/ |
 
 ## Bedikot
 
