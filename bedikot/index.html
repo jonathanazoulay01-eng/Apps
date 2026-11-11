@@ -346,7 +346,12 @@ async function refresh() {
   const cached = store.get('bedikot.state');
   if (cached) { try { S = JSON.parse(cached); } catch {} }
   render();
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((r) => r.update()).catch(() => {});
+    // quand une nouvelle version s'installe, on recharge une fois
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded) { reloaded = true; location.reload(); } });
+  }
   await refresh();
   document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && refresh());
   setInterval(render, 30000);
