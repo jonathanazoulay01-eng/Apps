@@ -54,6 +54,8 @@
   .link { background: none; color: var(--accent); font-weight: 600; padding: 8px; }
   .install ol { margin: 8px 0 0; padding-left: 20px; } .install li { margin: 4px 0; }
   .err { color: var(--warn); }
+  .pick { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
+  .pick input { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--accent-soft); color: var(--ink); }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -95,16 +97,16 @@
     <div id="sevenOn" hidden>
       <p class="big" id="dayNum"></p>
       <p class="soft" id="hefsekTxt"></p>
+      <div class="pick"><span>Changer le jour du hefsek :</span><input type="date" id="changeDate"></div>
       <div class="row">
-        <button class="sbtn" data-shift="-1">‹ Veille</button>
-        <button class="sbtn" data-shift="1">Lendemain ›</button>
         <button class="sbtn" id="stopBtn">Arrêter</button>
       </div>
     </div>
     <div id="sevenOff">
       <p class="soft" id="offTxt">Aucune période en cours.</p>
-      <button class="btn" id="startToday">Hefsek tahara aujourd'hui</button>
-      <button class="sbtn" id="startYesterday">C'était hier</button>
+      <button class="btn" id="startToday">Hefsek tahara ce soir</button>
+      <div class="pick"><span>Ou choisis le jour (au soir) :</span><input type="date" id="pickDate"></div>
+      <button class="sbtn" id="startPicked">Commencer à cette date</button>
     </div>
   </section>
 
@@ -193,9 +195,11 @@ function render() {
   $('sevenOn').hidden = !active;
   $('sevenOff').hidden = !!active;
   if (active) {
-    $('dayNum').textContent = idx === 0 ? 'Jour du hefsek tahara' : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
-    $('hefsekTxt').textContent = `Hefsek tahara : ${fmtDay(h)}`;
+    $('dayNum').textContent = idx === 0 ? 'Hefsek tahara ce soir' : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
+    $('hefsekTxt').textContent = `Hefsek tahara : ${fmtDay(h)} au soir`;
+    $('changeDate').value = h;
   } else {
+    if (!$('pickDate').value) $('pickDate').value = todayKey();
     $('offTxt').textContent = h ? 'Les 7 jours sont terminés. Mazal tov !' : 'Aucune période en cours.';
   }
 
@@ -306,8 +310,8 @@ async function save(patch) {
 
 $('enableBtn').onclick = enable;
 $('startToday').onclick = () => save({ hefsek_date: todayKey() });
-$('startYesterday').onclick = () => save({ hefsek_date: addDays(todayKey(), -1) });
-document.querySelectorAll('[data-shift]').forEach((b) => (b.onclick = () => save({ hefsek_date: addDays(S.hefsek_date, +b.dataset.shift) })));
+$('startPicked').onclick = () => { const v = $('pickDate').value; if (v) save({ hefsek_date: v }); else alert('Choisis d\'abord une date.'); };
+$('changeDate').onchange = (e) => { if (e.target.value) save({ hefsek_date: e.target.value }); };
 $('stopBtn').onclick = () => { if (confirm('Arrêter les rappels des 7 jours ?')) save({ hefsek_date: null }); };
 $('toggleSet').onclick = () => { $('settings').hidden = !$('settings').hidden; $('toggleSet').textContent = $('settings').hidden ? 'Réglages' : 'Masquer les réglages'; };
 $('hefsekRem').onchange = (e) => save({ hefsek_reminder: e.target.checked });

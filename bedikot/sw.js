@@ -1,5 +1,5 @@
 // Service worker Bedikot : affiche les rappels envoyés par le serveur.
-const CACHE = 'bedikot-v1';
+const CACHE = 'bedikot-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
