@@ -98,15 +98,16 @@
     <div id="sevenOn" hidden>
       <p class="big" id="dayNum"></p>
       <p class="soft" id="hefsekTxt"></p>
-      <div class="pick"><span>Changer le jour du hefsek :</span><input type="date" id="changeDate"></div>
+      <p class="soft" id="cycleTxt"></p>
+      <div class="pick"><span>Corriger le jour du hefsek :</span><input type="date" id="changeDate"></div>
       <div class="row">
         <button class="sbtn" id="stopBtn">Arrêter</button>
       </div>
     </div>
     <div id="sevenOff">
       <p class="soft" id="offTxt">Aucune période en cours.</p>
-      <button class="btn" id="startToday">Hefsek tahara ce soir</button>
-      <div class="pick"><span>Ou choisis le jour (au soir) :</span><input type="date" id="pickDate"></div>
+      <button class="btn" id="startToday">Hefsek tahara fait aujourd'hui</button>
+      <div class="pick"><span>Ou choisis le jour du hefsek :</span><input type="date" id="pickDate"></div>
       <button class="sbtn" id="startPicked">Commencer à cette date</button>
     </div>
   </section>
@@ -199,8 +200,9 @@ function render() {
   $('sevenOn').hidden = !active;
   $('sevenOff').hidden = !!active;
   if (active) {
-    $('dayNum').textContent = idx === 0 ? 'Hefsek tahara ce soir' : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
-    $('hefsekTxt').textContent = `Hefsek tahara : ${fmtDay(h)} au soir`;
+    $('dayNum').textContent = idx === 0 ? "Jour du hefsek tahara" : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
+    $('hefsekTxt').textContent = `Hefsek tahara : ${fmtDay(h)} (avant la chkia)`;
+    $('cycleTxt').textContent = `1er jour : ${fmtDay(addDays(h, 1))}\n7e jour : ${fmtDay(addDays(h, 7))}\nMikvé : ${fmtDay(addDays(h, 7))} soir, après la tombée de la nuit`;
     $('changeDate').value = h;
   } else {
     if (!$('pickDate').value) $('pickDate').value = todayKey();
