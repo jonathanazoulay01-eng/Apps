@@ -54,7 +54,8 @@
   .link { background: none; color: var(--accent); font-weight: 600; padding: 8px; }
   .install ol { margin: 8px 0 0; padding-left: 20px; } .install li { margin: 4px 0; }
   .err { color: var(--warn); }
-  .pick { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
+  .pick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+  .pick span { flex: 1 1 100%; }
   .pick input { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--accent-soft); color: var(--ink); }
   [hidden] { display: none !important; }
 </style>
@@ -99,16 +100,18 @@
       <p class="big" id="dayNum"></p>
       <p class="soft" id="hefsekTxt"></p>
       <p class="soft" id="cycleTxt"></p>
-      <div class="pick"><span>Corriger le jour du hefsek :</span><input type="date" id="changeDate"></div>
+      <div class="pick"><span>Corriger le jour du hefsek (après-midi) :</span><input type="date" id="changeDate"></div>
       <div class="row">
         <button class="sbtn" id="stopBtn">Arrêter</button>
       </div>
     </div>
     <div id="sevenOff">
       <p class="soft" id="offTxt">Aucune période en cours.</p>
-      <button class="btn" id="startToday">Hefsek tahara fait aujourd'hui</button>
-      <div class="pick"><span>Ou choisis le jour du hefsek :</span><input type="date" id="pickDate"></div>
-      <button class="sbtn" id="startPicked">Commencer à cette date</button>
+      <p class="hint">Le jour du hefsek tahara (fait l'après-midi, avant la chkia) est la veille du décompte. Le 1er des 7 jours commence le lendemain.</p>
+      <button class="btn" id="startToday">J'ai fait le hefsek cet après-midi</button>
+      <div class="pick"><span>Ou choisis le jour où tu as fait le hefsek (l'après-midi) :</span><input type="date" id="pickDate"></div>
+      <p class="hint" id="pickPreview"></p>
+      <button class="sbtn" id="startPicked">Valider cette date</button>
     </div>
   </section>
 
@@ -201,11 +204,12 @@ function render() {
   $('sevenOff').hidden = !!active;
   if (active) {
     $('dayNum').textContent = idx === 0 ? "Jour du hefsek tahara" : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
-    $('hefsekTxt').textContent = `Hefsek tahara : ${fmtDay(h)} (avant la chkia)`;
+    $('hefsekTxt').textContent = `Hefsek tahara fait le ${fmtDay(h)} après-midi : c'est la veille du décompte.`;
     $('cycleTxt').textContent = `1er jour : ${fmtDay(addDays(h, 1))}\n7e jour : ${fmtDay(addDays(h, 7))}\nMikvé : ${fmtDay(addDays(h, 7))} soir, après la tombée de la nuit`;
     $('changeDate').value = h;
   } else {
     if (!$('pickDate').value) $('pickDate').value = todayKey();
+    previewPick();
     $('offTxt').textContent = h ? 'Les 7 jours sont terminés. Mazal tov !' : 'Aucune période en cours.';
   }
 
@@ -320,6 +324,12 @@ async function save(patch) {
 
 $('enableBtn').onclick = enable;
 $('startToday').onclick = () => save({ hefsek_date: todayKey() });
+function previewPick() {
+  const v = $('pickDate').value;
+  $('pickPreview').textContent = v ? `Hefsek le ${fmtDay(v)} après-midi → 1er jour le ${fmtDay(addDays(v, 1))}, mikvé le ${fmtDay(addDays(v, 7))} soir.` : '';
+}
+$('pickDate').oninput = previewPick;
+$('pickDate').onchange = previewPick;
 $('startPicked').onclick = () => { const v = $('pickDate').value; if (v) save({ hefsek_date: v }); else alert('Choisis d\'abord une date.'); };
 $('changeDate').onchange = (e) => { if (e.target.value) save({ hefsek_date: e.target.value }); };
 $('stopBtn').onclick = () => { if (confirm('Arrêter les rappels des 7 jours ?')) save({ hefsek_date: null }); };
