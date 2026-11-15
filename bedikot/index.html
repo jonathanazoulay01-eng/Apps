@@ -374,17 +374,23 @@ function render() {
   // bedika en cours
   const plan = active ? S.plan : [];
   let cur = plan.find((p) => p.id === focusSlot && !S.done[p.id]);
-  if (!cur) cur = plan.filter((p) => p.day === today && !S.done[p.id] && now >= Date.parse(p.times[0]) - 3600e3 && now <= Date.parse(p.end)).pop();
+  // sinon : la prochaine bedika pas encore faite (celle en cours, ou la suivante dès que la précédente est validée)
+  if (!cur) cur = plan.find((p) => !S.done[p.id] && now <= Date.parse(p.end));
   $('current').hidden = !cur;
   if (cur) {
     const zz = cur.zmanim;
     const moment = cur.kind === 'matin' ? 'du matin' : cur.kind === 'hefsek' ? '' : "de l'après-midi";
     const head = cur.kind === 'hefsek' ? T('hefsek') : `${T('bedika')} <span>${moment}</span>`;
     const badge = cur.kind === 'hefsek' ? '' : `<span class="badge">${cur.label}</span>`;
+    const startIso = cur.kind === 'matin' ? (S.settings.show_bediavad ? zz.alot : zz.netz) : zz.minhaKetana;
+    const toStart = Math.ceil((Date.parse(startIso) - now) / 60000);
     const left = Math.round((Date.parse(cur.end) - now) / 60000);
-    const body = rangeHTML(cur) + `<div class="left">${left > 0 ? `⏳ Encore ${fmtDur(left)}` : 'Le temps est passé.'}</div>`;
-    $('current').innerHTML = `<div class="title">${head}${badge}</div>${body}<button class="btn" id="curDone">C'est fait ✓</button>`;
-    $('curDone').onclick = () => setDone(cur.id, true);
+    const when = cur.day === today ? '' : cur.day === addDays(today, 1) ? 'Demain · ' : `${cap(fmtDay(cur.day))} · `;
+    const status = toStart > 0
+      ? `<div class="left">🕒 ${when}Prochaine ${cur.kind === 'hefsek' ? 'étape' : 'bedika'} : commence dans ${fmtDur(toStart)}</div>`
+      : `<div class="left">${left > 0 ? `⏳ Encore ${fmtDur(left)}` : 'Le temps est passé.'}</div>`;
+    $('current').innerHTML = `<div class="title">${head}${badge}</div>${rangeHTML(cur)}${status}${toStart > 0 ? '' : `<button class="btn" id="curDone">C'est fait ✓</button>`}`;
+    if ($('curDone')) $('curDone').onclick = () => setDone(cur.id, true);
   }
 
   // programme
