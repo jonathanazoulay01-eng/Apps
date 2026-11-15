@@ -167,6 +167,9 @@ button:focus-visible,.opt:focus-visible{outline:3px solid var(--gold);outline-of
 .note{color:var(--muted);font-size:.9rem}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:14px;font-weight:800;z-index:20;max-width:calc(100% - 32px);text-align:center}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+.say{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-weight:800;font-size:.9rem;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow)}
+.say.speaking{background:var(--gold);border-color:var(--gold);color:#1b2147}
+button.pill[aria-pressed="true"]{background:var(--wool);border-color:var(--wool);color:#fff}
 .danger{border:0;background:none;color:var(--muted);text-decoration:underline;font-weight:700;align-self:flex-start;padding:0}
 
 @media (max-width:520px){
@@ -193,6 +196,7 @@ button:focus-visible,.opt:focus-visible{outline:3px solid var(--gold);outline-of
     <div class="lvl"><small id="lvlName">Niveau 1</small><div class="bar"><i id="lvlBar" style="width:0%"></i></div></div>
     <span class="pill xp" title="Points d’expérience">⭐ <span id="xp">0</span></span>
     <span class="pill" title="Meilleure série de bonnes réponses">🔥 <span id="best">0</span></span>
+    <button class="pill" id="autoRead" aria-pressed="false" title="Lire automatiquement les questions et les explications">🔊 Lecture auto</button>
   </div>
 
   <section class="chap" id="chapHead"></section>
@@ -450,10 +454,59 @@ function checkBadges(){
   if(ch.cartes.every((_,i)=>S.flips[ch.id+":"+i])) award(ch.id+":cartes");
 }
 
+/* ---------- lecture à voix haute ---------- */
+const TTS={ok:"speechSynthesis" in window, voice:null, btn:null};
+function pickVoice(){
+  if(!TTS.ok) return;
+  const v=speechSynthesis.getVoices().filter(x=>/^fr/i.test(x.lang));
+  TTS.voice=v.find(x=>/fr.FR/i.test(x.lang)&&/Amélie|Amelie|Audrey|Marie|Thomas|Google|Denise|Julie/i.test(x.name))||v.find(x=>/fr.FR/i.test(x.lang))||v[0]||null;
+}
+if(TTS.ok){pickVoice(); speechSynthesis.onvoiceschanged=pickVoice;}
+function cleanSpeech(t){
+  return String(t)
+    .replace(/[֐-׿יִ-ﭏ]+/g," ")
+    .replace(/\p{Extended_Pictographic}|️/gu," ")
+    .replace(/[’‘]/g,"'").replace(/’Hok|'Hok/g,"Hok")
+    .replace(/\s*\+\s*/g," et ").replace(/\s=\s/g," : ").replace(/n°/g,"numéro").replace(/___/g,"blanc")
+    .replace(/[«»()\[\]·•✔✘✓✗]/g," ").replace(/\s*\/\s*/g," ")
+    .replace(/\s*:\s*\./g,".").replace(/\s+/g," ").trim();
+}
+function stopSpeech(){ if(TTS.ok) speechSynthesis.cancel(); if(TTS.btn){TTS.btn.classList.remove("speaking");TTS.btn=null;} }
+function speak(text,btn){
+  if(!TTS.ok){toast("La lecture à voix haute n’est pas disponible sur cet appareil");return;}
+  const same=btn&&TTS.btn===btn; stopSpeech(); if(same) return;
+  const parts=cleanSpeech(text).split(/(?<=[.!?;:])\s+/).filter(x=>x.replace(/[^\p{L}\p{N}]/gu,"").length);
+  if(!parts.length) return;
+  if(btn){TTS.btn=btn;btn.classList.add("speaking");}
+  parts.forEach((t,i)=>{
+    const u=new SpeechSynthesisUtterance(t); u.lang="fr-FR"; if(TTS.voice)u.voice=TTS.voice; u.rate=.95;
+    if(i===parts.length-1) u.onend=u.onerror=()=>{if(TTS.btn===btn&&btn){btn.classList.remove("speaking");TTS.btn=null;}};
+    speechSynthesis.speak(u);
+  });
+}
+function nodeSpeech(el){
+  const c=el.cloneNode(true);
+  c.querySelectorAll(".heb,button,small,.icons svg,script,style").forEach(n=>n.remove());
+  c.querySelectorAll("li,p,h3,div,.verse").forEach(n=>n.append(". "));
+  return c.textContent;
+}
+function questionSpeech(){
+  const qt=$("#qt"); if(!qt) return "";
+  let t=nodeSpeech(qt);
+  const opts=[...document.querySelectorAll("#qa .opts .opt, #qa .choices .opt")];
+  if(opts.length&&!document.querySelector("#qa .vf")) t+=" "+opts.map(o=>{const l=o.querySelector(".l");return (l?l.textContent+" : ":"")+nodeSpeech(o.querySelector("span:last-child")||o).replace(/\.\s*$/,"");}).join(". ")+".";
+  if(document.querySelector("#qa .vf")) t+=" Vrai ou faux ?";
+  const si=$("#si"); if(si) t+=" À classer : "+si.textContent+".";
+  return t;
+}
+function setAuto(v){S.autoRead=v;save();const b=$("#autoRead");b.setAttribute("aria-pressed",v);if(!v)stopSpeech();}
+$("#autoRead").onclick=()=>{setAuto(!S.autoRead);toast(S.autoRead?"🔊 Lecture automatique activée":"Lecture automatique désactivée");};
+$("#autoRead").setAttribute("aria-pressed",!!S.autoRead);
+
 /* ---------- vues ---------- */
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.v));
 function show(v){
-  stopTimer(); curView=v;
+  stopTimer(); stopSpeech(); curView=v;
   document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v===v));
   ({apprendre:viewLearn,cartes:viewCards,quiz:viewQuizMenu,defi:viewDefiMenu,trophees:viewTrophies})[v]();
 }
@@ -464,13 +517,14 @@ function viewLearn(){
   Object.keys(SECTIONS).map(s=>{
     const done=S.read[ch.id+":"+s], m=Math.round(secMastery(ch,s)*100);
     return `<article class="fiche s-${s}">
-      <header><h2>${SECTIONS[s]}</h2><span class="tag">Quiz réussi à ${m} %</span></header>
+      <header><h2>${SECTIONS[s]}</h2><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="say" data-say="${s}">🔊 Lire</button><span class="tag">Quiz réussi à ${m} %</span></div></header>
       <div class="body">${ch.fiches[s]}
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="donebtn" data-s="${s}" ${done?"disabled":""}>${done?"✓ Fiche lue":"J’ai lu cette fiche (+20 ⭐)"}</button>
           <button class="go alt" data-quiz="${s}" style="font-size:1rem;padding:8px 14px">Me tester sur cette fiche →</button>
         </div>
       </div></article>`;}).join("")+`</div>`;
+  view.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(SECTIONS[b.dataset.say]+". "+nodeSpeech(b.closest(".fiche").querySelector(".body")),b));
   view.querySelectorAll(".donebtn").forEach(b=>b.onclick=()=>{
     S.read[ch.id+":"+b.dataset.s]=true; addXP(20); b.disabled=true; b.textContent="✓ Fiche lue"; toast("+20 ⭐ Bravo pour ta lecture !"); checkBadges();
   });
@@ -487,6 +541,7 @@ function viewCards(){
     <button class="go alt" id="shuf">🔀 Mélanger les cartes</button></div>`;
   view.querySelectorAll(".card").forEach(c=>c.onclick=()=>{
     c.classList.toggle("flip"); const k=ch.id+":"+c.dataset.i;
+    if(S.autoRead&&c.classList.contains("flip")) speak(nodeSpeech(c.querySelector(".front"))+". "+c.querySelector(".back").textContent);
     if(!S.flips[k]){S.flips[k]=true;addXP(2);save();checkBadges();}
   });
   $("#shuf").onclick=()=>{const g=view.querySelector(".cards");shuffle([...g.children]).forEach(n=>{n.classList.remove("flip");g.appendChild(n);});};
@@ -527,7 +582,7 @@ function startQuiz(sec,len){
 function renderQ(){
   const q=Q.list[Q.i], n=Q.list.length;
   view.innerHTML=`<div class="panel" id="qp">
-    <div class="qhead"><span>Question ${Q.i+1} / ${n}</span><span class="qtype">${TYPES[q.t]} · ${SECTIONS[q.s]}</span>${Q.combo>=2?`<span class="combo">🔥 ×${Q.combo}</span>`:""}</div>
+    <div class="qhead"><span>Question ${Q.i+1} / ${n}</span><span class="qtype">${TYPES[q.t]} · ${SECTIONS[q.s]}</span>${Q.combo>=2?`<span class="combo">🔥 ×${Q.combo}</span>`:""}<button class="say" id="sayQ">🔊 Lire</button></div>
     <div class="progress"><i style="width:${Q.i/n*100}%"></i></div>
     <div class="qtext" id="qt"></div>
     <div id="qa"></div>
@@ -536,6 +591,8 @@ function renderQ(){
   $("#quit").onclick=()=>endQuiz();
   const top=$("#tabs").getBoundingClientRect().top+scrollY-70; if(scrollY>top) window.scrollTo({top});
   RENDER[q.t](q,$("#qt"),$("#qa"),ok=>answered(q,ok));
+  $("#sayQ").onclick=e=>speak(questionSpeech(),e.currentTarget);
+  stopSpeech(); if(S.autoRead) speak(questionSpeech(),$("#sayQ"));
 }
 const RENDER={
   qcm(q,t,a,done){
@@ -610,11 +667,14 @@ function answered(q,ok){
   if(Q.combo>=5)award("serie5"); if(Q.combo>=10)award("serie10"); if(Q.combo>=20)award("serie20");
   checkBadges();
   const praise=["Bravo !","Super !","Excellent !","Génial !","Bien joué !","Parfait !"];
-  $("#fb").innerHTML=`<div class="feedback ${ok?"ok":"ko"}"><b>${ok?praise[Math.floor(Math.random()*praise.length)]+(Q.combo>=3?` 🔥 Série de ${Q.combo} !`:""):"Pas tout à fait…"}</b><span>${txt(q.e)}</span></div>
+  $("#fb").innerHTML=`<div class="feedback ${ok?"ok":"ko"}"><b>${ok?praise[Math.floor(Math.random()*praise.length)]+(Q.combo>=3?` 🔥 Série de ${Q.combo} !`:""):"Pas tout à fait…"}</b><span>${txt(q.e)}</span><button class="say" id="sayE" style="align-self:flex-start">🔊 Lire l’explication</button></div>
     <button class="go" id="next" style="margin-top:12px">${Q.i+1<Q.list.length?"Question suivante →":"Voir mon résultat"}</button>`;
+  const fbText=(ok?"Bravo ! ":"Pas tout à fait. ")+nodeSpeech($("#fb .feedback span"));
+  $("#sayE").onclick=e=>speak(fbText,e.currentTarget);
+  if(S.autoRead) speak(fbText,$("#sayE")); else stopSpeech();
   const nx=$("#next"); nx.focus({preventScroll:true});
   nx.scrollIntoView({behavior:"smooth",block:"nearest"});
-  nx.onclick=()=>{Q.i++; Q.i<Q.list.length?renderQ():endQuiz();};
+  nx.onclick=()=>{stopSpeech();Q.i++; Q.i<Q.list.length?renderQ():endQuiz();};
 }
 function endQuiz(){
   if(!Q) return show("quiz");
@@ -702,7 +762,7 @@ function viewTrophies(){
   $("#reset").onclick=()=>{
     $("#rz").innerHTML=`<div class="feedback ko"><b>Tout effacer ?</b><span>Les étoiles, trophées et réponses seront supprimés.</span>
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="go" id="yes" style="background:var(--bad);color:#fff;box-shadow:none">Oui, tout effacer</button><button class="go alt" id="no">Annuler</button></div></div>`;
-    $("#yes").onclick=()=>{S={xp:0,best:0,chap:S.chap,qs:{},read:{},flips:{},badges:{},defiBest:{}};save();renderTop();renderChapHead();show("trophees");toast("Progression remise à zéro");};
+    $("#yes").onclick=()=>{S={autoRead:S.autoRead,xp:0,best:0,chap:S.chap,qs:{},read:{},flips:{},badges:{},defiBest:{}};save();renderTop();renderChapHead();show("trophees");toast("Progression remise à zéro");};
     $("#no").onclick=()=>show("trophees");
   };
 }
