@@ -5,121 +5,195 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bedikot</title>
 <meta name="description" content="Rappels des bedikot pendant les 7 jours propres">
-<meta name="theme-color" content="#7B4B94">
+<meta name="theme-color" content="#5E3473">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Bedikot">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FAF7FC; --card: #FFFFFF; --ink: #2D2433; --soft: #76697D; --accent: #7B4B94;
-    --accent-soft: #EFE6F4; --ok: #2E8B57; --warn: #B4572E; --line: #E8E0EC;
+    --bg: #F6F2F9; --card: #FFFFFF; --ink: #251C2B; --soft: #7A6E82; --faint: #B3A8BA;
+    --accent: #7B4B94; --accent-2: #9A6BB5; --accent-soft: #F1E9F6; --gold: #E9B44C; --gold-soft: #FFF4DC;
+    --ok: #2E8B57; --ok-soft: #E4F4EA; --warn: #C2553A; --line: #ECE4F0;
+    --shadow: 0 1px 2px rgba(60, 30, 80, .05), 0 8px 24px rgba(60, 30, 80, .07);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; background: var(--bg); color: var(--ink);
-    font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 520px; margin: 0 auto;
-    padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 40px); display: grid; gap: 12px; }
-  h1 { font-size: 30px; margin: 8px 0 0; }
-  h2 { font-size: 18px; margin: 0 0 6px; }
-  .sub { color: var(--soft); margin: 0 0 4px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
-  .card.focus { border: 2px solid var(--accent); }
-  .soft { color: var(--soft); margin: 0 0 8px; white-space: pre-line; }
-  .hint { color: var(--soft); font-size: 13px; margin: 8px 0 0; }
-  .big { font-size: 26px; font-weight: 700; color: var(--accent); margin: 0 0 2px; }
-  .z { display: flex; justify-content: space-between; text-align: center; }
-  .z div { flex: 1; } .z small { color: var(--soft); font-size: 11px; display: block; }
-  .z b { font-size: 21px; } .z .acc { color: var(--accent); }
+    font: 16px/1.45 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .he { font-family: "Frank Ruhl Libre", "Times New Roman", serif; font-weight: 700; unicode-bidi: isolate; direction: rtl; }
+  .tr { color: var(--soft); font-weight: 500; }
+  main { max-width: 520px; margin: 0 auto; padding: 0 16px calc(env(safe-area-inset-bottom) + 40px); display: grid; gap: 14px; }
+
+  /* En-tête */
+  .hero { margin: 0 -16px; padding: calc(env(safe-area-inset-top) + 22px) 20px 26px;
+    background: radial-gradient(120% 120% at 100% 0%, #B184C9 0%, #7B4B94 45%, #4E2A60 100%); color: #fff;
+    border-radius: 0 0 28px 28px; box-shadow: 0 10px 30px rgba(78, 42, 96, .25); }
+  .hero-top { display: flex; align-items: center; gap: 12px; }
+  .hero-top img { width: 44px; height: 44px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+  .hero h1 { margin: 0; font-size: 30px; line-height: 1.1; }
+  .hero h1 .he { font-size: 32px; }
+  .hero .sub { opacity: .85; font-size: 14px; margin-top: 2px; }
+  .ring-wrap { display: flex; align-items: center; gap: 18px; margin-top: 20px; }
+  .ring { width: 96px; height: 96px; flex: none; position: relative; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 26px; }
+  .ring b small { display: block; font-size: 11px; font-weight: 500; opacity: .8; margin-top: -18px; }
+  .ring-txt .big { font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .ring-txt .he { font-size: 24px; }
+  .ring-txt p { margin: 4px 0 0; opacity: .9; font-size: 14px; }
+  .dots { display: flex; gap: 6px; margin-top: 16px; }
+  .dots span { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); }
+  .dots span.on { background: var(--gold); }
+  .dots span.now { background: #fff; }
+
+  /* Cartes */
+  .card { background: var(--card); border-radius: 20px; padding: 18px; box-shadow: var(--shadow); }
+  .card h2 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--soft); margin: 0 0 12px; font-weight: 600; }
+  .soft { color: var(--soft); margin: 0 0 8px; }
+  .hint { color: var(--soft); font-size: 13px; margin: 10px 0 0; }
+  .err { color: var(--warn); }
+
+  /* Horaires du jour : frise */
+  .zrow { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 12px; padding: 10px 0; }
+  .zrow + .zrow { border-top: 1px solid var(--line); }
+  .zicon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-size: 18px; background: var(--accent-soft); }
+  .zname .he { font-size: 19px; display: block; line-height: 1.2; text-align: left; direction: rtl; }
+  .zname .tr { font-size: 13px; }
+  .ztime { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .zrow.end .ztime { color: var(--accent); }
+
+  /* Bedika en cours */
+  .now { background: linear-gradient(160deg, #FFFFFF 0%, #FBF7FD 100%); border: 2px solid var(--accent-2); }
+  .now .title { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .now .title .he { font-size: 26px; color: var(--accent); }
+  .now .title .badge { margin-left: auto; }
+  .badge { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+  .badge.gold { background: var(--gold-soft); color: #9A6A10; }
+  .badge.ok { background: var(--ok-soft); color: var(--ok); }
+  .opt { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; padding: 12px 14px; border-radius: 14px; background: var(--accent-soft); margin-top: 8px; }
+  .opt.best { background: var(--gold-soft); }
+  .opt .lbl .he { font-size: 18px; }
+  .opt .what { grid-column: 1; font-size: 14px; color: var(--soft); }
+  .opt .what .he { font-size: 15px; color: var(--ink); }
+  .opt .t { grid-row: 1 / span 2; grid-column: 2; font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .left { margin-top: 10px; font-size: 14px; color: var(--soft); }
+
   button { font: inherit; border: 0; cursor: pointer; }
-  .btn { width: 100%; background: var(--accent); color: #fff; font-size: 18px; font-weight: 700;
-    border-radius: 14px; padding: 16px; margin-top: 8px; }
-  .btn:active, .sbtn:active { opacity: .8; }
-  .sbtn { background: var(--accent-soft); color: var(--accent); font-weight: 600; border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .day { border-top: 1px solid var(--line); padding: 8px 0; }
-  .day b { display: block; margin-bottom: 2px; }
-  .slot { display: flex; gap: 8px; align-items: center; padding: 4px 0; width: 100%; background: none; text-align: left; color: var(--ink); }
-  .slot i { font-style: normal; width: 22px; font-size: 18px; color: var(--soft); }
-  .slot.done i { color: var(--ok); }
-  .set { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 0; }
+  .btn { width: 100%; background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #fff; font-size: 18px; font-weight: 700;
+    border-radius: 16px; padding: 16px; margin-top: 14px; box-shadow: 0 6px 16px rgba(123, 75, 148, .3); }
+  .btn .he { font-size: 20px; }
+  .btn:active, .sbtn:active, .slot:active { transform: scale(.98); }
+  .sbtn { background: var(--accent-soft); color: var(--accent); font-weight: 600; border-radius: 12px; padding: 10px 14px; margin-top: 10px; }
+
+  /* Cycle */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tile { background: var(--accent-soft); border-radius: 14px; padding: 10px; text-align: center; }
+  .tile.gold { background: var(--gold-soft); }
+  .tile small { display: block; color: var(--soft); font-size: 12px; }
+  .tile b { display: block; font-size: 15px; margin-top: 2px; }
+  .tile .he { font-size: 17px; }
+
+  /* Programme */
+  .day { padding: 12px 0; }
+  .day + .day { border-top: 1px solid var(--line); }
+  .day.today { background: var(--accent-soft); margin: 0 -18px; padding: 12px 18px; }
+  .dayhead { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 600; }
+  .dayhead .badge { margin-left: auto; }
+  .slot { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: center; width: 100%; background: none; text-align: left; color: var(--ink); padding: 6px 0; }
+  .check { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--faint); display: grid; place-items: center; font-size: 15px; color: #fff; }
+  .slot.done .check { background: var(--ok); border-color: var(--ok); }
+  .slot.missed .check { border-color: var(--warn); color: var(--warn); }
+  .slot .l1 { font-weight: 600; font-size: 15px; }
+  .slot .l2 { font-size: 13px; color: var(--soft); }
+  .slot .l2 .he { font-size: 14px; color: var(--ink); font-weight: 500; }
+
+  /* Formulaires */
+  .pick { display: grid; gap: 8px; margin-top: 14px; }
+  .pick label { font-size: 14px; color: var(--soft); }
+  .pick input { font: inherit; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--accent-soft); color: var(--ink); width: 100%; }
+  .set { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; }
+  .set + .set { border-top: 1px solid var(--line); }
   .set span { flex: 1; }
   .step { display: flex; align-items: center; gap: 6px; }
   .step button { width: 34px; height: 34px; border-radius: 17px; background: var(--accent-soft); color: var(--accent); font-size: 20px; font-weight: 700; }
-  .step output { min-width: 64px; text-align: center; font-weight: 600; }
+  .step output { min-width: 60px; text-align: center; font-weight: 600; }
   input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
   .link { background: none; color: var(--accent); font-weight: 600; padding: 8px; }
   .install ol { margin: 8px 0 0; padding-left: 20px; } .install li { margin: 4px 0; }
-  .err { color: var(--warn); }
-  .pick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
-  .pick span { flex: 1 1 100%; }
-  .pick input { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--accent-soft); color: var(--ink); }
-  .he { font-family: 'Arial Hebrew', 'SF Hebrew', 'Noto Sans Hebrew', 'Times New Roman', serif; unicode-bidi: isolate; font-size: 1.08em; }
   [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <main>
-  <div>
-    <h1><span class="he" lang="he" dir="rtl">בְּדִיקוֹת</span> <small style="font-size:16px;font-weight:500;color:var(--soft)">(examens)</small></h1>
-    <p class="sub" id="where">📍 Bonneuil-sur-Marne</p>
-  </div>
+  <header class="hero">
+    <div class="hero-top">
+      <img src="icon-192.png" alt="">
+      <div>
+        <h1><span class="he" lang="he">בְּדִיקוֹת</span> <span style="font-size:16px;font-weight:500;opacity:.85">(examens)</span></h1>
+        <div class="sub" id="where">📍 Bonneuil-sur-Marne</div>
+      </div>
+    </div>
+    <div class="ring-wrap" id="ringWrap" hidden>
+      <div class="ring">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="10"/>
+          <circle id="ringArc" cx="50" cy="50" r="42" fill="none" stroke="#E9B44C" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 264"/></svg>
+        <b id="ringNum">–</b>
+      </div>
+      <div class="ring-txt">
+        <div class="big" id="ringTitle"></div>
+        <p id="ringSub"></p>
+      </div>
+    </div>
+    <div class="dots" id="dots" hidden></div>
+  </header>
 
   <section class="card install" id="install" hidden>
     <h2>Installer l'app sur l'iPhone</h2>
     <p class="soft">Les rappels ne marchent que si l'app est sur l'écran d'accueil.</p>
     <ol>
       <li>Ouvre ce lien dans <b>Safari</b>.</li>
-      <li>Appuie sur le bouton <b>Partager</b> (carré avec une flèche ⬆︎).</li>
+      <li>Appuie sur <b>Partager</b> (dans « ••• » sur les iOS récents).</li>
       <li>Choisis <b>« Sur l'écran d'accueil »</b>, puis <b>Ajouter</b>.</li>
       <li>Ouvre <b>Bedikot</b> depuis l'écran d'accueil.</li>
     </ol>
   </section>
 
-  <section class="card" id="zcard" hidden>
-    <div class="z">
-      <div><small><span class="he" lang="he" dir="rtl">עֲלוֹת הַשַּׁחַר</span><br>(aube)</small><b id="zAlot">--:--</b></div>
-      <div><small><span class="he" lang="he" dir="rtl">הָנֵץ הַחַמָּה</span><br>(lever du soleil)</small><b id="zNetz">--:--</b></div>
-      <div><small><span class="he" lang="he" dir="rtl">מִנְחָה קְטַנָּה</span><br>(fin d'après-midi)</small><b id="zMinha">--:--</b></div>
-      <div><small><span class="he" lang="he" dir="rtl">שְׁקִיעָה</span><br>(coucher du soleil)</small><b class="acc" id="zShkia">--:--</b></div>
-    </div>
-  </section>
-
   <section class="card" id="enable" hidden>
     <h2>Activer les rappels</h2>
-    <p class="soft">Autorise les notifications et la position (pour calculer la <span class="he" lang="he" dir="rtl">שְׁקִיעָה</span> (coucher du soleil) là où tu es).</p>
+    <p class="soft">Autorise les notifications et la position, pour calculer les horaires là où tu es.</p>
     <button class="btn" id="enableBtn">Activer les notifications</button>
     <p class="hint err" id="enableErr" hidden></p>
   </section>
 
+  <section class="card now" id="current" hidden></section>
+
+  <section class="card" id="zcard" hidden>
+    <h2>Horaires d'aujourd'hui</h2>
+    <div id="zlist"></div>
+  </section>
+
   <section class="card" id="seven">
-    <h2><span class="he" lang="he" dir="rtl">שִׁבְעָה נְקִיִּים</span> (7 jours propres)</h2>
+    <h2 id="sevenTitle"></h2>
     <div id="sevenOn" hidden>
-      <p class="big" id="dayNum"></p>
-      <p class="soft" id="hefsekTxt"></p>
-      <p class="soft" id="cycleTxt"></p>
-      <div class="pick"><span>Corriger le jour du <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles), fait l'après-midi :</span><input type="date" id="changeDate"></div>
-      <div class="row">
-        <button class="sbtn" id="stopBtn">Arrêter</button>
-      </div>
+      <div class="tiles" id="tiles"></div>
+      <p class="hint" id="hefsekTxt"></p>
+      <div class="pick"><label for="changeDate" id="changeLbl"></label><input type="date" id="changeDate"></div>
+      <button class="sbtn" id="stopBtn">Arrêter les rappels</button>
     </div>
     <div id="sevenOff">
       <p class="soft" id="offTxt">Aucune période en cours.</p>
-      <p class="hint">Le jour du <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles), fait l'après-midi avant la <span class="he" lang="he" dir="rtl">שְׁקִיעָה</span> (coucher du soleil), est la veille du décompte. Le 1er des 7 jours commence le lendemain.</p>
-      <button class="btn" id="startToday">J'ai fait le <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> cet après-midi</button>
-      <div class="pick"><span>Ou choisis le jour où tu as fait le <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles), l'après-midi :</span><input type="date" id="pickDate"></div>
+      <p class="hint" id="offHint"></p>
+      <button class="btn" id="startToday"></button>
+      <div class="pick"><label for="pickDate" id="pickLbl"></label><input type="date" id="pickDate"></div>
       <p class="hint" id="pickPreview"></p>
       <button class="sbtn" id="startPicked">Valider cette date</button>
     </div>
-  </section>
-
-  <section class="card focus" id="current" hidden>
-    <h2 id="curTitle"></h2>
-    <p class="soft" id="curTxt"></p>
-    <button class="btn" id="curDone">C'est fait ✓</button>
   </section>
 
   <section class="card" id="prog" hidden>
@@ -128,15 +202,15 @@
     <p class="hint">Touche une ligne pour la cocher ou la décocher.</p>
   </section>
 
-  <button class="link" id="toggleSet">Réglages</button>
+  <button class="link" id="toggleSet">⚙︎ Réglages</button>
   <section class="card" id="settings" hidden>
-    <div class="set"><span>Rappel le jour du <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles)</span><input type="checkbox" id="hefsekRem"></div>
-    <div class="set"><span id="alotLbl">Rappel du matin avant</span><div class="step" data-k="before_alot" data-step="5" data-min="-120" data-max="60"><button>−</button><output></output><button>+</button></div></div>
-    <button class="sbtn" id="gpsBtn">Mettre à jour ma position</button>
+    <div class="set"><span id="hefsekRemLbl"></span><input type="checkbox" id="hefsekRem"></div>
+    <div class="set"><span id="alotLbl"></span><div class="step" data-k="before_alot" data-step="5" data-min="-120" data-max="60"><button>−</button><output></output><button>+</button></div></div>
+    <button class="sbtn" id="gpsBtn">📍 Mettre à jour ma position</button>
     <button class="sbtn" id="bonneuilBtn">Utiliser Bonneuil-sur-Marne</button>
-    <button class="sbtn" id="testBtn">Envoyer une notification d'essai</button>
+    <button class="sbtn" id="testBtn">🔔 Envoyer une notification d'essai</button>
     <p class="hint" id="testTxt"></p>
-    <p class="hint">Horaires selon Roger Stioui (comme Torah-Box) : <span class="he" lang="he" dir="rtl">שְׁקִיעָה</span> (coucher du soleil) au niveau de la mer, <span class="he" lang="he" dir="rtl">עֲלוֹת הַשַּׁחַר</span> (aube) à 16,1°. <span class="he" lang="he" dir="rtl">מִנְחָה קְטַנָּה</span> (fin d'après-midi) selon le Gaon de Vilna. Un seul rappel le matin (avant עֲלוֹת הַשַּׁחַר) et un seul l'après-midi (à מִנְחָה קְטַנָּה).</p>
+    <p class="hint" id="methodTxt"></p>
   </section>
 </main>
 
@@ -144,10 +218,16 @@
 const API = 'https://qddkzkqhzbbwrfledovv.supabase.co/functions/v1/bedikot';
 const BONNEUIL = { place: 'Bonneuil-sur-Marne', lat: 48.7714, lon: 2.4875, tz: 'Europe/Paris' };
 const $ = (id) => document.getElementById(id);
-const W = {"bedikot": ["בְּדִיקוֹת", "examens"], "bedika": ["בְּדִיקָה", "examen"], "hefsek": ["הֶפְסֵק טָהֳרָה", "examen de fin des règles"], "alot": ["עֲלוֹת הַשַּׁחַר", "aube"], "netz": ["הָנֵץ הַחַמָּה", "lever du soleil"], "minha": ["מִנְחָה קְטַנָּה", "fin d'après-midi"], "shkia": ["שְׁקִיעָה", "coucher du soleil"], "bediavad": ["בְּדִיעֲבַד", "a posteriori"], "lehatehila": ["לְכַתְּחִלָּה", "idéalement"], "mikve": ["מִקְוֶה", "bain rituel"], "nekiim": ["שִׁבְעָה נְקִיִּים", "7 jours propres"]};
-// mot hébreu vocalisé isolé (pour ne pas casser le sens de lecture) + traduction
-const he = (k) => `\u2068${W[k][0]}\u2069 (${W[k][1]})`;
-const heOnly = (k) => `\u2068${W[k][0]}\u2069`;
+const W = {
+  bedikot: ['בְּדִיקוֹת', 'examens'], bedika: ['בְּדִיקָה', 'examen'], hefsek: ['הֶפְסֵק טָהֳרָה', 'examen de fin des règles'],
+  alot: ['עֲלוֹת הַשַּׁחַר', 'aube'], netz: ['הָנֵץ הַחַמָּה', 'lever du soleil'], minha: ['מִנְחָה קְטַנָּה', "fin d'après-midi"],
+  shkia: ['שְׁקִיעָה', 'coucher du soleil'], bediavad: ['בְּדִיעֲבַד', 'a posteriori'], lehatehila: ['לְכַתְּחִלָּה', 'idéalement'],
+  mikve: ['מִקְוֶה', 'bain rituel'], nekiim: ['שִׁבְעָה נְקִיִּים', '7 jours propres'],
+};
+// HTML : mot hébreu vocalisé + traduction entre parenthèses
+const T = (k) => `<span class="he" lang="he">${W[k][0]}</span> <span class="tr">(${W[k][1]})</span>`;
+// texte brut (notifications, alertes)
+const he = (k) => `⁨${W[k][0]}⁩ (${W[k][1]})`;
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch {} },
@@ -171,6 +251,7 @@ async function api(action, data = {}) {
 const JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
 const fmtDay = (k) => { const [y, m, d] = k.split('-').map(Number); const dt = new Date(Date.UTC(y, m - 1, d, 12)); return `${JOURS[dt.getUTCDay()]} ${d} ${MOIS[m - 1]}`; };
+const shortDay = (k) => { const [y, m, d] = k.split('-').map(Number); const dt = new Date(Date.UTC(y, m - 1, d, 12)); return `${JOURS[dt.getUTCDay()].slice(0, 3)}. ${d}`; };
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const tz = () => (S && S.tz) || 'Europe/Paris';
 // arrondi strict : un début (alot, nets, Minha kétana) à la minute supérieure, une fin (chkia) à la minute inférieure
@@ -184,20 +265,32 @@ const addDays = (k, n) => { const d = new Date(k + 'T12:00:00Z'); d.setUTCDate(d
 const diffDays = (a, b) => Math.round((Date.parse(a + 'T12:00:00Z') - Date.parse(b + 'T12:00:00Z')) / 864e5);
 const fmtDur = (m) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')}`);
 
+// textes fixes avec les termes hébreux
+$('sevenTitle').innerHTML = T('nekiim');
+$('offHint').innerHTML = `Le jour du ${T('hefsek')}, fait l'après-midi avant la ${T('shkia')}, est la veille du décompte. Le 1er des 7 jours commence le lendemain.`;
+$('startToday').innerHTML = `J'ai fait le <span class="he" lang="he">${W.hefsek[0]}</span> cet après-midi<br><span style="font-size:13px;font-weight:500;opacity:.85">(${W.hefsek[1]})</span>`;
+$('pickLbl').innerHTML = `Ou choisis le jour du ${T('hefsek')}, fait l'après-midi :`;
+$('changeLbl').innerHTML = `Corriger le jour du ${T('hefsek')} :`;
+$('hefsekRemLbl').innerHTML = `Rappel le jour du ${T('hefsek')}`;
+$('methodTxt').innerHTML = `Horaires selon Roger Stioui (comme Torah-Box) : ${T('shkia')} au niveau de la mer, ${T('alot')} à 16,1°, ${T('minha')} selon le Gaon de Vilna. Un seul rappel le matin et un seul l'après-midi.`;
+
+function zrow(icon, k, iso, mode, end) {
+  return `<div class="zrow${end ? ' end' : ''}"><div class="zicon">${icon}</div>
+    <div class="zname"><span class="he" lang="he">${W[k][0]}</span><span class="tr">${W[k][1]}</span></div>
+    <div class="ztime">${iso ? hhmm(iso, mode) : '--:--'}</div></div>`;
+}
+
 function render() {
   $('install').hidden = !(isIOS && !standalone);
-  const ready = !!S;
   $('enable').hidden = !(standalone || !isIOS) || (S && S.has_push) || !pushOK;
   if (!pushOK && standalone) { $('enable').hidden = false; $('enableBtn').hidden = true; showErr("Ce téléphone ne permet pas les notifications web (iOS 16.4 minimum)."); }
-  if (!ready) return;
+  if (!S) return;
 
   $('where').textContent = `📍 ${S.place} · ${fmtDay(todayKey())}`;
-  if (S.zmanim_today) {
+  const z = S.zmanim_today;
+  if (z) {
     $('zcard').hidden = false;
-    $('zAlot').textContent = hhmm(S.zmanim_today.alot, 'debut');
-    $('zNetz').textContent = hhmm(S.zmanim_today.netz, 'debut');
-    $('zMinha').textContent = S.zmanim_today.minhaKetana ? hhmm(S.zmanim_today.minhaKetana, 'debut') : '--:--';
-    $('zShkia').textContent = hhmm(S.zmanim_today.shkia);
+    $('zlist').innerHTML = zrow('🌅', 'alot', z.alot, 'debut') + zrow('☀️', 'netz', z.netz, 'debut') + zrow('🌤️', 'minha', z.minhaKetana, 'debut') + zrow('🌇', 'shkia', z.shkia, 'fin', true);
   }
 
   const now = Date.now();
@@ -205,12 +298,28 @@ function render() {
   const h = S.hefsek_date;
   const idx = h ? diffDays(today, h) : null;
   const active = h && idx <= 7;
+
+  // anneau de progression
+  $('ringWrap').hidden = !active;
+  $('dots').hidden = !active;
+  if (active) {
+    const n = Math.max(0, Math.min(7, idx));
+    $('ringArc').setAttribute('stroke-dasharray', `${(n / 7) * 264} 264`);
+    $('ringNum').innerHTML = `<span>${n}<span style="font-size:15px;opacity:.75">/7</span></span>`;
+    $('ringTitle').innerHTML = idx === 0 ? `<span class="he" lang="he">${W.hefsek[0]}</span>` : idx < 0 ? 'Bientôt' : `Jour ${idx} des 7`;
+    $('ringSub').innerHTML = idx === 0 ? `(${W.hefsek[1]}) aujourd'hui, le 1er jour commence demain`
+      : idx === 7 ? `Dernier jour. <span class="he" lang="he">${W.mikve[0]}</span> (${W.mikve[1]}) ce soir`
+      : `<span class="he" lang="he">${W.mikve[0]}</span> (${W.mikve[1]}) ${fmtDay(addDays(h, 7))} soir`;
+    $('dots').innerHTML = Array.from({ length: 7 }, (_, i) => `<span class="${i + 1 < idx ? 'on' : i + 1 === idx ? 'now' : ''}"></span>`).join('');
+  }
+
   $('sevenOn').hidden = !active;
   $('sevenOff').hidden = !!active;
   if (active) {
-    $('dayNum').textContent = idx === 0 ? `Jour du ${heOnly('hefsek')}` : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
-    $('hefsekTxt').textContent = `${he('hefsek')} fait le ${fmtDay(h)} après-midi : c'est la veille du décompte.`;
-    $('cycleTxt').textContent = `1er jour : ${fmtDay(addDays(h, 1))}\n7e jour : ${fmtDay(addDays(h, 7))}\n${he('mikve')} : ${fmtDay(addDays(h, 7))} soir, après la tombée de la nuit`;
+    $('tiles').innerHTML = `<div class="tile"><small>1er jour</small><b>${cap(shortDay(addDays(h, 1)))}</b></div>
+      <div class="tile"><small>7e jour</small><b>${cap(shortDay(addDays(h, 7)))}</b></div>
+      <div class="tile gold"><small><span class="he" lang="he">${W.mikve[0]}</span><br>(${W.mikve[1]})</small><b>${cap(shortDay(addDays(h, 7)))} soir</b></div>`;
+    $('hefsekTxt').innerHTML = `${T('hefsek')} fait le ${fmtDay(h)} après-midi : c'est la veille du décompte. ${T('mikve')} après la tombée de la nuit du 7e jour.`;
     $('changeDate').value = h;
   } else {
     if (!$('pickDate').value) $('pickDate').value = todayKey();
@@ -218,22 +327,27 @@ function render() {
     $('offTxt').textContent = h ? 'Les 7 jours sont terminés. Mazal tov !' : 'Aucune période en cours.';
   }
 
-  // bedika en cours : aujourd'hui, pas faite, entre 1 h avant le 1er rappel et la chkia
+  // bedika en cours
   const plan = active ? S.plan : [];
   let cur = plan.find((p) => p.id === focusSlot && !S.done[p.id]);
-  // si plusieurs sont possibles (matin pas validé et après-midi commencé), on montre la plus récente
   if (!cur) cur = plan.filter((p) => p.day === today && !S.done[p.id] && now >= Date.parse(p.times[0]) - 3600e3 && now <= Date.parse(p.end)).pop();
   $('current').hidden = !cur;
   if (cur) {
-    const name = cur.kind === 'hefsek' ? he('hefsek') : cur.kind === 'matin' ? `${he('bedika')} du matin` : `${he('bedika')} de l'après-midi`;
-    $('curTitle').textContent = cur.kind === 'hefsek' ? name : `${name} · ${cur.label}`;
+    const zz = cur.zmanim;
+    const moment = cur.kind === 'matin' ? 'du matin' : cur.kind === 'hefsek' ? '' : "de l'après-midi";
+    const head = cur.kind === 'hefsek' ? T('hefsek') : `${T('bedika')} <span>${moment}</span>`;
+    const badge = cur.kind === 'hefsek' ? '' : `<span class="badge">${cur.label}</span>`;
+    let body;
     if (cur.kind === 'matin') {
-      $('curTxt').textContent = `${he('bediavad')} : dès ${he('alot')} ${hhmm(cur.zmanim.alot, 'debut')}\n${he('lehatehila')} : dès ${he('netz')} ${hhmm(cur.zmanim.netz, 'debut')}`;
+      body = `<div class="opt"><div class="lbl">${T('bediavad')}</div><div class="what">dès ${T('alot')}</div><div class="t">${hhmm(zz.alot, 'debut')}</div></div>
+        <div class="opt best"><div class="lbl">${T('lehatehila')}</div><div class="what">dès ${T('netz')}</div><div class="t">${hhmm(zz.netz, 'debut')}</div></div>`;
     } else {
-      const left = Math.round((Date.parse(cur.zmanim.shkia) - now) / 60000);
-      const mk = cur.zmanim.minhaKetana ? `À partir de ${he('minha')} : ${hhmm(cur.zmanim.minhaKetana, 'debut')}\n` : '';
-      $('curTxt').textContent = left > 0 ? `${mk}Avant la ${he('shkia')} : ${hhmm(cur.zmanim.shkia)} (dans ${fmtDur(left)})` : `La ${he('shkia')} est passée.`;
+      const left = Math.round((Date.parse(zz.shkia) - now) / 60000);
+      body = `<div class="opt best"><div class="lbl">À partir de</div><div class="what">${T('minha')}</div><div class="t">${hhmm(zz.minhaKetana, 'debut')}</div></div>
+        <div class="opt"><div class="lbl">Avant la</div><div class="what">${T('shkia')}</div><div class="t">${hhmm(zz.shkia)}</div></div>
+        <div class="left">${left > 0 ? `⏳ Encore ${fmtDur(left)} avant la ${T('shkia')}` : `La ${T('shkia')} est passée.`}</div>`;
     }
+    $('current').innerHTML = `<div class="title">${head}${badge}</div>${body}<button class="btn" id="curDone">C'est fait ✓</button>`;
     $('curDone').onclick = () => setDone(cur.id, true);
   }
 
@@ -244,17 +358,20 @@ function render() {
   $('days').innerHTML = '';
   for (const [day, slots] of Object.entries(byDay)) {
     const el = document.createElement('div');
-    el.className = 'day';
-    el.innerHTML = `<b>${cap(fmtDay(day))} · ${slots[0].kind === 'hefsek' ? heOnly('hefsek') : slots[0].label}</b>`;
+    el.className = 'day' + (day === today ? ' today' : '');
+    const lbl = slots[0].kind === 'hefsek' ? `<span class="badge gold">Veille du décompte</span>` : `<span class="badge${day === today ? '' : ''}">${slots[0].label}</span>`;
+    el.innerHTML = `<div class="dayhead">${cap(fmtDay(day))}${day === today ? ' · aujourd\'hui' : ''}${lbl}</div>`;
     for (const sl of slots) {
       const done = !!S.done[sl.id];
-      const past = !done && now > Date.parse(sl.end);
+      const missed = !done && now > Date.parse(sl.end);
       const b = document.createElement('button');
-      b.className = 'slot' + (done ? ' done' : '');
-      const what = sl.kind === 'matin'
-        ? `Matin · ${heOnly('alot')} ${hhmm(sl.zmanim.alot, 'debut')}, ${heOnly('netz')} ${hhmm(sl.zmanim.netz, 'debut')}`
-        : `${sl.kind === 'hefsek' ? heOnly('hefsek') : 'Après-midi'} · ${heOnly('minha')} ${sl.zmanim.minhaKetana ? hhmm(sl.zmanim.minhaKetana, 'debut') : ''} → ${heOnly('shkia')} ${hhmm(sl.zmanim.shkia)}`;
-      b.innerHTML = `<i>${done ? '✓' : past ? '✗' : '○'}</i><span>${what}</span>`;
+      b.className = 'slot' + (done ? ' done' : missed ? ' missed' : '');
+      const zz = sl.zmanim;
+      const l1 = sl.kind === 'hefsek' ? T('hefsek') : sl.kind === 'matin' ? `☀️ ${T('bedika')} du matin` : `🌇 ${T('bedika')} de l'après-midi`;
+      const l2 = sl.kind === 'matin'
+        ? `${T('alot')} ${hhmm(zz.alot, 'debut')} · ${T('netz')} ${hhmm(zz.netz, 'debut')}`
+        : `${T('minha')} ${hhmm(zz.minhaKetana, 'debut')} → ${T('shkia')} ${hhmm(zz.shkia)}`;
+      b.innerHTML = `<span class="check">${done ? '✓' : missed ? '!' : ''}</span><span><div class="l1">${l1}</div><div class="l2">${l2}</div></span>`;
       b.onclick = () => setDone(sl.id, !done);
       el.appendChild(b);
     }
@@ -265,9 +382,9 @@ function render() {
   $('hefsekRem').checked = S.settings.hefsek_reminder;
   document.querySelectorAll('.step').forEach((st) => {
     const v = S.settings[st.dataset.k];
-    st.querySelector('output').textContent = `${st.dataset.k === 'before_alot' ? Math.abs(v) : v} min`;
+    st.querySelector('output').textContent = `${Math.abs(v)} min`;
   });
-  $('alotLbl').textContent = `Rappel du matin ${S.settings.before_alot >= 0 ? 'avant' : 'après'} ${he('alot')}`;
+  $('alotLbl').innerHTML = `Rappel du matin ${S.settings.before_alot >= 0 ? 'avant' : 'après'} ${T('alot')}`;
 }
 
 function showErr(t) { $('enableErr').hidden = !t; $('enableErr').textContent = t || ''; }
@@ -331,14 +448,14 @@ $('enableBtn').onclick = enable;
 $('startToday').onclick = () => save({ hefsek_date: todayKey() });
 function previewPick() {
   const v = $('pickDate').value;
-  $('pickPreview').textContent = v ? `${heOnly('hefsek')} le ${fmtDay(v)} après-midi → 1er jour le ${fmtDay(addDays(v, 1))}, ${heOnly('mikve')} le ${fmtDay(addDays(v, 7))} soir.` : '';
+  $('pickPreview').innerHTML = v ? `${T('hefsek')} le ${fmtDay(v)} après-midi → 1er jour le ${fmtDay(addDays(v, 1))}, ${T('mikve')} le ${fmtDay(addDays(v, 7))} soir.` : '';
 }
 $('pickDate').oninput = previewPick;
 $('pickDate').onchange = previewPick;
 $('startPicked').onclick = () => { const v = $('pickDate').value; if (v) save({ hefsek_date: v }); else alert('Choisis d\'abord une date.'); };
 $('changeDate').onchange = (e) => { if (e.target.value) save({ hefsek_date: e.target.value }); };
 $('stopBtn').onclick = () => { if (confirm('Arrêter les rappels des 7 jours ?')) save({ hefsek_date: null }); };
-$('toggleSet').onclick = () => { $('settings').hidden = !$('settings').hidden; $('toggleSet').textContent = $('settings').hidden ? 'Réglages' : 'Masquer les réglages'; };
+$('toggleSet').onclick = () => { $('settings').hidden = !$('settings').hidden; $('toggleSet').textContent = $('settings').hidden ? '⚙︎ Réglages' : 'Masquer les réglages'; };
 $('hefsekRem').onchange = (e) => save({ hefsek_reminder: e.target.checked });
 document.querySelectorAll('.step').forEach((st) => {
   const [minus, , plus] = st.children;
