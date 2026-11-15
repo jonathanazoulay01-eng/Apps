@@ -57,13 +57,14 @@
   .pick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
   .pick span { flex: 1 1 100%; }
   .pick input { font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--accent-soft); color: var(--ink); }
+  .he { font-family: 'Arial Hebrew', 'SF Hebrew', 'Noto Sans Hebrew', 'Times New Roman', serif; unicode-bidi: isolate; font-size: 1.08em; }
   [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <main>
   <div>
-    <h1>Bedikot</h1>
+    <h1><span class="he" lang="he" dir="rtl">בְּדִיקוֹת</span> <small style="font-size:16px;font-weight:500;color:var(--soft)">(examens)</small></h1>
     <p class="sub" id="where">📍 Bonneuil-sur-Marne</p>
   </div>
 
@@ -80,36 +81,36 @@
 
   <section class="card" id="zcard" hidden>
     <div class="z">
-      <div><small>Alot hachahar</small><b id="zAlot">--:--</b></div>
-      <div><small>Nets</small><b id="zNetz">--:--</b></div>
-      <div><small>Minha kétana</small><b id="zMinha">--:--</b></div>
-      <div><small>Chkia</small><b class="acc" id="zShkia">--:--</b></div>
+      <div><small><span class="he" lang="he" dir="rtl">עֲלוֹת הַשַּׁחַר</span><br>(aube)</small><b id="zAlot">--:--</b></div>
+      <div><small><span class="he" lang="he" dir="rtl">הָנֵץ הַחַמָּה</span><br>(lever du soleil)</small><b id="zNetz">--:--</b></div>
+      <div><small><span class="he" lang="he" dir="rtl">מִנְחָה קְטַנָּה</span><br>(fin d'après-midi)</small><b id="zMinha">--:--</b></div>
+      <div><small><span class="he" lang="he" dir="rtl">שְׁקִיעָה</span><br>(coucher du soleil)</small><b class="acc" id="zShkia">--:--</b></div>
     </div>
   </section>
 
   <section class="card" id="enable" hidden>
     <h2>Activer les rappels</h2>
-    <p class="soft">Autorise les notifications et la position (pour calculer la chkia là où tu es).</p>
+    <p class="soft">Autorise les notifications et la position (pour calculer la <span class="he" lang="he" dir="rtl">שְׁקִיעָה</span> (coucher du soleil) là où tu es).</p>
     <button class="btn" id="enableBtn">Activer les notifications</button>
     <p class="hint err" id="enableErr" hidden></p>
   </section>
 
   <section class="card" id="seven">
-    <h2>7 jours propres</h2>
+    <h2><span class="he" lang="he" dir="rtl">שִׁבְעָה נְקִיִּים</span> (7 jours propres)</h2>
     <div id="sevenOn" hidden>
       <p class="big" id="dayNum"></p>
       <p class="soft" id="hefsekTxt"></p>
       <p class="soft" id="cycleTxt"></p>
-      <div class="pick"><span>Corriger le jour du hefsek (après-midi) :</span><input type="date" id="changeDate"></div>
+      <div class="pick"><span>Corriger le jour du <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles), fait l'après-midi :</span><input type="date" id="changeDate"></div>
       <div class="row">
         <button class="sbtn" id="stopBtn">Arrêter</button>
       </div>
     </div>
     <div id="sevenOff">
       <p class="soft" id="offTxt">Aucune période en cours.</p>
-      <p class="hint">Le jour du hefsek tahara (fait l'après-midi, avant la chkia) est la veille du décompte. Le 1er des 7 jours commence le lendemain.</p>
-      <button class="btn" id="startToday">J'ai fait le hefsek cet après-midi</button>
-      <div class="pick"><span>Ou choisis le jour où tu as fait le hefsek (l'après-midi) :</span><input type="date" id="pickDate"></div>
+      <p class="hint">Le jour du <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles), fait l'après-midi avant la <span class="he" lang="he" dir="rtl">שְׁקִיעָה</span> (coucher du soleil), est la veille du décompte. Le 1er des 7 jours commence le lendemain.</p>
+      <button class="btn" id="startToday">J'ai fait le <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> cet après-midi</button>
+      <div class="pick"><span>Ou choisis le jour où tu as fait le <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles), l'après-midi :</span><input type="date" id="pickDate"></div>
       <p class="hint" id="pickPreview"></p>
       <button class="sbtn" id="startPicked">Valider cette date</button>
     </div>
@@ -129,13 +130,13 @@
 
   <button class="link" id="toggleSet">Réglages</button>
   <section class="card" id="settings" hidden>
-    <div class="set"><span>Rappel le jour du hefsek</span><input type="checkbox" id="hefsekRem"></div>
-    <div class="set"><span id="alotLbl">Rappel du matin avant alot</span><div class="step" data-k="before_alot" data-step="5" data-min="-120" data-max="60"><button>−</button><output></output><button>+</button></div></div>
+    <div class="set"><span>Rappel le jour du <span class="he" lang="he" dir="rtl">הֶפְסֵק טָהֳרָה</span> (examen de fin des règles)</span><input type="checkbox" id="hefsekRem"></div>
+    <div class="set"><span id="alotLbl">Rappel du matin avant</span><div class="step" data-k="before_alot" data-step="5" data-min="-120" data-max="60"><button>−</button><output></output><button>+</button></div></div>
     <button class="sbtn" id="gpsBtn">Mettre à jour ma position</button>
     <button class="sbtn" id="bonneuilBtn">Utiliser Bonneuil-sur-Marne</button>
     <button class="sbtn" id="testBtn">Envoyer une notification d'essai</button>
     <p class="hint" id="testTxt"></p>
-    <p class="hint">Horaires selon Roger Stioui (comme Torah-Box) : chkia au coucher du soleil, alot hachahar à 16,1°. Minha kétana selon le Gaon de Vilna. Un seul rappel le matin (avant alot) et un seul l'après-midi (à Minha kétana).</p>
+    <p class="hint">Horaires selon Roger Stioui (comme Torah-Box) : <span class="he" lang="he" dir="rtl">שְׁקִיעָה</span> (coucher du soleil) au niveau de la mer, <span class="he" lang="he" dir="rtl">עֲלוֹת הַשַּׁחַר</span> (aube) à 16,1°. <span class="he" lang="he" dir="rtl">מִנְחָה קְטַנָּה</span> (fin d'après-midi) selon le Gaon de Vilna. Un seul rappel le matin (avant עֲלוֹת הַשַּׁחַר) et un seul l'après-midi (à מִנְחָה קְטַנָּה).</p>
   </section>
 </main>
 
@@ -143,6 +144,10 @@
 const API = 'https://qddkzkqhzbbwrfledovv.supabase.co/functions/v1/bedikot';
 const BONNEUIL = { place: 'Bonneuil-sur-Marne', lat: 48.7714, lon: 2.4875, tz: 'Europe/Paris' };
 const $ = (id) => document.getElementById(id);
+const W = {"bedikot": ["בְּדִיקוֹת", "examens"], "bedika": ["בְּדִיקָה", "examen"], "hefsek": ["הֶפְסֵק טָהֳרָה", "examen de fin des règles"], "alot": ["עֲלוֹת הַשַּׁחַר", "aube"], "netz": ["הָנֵץ הַחַמָּה", "lever du soleil"], "minha": ["מִנְחָה קְטַנָּה", "fin d'après-midi"], "shkia": ["שְׁקִיעָה", "coucher du soleil"], "bediavad": ["בְּדִיעֲבַד", "a posteriori"], "lehatehila": ["לְכַתְּחִלָּה", "idéalement"], "mikve": ["מִקְוֶה", "bain rituel"], "nekiim": ["שִׁבְעָה נְקִיִּים", "7 jours propres"]};
+// mot hébreu vocalisé isolé (pour ne pas casser le sens de lecture) + traduction
+const he = (k) => `\u2068${W[k][0]}\u2069 (${W[k][1]})`;
+const heOnly = (k) => `\u2068${W[k][0]}\u2069`;
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch {} },
@@ -203,9 +208,9 @@ function render() {
   $('sevenOn').hidden = !active;
   $('sevenOff').hidden = !!active;
   if (active) {
-    $('dayNum').textContent = idx === 0 ? "Jour du hefsek tahara" : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
-    $('hefsekTxt').textContent = `Hefsek tahara fait le ${fmtDay(h)} après-midi : c'est la veille du décompte.`;
-    $('cycleTxt').textContent = `1er jour : ${fmtDay(addDays(h, 1))}\n7e jour : ${fmtDay(addDays(h, 7))}\nMikvé : ${fmtDay(addDays(h, 7))} soir, après la tombée de la nuit`;
+    $('dayNum').textContent = idx === 0 ? `Jour du ${heOnly('hefsek')}` : idx < 0 ? 'Bientôt' : `Jour ${idx}/7`;
+    $('hefsekTxt').textContent = `${he('hefsek')} fait le ${fmtDay(h)} après-midi : c'est la veille du décompte.`;
+    $('cycleTxt').textContent = `1er jour : ${fmtDay(addDays(h, 1))}\n7e jour : ${fmtDay(addDays(h, 7))}\n${he('mikve')} : ${fmtDay(addDays(h, 7))} soir, après la tombée de la nuit`;
     $('changeDate').value = h;
   } else {
     if (!$('pickDate').value) $('pickDate').value = todayKey();
@@ -220,14 +225,14 @@ function render() {
   if (!cur) cur = plan.filter((p) => p.day === today && !S.done[p.id] && now >= Date.parse(p.times[0]) - 3600e3 && now <= Date.parse(p.end)).pop();
   $('current').hidden = !cur;
   if (cur) {
-    const name = cur.kind === 'hefsek' ? 'Hefsek tahara' : cur.kind === 'matin' ? 'Bedika du matin' : "Bedika de l'après-midi";
+    const name = cur.kind === 'hefsek' ? he('hefsek') : cur.kind === 'matin' ? `${he('bedika')} du matin` : `${he('bedika')} de l'après-midi`;
     $('curTitle').textContent = cur.kind === 'hefsek' ? name : `${name} · ${cur.label}`;
     if (cur.kind === 'matin') {
-      $('curTxt').textContent = `Bediavad : dès alot hachahar ${hhmm(cur.zmanim.alot, 'debut')}\nLehatehila : dès nets hahama ${hhmm(cur.zmanim.netz, 'debut')}`;
+      $('curTxt').textContent = `${he('bediavad')} : dès ${he('alot')} ${hhmm(cur.zmanim.alot, 'debut')}\n${he('lehatehila')} : dès ${he('netz')} ${hhmm(cur.zmanim.netz, 'debut')}`;
     } else {
       const left = Math.round((Date.parse(cur.zmanim.shkia) - now) / 60000);
-      const mk = cur.zmanim.minhaKetana ? `À partir de Minha kétana : ${hhmm(cur.zmanim.minhaKetana, 'debut')}\n` : '';
-      $('curTxt').textContent = left > 0 ? `${mk}Avant la chkia : ${hhmm(cur.zmanim.shkia)} (dans ${fmtDur(left)})` : 'La chkia est passée.';
+      const mk = cur.zmanim.minhaKetana ? `À partir de ${he('minha')} : ${hhmm(cur.zmanim.minhaKetana, 'debut')}\n` : '';
+      $('curTxt').textContent = left > 0 ? `${mk}Avant la ${he('shkia')} : ${hhmm(cur.zmanim.shkia)} (dans ${fmtDur(left)})` : `La ${he('shkia')} est passée.`;
     }
     $('curDone').onclick = () => setDone(cur.id, true);
   }
@@ -240,15 +245,15 @@ function render() {
   for (const [day, slots] of Object.entries(byDay)) {
     const el = document.createElement('div');
     el.className = 'day';
-    el.innerHTML = `<b>${cap(fmtDay(day))} · ${slots[0].label}</b>`;
+    el.innerHTML = `<b>${cap(fmtDay(day))} · ${slots[0].kind === 'hefsek' ? heOnly('hefsek') : slots[0].label}</b>`;
     for (const sl of slots) {
       const done = !!S.done[sl.id];
       const past = !done && now > Date.parse(sl.end);
       const b = document.createElement('button');
       b.className = 'slot' + (done ? ' done' : '');
       const what = sl.kind === 'matin'
-        ? `Matin · alot ${hhmm(sl.zmanim.alot, 'debut')}, nets ${hhmm(sl.zmanim.netz, 'debut')}`
-        : `${sl.kind === 'hefsek' ? 'Hefsek' : 'Après-midi'} · ${sl.zmanim.minhaKetana ? hhmm(sl.zmanim.minhaKetana, 'debut') : ''} → chkia ${hhmm(sl.zmanim.shkia)}`;
+        ? `Matin · ${heOnly('alot')} ${hhmm(sl.zmanim.alot, 'debut')}, ${heOnly('netz')} ${hhmm(sl.zmanim.netz, 'debut')}`
+        : `${sl.kind === 'hefsek' ? heOnly('hefsek') : 'Après-midi'} · ${heOnly('minha')} ${sl.zmanim.minhaKetana ? hhmm(sl.zmanim.minhaKetana, 'debut') : ''} → ${heOnly('shkia')} ${hhmm(sl.zmanim.shkia)}`;
       b.innerHTML = `<i>${done ? '✓' : past ? '✗' : '○'}</i><span>${what}</span>`;
       b.onclick = () => setDone(sl.id, !done);
       el.appendChild(b);
@@ -262,7 +267,7 @@ function render() {
     const v = S.settings[st.dataset.k];
     st.querySelector('output').textContent = `${st.dataset.k === 'before_alot' ? Math.abs(v) : v} min`;
   });
-  $('alotLbl').textContent = S.settings.before_alot >= 0 ? 'Rappel du matin avant alot' : 'Rappel du matin après alot';
+  $('alotLbl').textContent = `Rappel du matin ${S.settings.before_alot >= 0 ? 'avant' : 'après'} ${he('alot')}`;
 }
 
 function showErr(t) { $('enableErr').hidden = !t; $('enableErr').textContent = t || ''; }
@@ -326,7 +331,7 @@ $('enableBtn').onclick = enable;
 $('startToday').onclick = () => save({ hefsek_date: todayKey() });
 function previewPick() {
   const v = $('pickDate').value;
-  $('pickPreview').textContent = v ? `Hefsek le ${fmtDay(v)} après-midi → 1er jour le ${fmtDay(addDays(v, 1))}, mikvé le ${fmtDay(addDays(v, 7))} soir.` : '';
+  $('pickPreview').textContent = v ? `${heOnly('hefsek')} le ${fmtDay(v)} après-midi → 1er jour le ${fmtDay(addDays(v, 1))}, ${heOnly('mikve')} le ${fmtDay(addDays(v, 7))} soir.` : '';
 }
 $('pickDate').oninput = previewPick;
 $('pickDate').onchange = previewPick;

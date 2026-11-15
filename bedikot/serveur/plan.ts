@@ -87,19 +87,32 @@ export const hhmm = (iso: string, tz: string, mode: 'debut' | 'fin' = 'fin') => 
   return new Intl.DateTimeFormat('fr-FR', { timeZone: tz, hour: '2-digit', minute: '2-digit' }).format(new Date(t));
 };
 
+// Termes hébreux vocalisés + traduction (isolés pour garder le bon sens de lecture)
+const W: Record<string, [string, string]> = {
+  bedika: ['בְּדִיקָה', 'examen'],
+  hefsek: ['הֶפְסֵק טָהֳרָה', 'examen de fin des règles'],
+  alot: ['עֲלוֹת הַשַּׁחַר', 'aube'],
+  netz: ['הָנֵץ הַחַמָּה', 'lever du soleil'],
+  minha: ['מִנְחָה קְטַנָּה', "fin d'après-midi"],
+  shkia: ['שְׁקִיעָה', 'coucher du soleil'],
+  bediavad: ['בְּדִיעֲבַד', 'a posteriori'],
+  lehatehila: ['לְכַתְּחִלָּה', 'idéalement'],
+};
+const he = (k: string) => `\u2068${W[k][0]}\u2069 (${W[k][1]})`;
+
 export function message(slot: Slot, _index: number, _at: number, tz: string) {
   const z = slot.zmanim;
   if (slot.kind === 'matin') {
     return {
-      title: `Bedika du matin · ${slot.label}`,
-      body: `Bediavad : dès alot hachahar ${hhmm(z.alot, tz, 'debut')}\nLehatehila : dès nets hahama ${hhmm(z.netz, tz, 'debut')}`,
+      title: `${he('bedika')} du matin · ${slot.label}`,
+      body: `${he('bediavad')} : dès ${he('alot')} ${hhmm(z.alot, tz, 'debut')}\n${he('lehatehila')} : dès ${he('netz')} ${hhmm(z.netz, tz, 'debut')}`,
       tag: slot.id,
       slot: slot.id,
     };
   }
   return {
-    title: slot.kind === 'hefsek' ? 'Hefsek tahara' : `Bedika de l'après-midi · ${slot.label}`,
-    body: `À partir de Minha kétana : ${hhmm(z.minhaKetana, tz, 'debut')}\nAvant la chkia : ${hhmm(z.shkia, tz, 'fin')}`,
+    title: slot.kind === 'hefsek' ? he('hefsek') : `${he('bedika')} de l'après-midi · ${slot.label}`,
+    body: `À partir de ${he('minha')} : ${hhmm(z.minhaKetana, tz, 'debut')}\nAvant la ${he('shkia')} : ${hhmm(z.shkia, tz, 'fin')}`,
     tag: slot.id,
     slot: slot.id,
   };
