@@ -22,4 +22,6 @@ Petites applications web personnelles, une par dossier, publiées sur GitHub Pag
 ## Mitsvot en jeu
 
 - Page unique : `mitsvot/index.html`. Pour ajouter un chapitre, ajouter un objet au tableau `CHAPITRES` (fiches, cartes, questions).
+- Accueil par prénom, programme 5787 (Examens 1, 2, 3 et final) avec évaluations notées sur 20, progression synchronisée en ligne (Supabase, clé publique uniquement) et espace parent protégé par code.
+- Sections au programme : « La Mitsva » et « Quelques précisions » (« Le message de la Mitsva » n’est plus au programme). Chapitres en ligne : 102 Cha’atnez, 105 Tsedaka, 112 Bikourim.
 - Progression enregistrée dans le navigateur (localStorage).

@@ -172,6 +172,76 @@ button:focus-visible,.opt:focus-visible{outline:3px solid var(--gold);outline-of
 button.pill[aria-pressed="true"]{background:var(--wool);border-color:var(--wool);color:#fff}
 .danger{border:0;background:none;color:var(--muted);text-decoration:underline;font-weight:700;align-self:flex-start;padding:0}
 
+[hidden]{display:none!important}
+.kid{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.kid header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.kid header .av{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:1.4rem;color:#fff;flex:none}
+.kid header h3{font-size:1.3rem}
+.kid header small{color:var(--muted);font-weight:700;display:block}
+.kgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.kgrid div{background:var(--surface2);border-radius:12px;padding:8px;text-align:center}
+.kgrid b{display:block;font-family:var(--f-display);font-size:1.3rem;color:var(--wool);font-variant-numeric:tabular-nums}
+.kgrid small{font-weight:700;color:var(--muted);font-size:.78rem}
+.kch{display:flex;flex-direction:column;gap:6px;border-top:2px dashed var(--line);padding-top:10px}
+.kch .t{display:flex;justify-content:space-between;font-weight:800;gap:8px}
+.kbars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kbars small{font-weight:700;color:var(--muted);font-size:.78rem;display:block}
+.kid details summary{cursor:pointer;font-weight:800;color:var(--wool)}
+.kid details ul{margin:6px 0 0;padding-left:1.2em;font-size:.92rem}
+.chcard.eval{border-color:var(--gold);background:var(--gold-soft)}
+.chcard.eval.locked{border-style:dashed;background:var(--surface);box-shadow:none;opacity:.75}
+.chcard.eval .score{font-family:var(--f-display);font-size:1.8rem;font-weight:800;color:var(--wool)}
+.exam{display:flex;flex-direction:column;gap:12px}
+.examhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;border-left:6px solid var(--ex);padding-left:12px}
+.examhead h2{font-size:1.45rem;color:var(--ex)}
+.examhead span{font-weight:700;color:var(--muted)}
+.examhead .cd{background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--fg);font-size:.88rem}
+.theme{font-family:var(--f-display);font-weight:700;color:var(--muted);font-size:1.05rem;margin-top:2px}
+.chcard.soon.named{justify-content:flex-start;align-items:flex-start;text-align:left;min-height:0;gap:4px}
+.chcard.soon.named b{font-family:var(--f-display);color:var(--fg);font-size:1.1rem}
+.sync{font-size:.8rem;font-weight:700;color:var(--muted)}
+@media (max-width:520px){.kgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.kbars{grid-template-columns:1fr}}
+/* écrans prénom + accueil */
+.brand{cursor:pointer;border:0;background:none;padding:0}
+.who{min-height:calc(100vh - 40px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;padding-block:30px}
+.who .logo{width:150px;height:150px;overflow:hidden;border-radius:28px;background:var(--surface);border:3px solid var(--gold);display:grid;place-items:center;box-shadow:0 4px 0 #b77f05;animation:bob 3s ease-in-out infinite}
+.who .logo svg{width:70px;height:70px}
+.who h1{font-size:clamp(2rem,7vw,2.8rem);color:var(--wool)}
+.who p{margin:0;color:var(--muted);font-weight:700}
+.profiles{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:620px}
+.prof{border:3px solid var(--line);background:var(--surface);border-radius:20px;padding:14px 18px;min-width:150px;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:var(--shadow)}
+.prof:hover{border-color:var(--wool)}
+.prof .av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:1.6rem;color:#fff;margin-bottom:4px}
+.prof b{font-family:var(--f-display);font-size:1.25rem}
+.prof small{color:var(--muted);font-weight:700}
+.newname{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;max-width:420px}
+.newname input{flex:1 1 200px;min-width:0;font:inherit;font-weight:700;font-size:1.1rem;padding:10px 14px;border-radius:14px;border:3px solid var(--line);background:var(--surface);color:var(--fg)}
+.newname input:focus{outline:none;border-color:var(--wool)}
+.hero{background:var(--wool);color:#fff;border-radius:26px;padding:26px 24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero h1{font-size:clamp(2rem,7vw,2.9rem);color:#fff}
+.hero h1 .wave{display:inline-block;animation:wave 1.6s ease-in-out 2;transform-origin:70% 70%}
+.hero p{margin:0;font-size:1.2rem;font-weight:700;max-width:34ch}
+.hero .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;position:relative;z-index:1}
+.hero .pill{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.35);color:#fff}
+.sectitle{font-family:var(--f-display);font-size:1.4rem;margin:0}
+.chaps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.chcard{border:3px solid var(--line);background:var(--surface);border-radius:22px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);position:relative;min-width:0}
+button.chcard:hover{border-color:var(--wool);transform:translateY(-2px)}
+.chcard .eyebrow{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.75rem;color:var(--muted)}
+.chcard h3{font-size:1.35rem;color:var(--wool)}
+.chcard .heb{font-size:1.05rem;color:var(--muted)}
+.chcard .mini{position:absolute;right:14px;top:14px;width:50px;height:50px;border-radius:50%;background:#c8373f;color:#fff;display:grid;place-items:center;text-align:center;font-family:var(--f-display);font-weight:800;line-height:1;border:3px solid #f3d27a;font-size:1rem}
+.chcard .mini small{display:block;font-size:.45rem;letter-spacing:.08em}
+.chcard .stars3{color:var(--gold);font-size:1.2rem;letter-spacing:.08em}
+.chcard .stars3 .off{color:var(--line)}
+.chcard.soon{border-style:dashed;box-shadow:none;opacity:.7;justify-content:center;align-items:center;text-align:center;min-height:170px;color:var(--muted);font-weight:800}
+.back{border:0;background:none;color:var(--wool);font-weight:800;padding:0;align-self:flex-start}
+@keyframes wave{0%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}40%{transform:rotate(-8deg)}60%{transform:rotate(14deg)}80%{transform:rotate(-4deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes pop{from{transform:scale(.92);opacity:.4}to{transform:scale(1);opacity:1}}
+.pop{animation:pop .35s ease-out}
+
 @media (max-width:520px){
   body{font-size:16px}
   .chap{grid-template-columns:1fr}
@@ -188,16 +258,23 @@ button.pill[aria-pressed="true"]{background:var(--wool);border-color:var(--wool)
 </head><body>
 <canvas id="confetti" hidden></canvas>
 <div class="wrap">
-  <div class="top">
-    <div class="brand">
+  <div class="top" id="topbar" hidden>
+    <button class="brand" id="homeBtn" title="Retour à l’accueil">
       <svg class="spool" viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="3" width="22" height="5" rx="2" fill="currentColor"/><rect x="5" y="24" width="22" height="5" rx="2" fill="currentColor"/><rect x="8" y="8" width="16" height="16" fill="var(--gold)"/><path d="M8 11h16M8 15h16M8 19h16" stroke="var(--fg)" stroke-opacity=".35" stroke-width="1.5"/></svg>
       Mitsvot en jeu
-    </div>
+    </button>
     <div class="lvl"><small id="lvlName">Niveau 1</small><div class="bar"><i id="lvlBar" style="width:0%"></i></div></div>
     <span class="pill xp" title="Points d’expérience">⭐ <span id="xp">0</span></span>
     <span class="pill" title="Meilleure série de bonnes réponses">🔥 <span id="best">0</span></span>
     <button class="pill" id="autoRead" aria-pressed="false" title="Lire automatiquement les questions et les explications">🔊 Lecture auto</button>
+    <button class="pill" id="whoBtn" title="Changer de prénom">👤 <span id="whoName"></span></button>
   </div>
+
+  <section id="scrWho" class="who"></section>
+  <section id="scrParent" hidden style="display:flex;flex-direction:column;gap:16px"></section>
+  <section id="scrHome" hidden style="display:flex;flex-direction:column;gap:18px"></section>
+  <section id="scrChap" hidden style="display:flex;flex-direction:column;gap:18px">
+  <button class="back" id="backHome">← Tous les chapitres</button>
 
   <section class="chap" id="chapHead"></section>
 
@@ -210,6 +287,7 @@ button.pill[aria-pressed="true"]{background:var(--wool);border-color:var(--wool)
   </nav>
 
   <main id="view"></main>
+  </section>
 </div>
 
 <script>
@@ -222,7 +300,7 @@ button.pill[aria-pressed="true"]{background:var(--wool);border-color:var(--wool)
    ============================================================ */
 const CHAPITRES = [
 {
-  id:"ch1", numero:1, titre:"Le Cha’atnez", mitsva:237,
+  id:"ch1", numero:102, titre:"Le Cha’atnez", mitsva:237,
   hebreu:"שֶׁלֹּא לִלְבּוֹשׁ שַׁעַטְנֵז",
   fiches:{
     mitsva:`
@@ -284,9 +362,9 @@ const CHAPITRES = [
     ["צֶמֶר","Laine"],
     ["פִּשְׁתִּים","Lin"],
     ["יַחְדָּו","Ensemble"],
-    ["’Hok","Mitsva dont Hachem ne nous a pas donné de raison que nous puissions comprendre"],
-    ["La leçon","Ce qui doit rester séparé… doit le rester !"],
-    ["Laine / Lin","Laine : vient des animaux. Lin : vient d’une plante"],
+    ["’Hok","Mitsva dont Hachem ne nous a pas donné de raison que nous puissions comprendre","hors"],
+    ["La leçon","Ce qui doit rester séparé… doit le rester !","hors"],
+    ["Laine / Lin","Laine : vient des animaux. Lin : vient d’une plante","hors"],
     ["שׁוּעַ · טָווּי · נוּז","Peigné · filé · tissé : les 3 mots cachés dans שַׁעַטְנֵז"],
     ["S’asseoir","Interdit par les Sages, même sur 10 épaisseurs de tissu"],
     ["Deux ceintures","Interdit l’une sur l’autre ; permis à deux endroits différents"],
@@ -374,23 +452,341 @@ const CHAPITRES = [
     {s:"precisions",t:"tri",q:"Interdit par la Torah ou par les Sages ?",bins:["📜 Torah","🎓 Les Sages"],items:[["Porter un vêtement laine + lin",0],["S’asseoir sur du Cha’atnez",1],["Cuir cousu avec du fil de lin sur un vêtement en laine",1],["Un seul fil de lin dans un tissu en laine",0],["Laine de brebis née d’une chèvre avec du lin",1],["Une couverture laine + lin pour se couvrir",0]],e:"La Torah interdit de porter (et se couvrir) ; les Sages ont ajouté des interdits par prudence."},
     {s:"precisions",t:"vf",q:"Une ceinture à la taille et une autre sur les hanches, ce n’est pas un problème de Cha’atnez.",a:true,e:"Exact : elles sont à deux endroits différents."}
   ]
+},
+{
+  id:"ch105", numero:105, titre:"La Tsedaka", mitsva:"249·250",
+  hebreu:"מִצְוַת צְדָקָה",
+  noms:{mitsva:"Les Mitsvot"},
+  fiches:{
+    mitsva:`
+      <p>Ce chapitre comporte <span class="key">deux Mitsvot</span> :</p>
+      <ul>
+        <li><b>Donner</b> aux gens pauvres ce dont ils ont besoin.</li>
+        <li><b>Ne pas ignorer</b> les besoins des gens pauvres.</li>
+      </ul>
+      <div class="verse">
+        <div class="heb">מִצְוַת צְדָקָה</div>
+        <div><b>La mitsva de donner la tsedaka</b> · Mitsva n° 249</div>
+        <div class="note">(Devarim 15, 11)</div>
+        <div>« Le pauvre ne cessera jamais dans la terre ; c’est pourquoi Je t’ordonne : <b>ouvre ta main généreusement</b> à ton frère pauvre et nécessiteux dans ton pays. »</div>
+      </div>
+      <div class="verse">
+        <div class="heb">שֶׁלֹּא לִמְנוֹעַ מִלְּהַחֲיוֹת הֶעָנִי וּמִלִּיתֵּן לוֹ מַה שֶּׁהוּא צָרִיךְ</div>
+        <div><b>Ne pas s’empêcher de donner au pauvre ce dont il a besoin</b> · Mitsva n° 250</div>
+        <div class="note">(Devarim 15, 7)</div>
+        <div>« <b>N’endurcis pas ton cœur et ne ferme pas ta main</b> contre ton frère nécessiteux. »</div>
+      </div>
+      <h3>Qui ? Où ? Quand ?</h3>
+      <ul>
+        <li>Les deux Mitsvot : <b>toute personne</b>, <b>à tout endroit</b>, <b>à toute époque</b>.</li>
+        <li>Mitsva n° 250 : <span class="key">pas de punition</span>.</li>
+      </ul>`,
+    precisions:`
+      <h3>💰 Donner la Tsedaka</h3>
+      <ul>
+        <li>Si quelqu’un te demande de l’aide (argent, nourriture…), tu n’as <b>pas le droit de l’ignorer</b> ni de le renvoyer sans rien.</li>
+        <li><b>Mitsva positive</b> : donner autant qu’on peut (nourriture, habits, abri, argent…). <b>Mitsva négative</b> : ne pas s’empêcher de donner si on peut aider.</li>
+        <li>En <span class="key">une seule action</span>, on accomplit les deux Mitsvot.</li>
+        <li><b>Chaque Juif</b> doit donner la tsedaka, <b>même le pauvre</b> qui en reçoit !</li>
+      </ul>
+      <h3>⚖️ Combien donner ?</h3>
+      <ul>
+        <li>Le <b>ma’assère ksafim</b> = donner <span class="key">un dixième</span> de ses revenus. La tsedaka, elle, n’a <b>pas de mesure fixe</b> : autant que tu peux. Plus on est riche, plus on donne.</li>
+        <li>Si tu ne peux pas donner beaucoup, n’ignore pas le pauvre : <b>même une toute petite somme</b>, c’est la mitsva. Ne t’énerve pas : parle-lui <b>calmement et gentiment</b>.</li>
+        <li>À chaque pauvre, on donne <b>ce dont il a besoin</b> : à manger s’il a faim, des vêtements s’il doit s’habiller. Un pauvre qui était très riche avant : on remplace ce à quoi il était habitué.</li>
+        <li>On n’est pas obligé de tout faire seul : on donne ce qu’on peut et on prévient les <b>organisations charitables</b>.</li>
+      </ul>
+      <h3>😊 Comment donner ?</h3>
+      <ul>
+        <li>Avec <b>gentillesse</b>, des mots de réconfort, en ressentant sa peine, <b>heureux et de bon cœur</b>.</li>
+        <li>Donner avec un <span class="key">visage renfrogné</span> fait perdre le mérite de la mitsva, même pour une très grosse somme.</li>
+      </ul>
+      <h3>🎁 Différentes sortes de Tsedaka</h3>
+      <ul>
+        <li>Aider au <b>mariage d’une jeune fille pauvre</b> (surtout orpheline) : une des plus grandes formes de tsedaka.</li>
+        <li>Même un <b>riche</b> peut avoir besoin d’aide (s’il tombe malade, s’il cherche un objet que toi tu as).</li>
+        <li>La tsedaka, ce peut être aussi des <b>mots gentils</b> ou juste <b>un sourire</b>.</li>
+      </ul>
+      <h3>👨‍👩‍👧 Les priorités (dans l’ordre)</h3>
+      <ul>
+        <li>1. Tes parents · 2. Tes enfants · 3. Tes frères et sœurs · 4. Ta famille (même de lointains cousins) · 5. Un voisin · 6. Les pauvres de ta ville · 7. Les pauvres d’Eretz Israël · 8. Les pauvres d’une autre ville.</li>
+      </ul>
+      <h3>🪜 Les huit niveaux (du plus haut au plus bas)</h3>
+      <ul>
+        <li><b>1.</b> Aider l’autre à <span class="key">gagner sa vie</span> : prêt, partenariat, travail, formation.</li>
+        <li><b>2.</b> Ni le donneur ni le pauvre ne savent qui est l’autre (ex. : <b>boîte de tsedaka</b>, si celui qui distribue est digne de confiance).</li>
+        <li><b>3.</b> Le donneur sait qui reçoit, le pauvre ne sait pas qui a donné (des Sages déposaient l’argent devant la porte).</li>
+        <li><b>4.</b> Le pauvre sait qui a donné, le donneur ne sait pas qui a reçu (des Sages laissaient tomber des bourses derrière eux).</li>
+        <li><b>5.</b> Donner <b>avant</b> que le pauvre demande.</li>
+        <li><b>6.</b> Donner <b>après</b> qu’il a demandé.</li>
+        <li><b>7.</b> Donner moins qu’on devrait, mais <b>gentiment</b>.</li>
+        <li><b>8.</b> Donner <b>le cœur lourd et avec regret</b> : le niveau le plus bas.</li>
+      </ul>
+      <div class="tip"><b>Fais le point :</b> comment doit-on donner la tsedaka ?</div>`
+  },
+  cartes:[
+    ["Mitsva n° 249","Donner la tsedaka aux gens pauvres"],
+    ["Mitsva n° 250","Ne pas s’empêcher de donner au pauvre ce dont il a besoin"],
+    ["Devarim 15, 11","« Ouvre ta main généreusement à ton frère pauvre »"],
+    ["Devarim 15, 7","« N’endurcis pas ton cœur et ne ferme pas ta main »"],
+    ["Une seule action","En donnant, on accomplit les deux Mitsvot"],
+    ["Ma’assère ksafim","Donner un dixième de ses revenus"],
+    ["Combien ?","La tsedaka n’a pas de mesure fixe : autant que tu peux"],
+    ["Le pauvre aussi","Même le pauvre doit donner la tsedaka"],
+    ["Visage renfrogné","On perd le mérite de la mitsva, même avec une grosse somme"],
+    ["La plus grande tsedaka ?","Aider au mariage d’une jeune fille pauvre, surtout orpheline"],
+    ["Priorité n° 1","Tes parents"],
+    ["Niveau 1 (le plus haut)","Aider l’autre à gagner sa vie"],
+    ["Niveau 2","Personne ne sait qui donne ni qui reçoit (boîte de tsedaka)"],
+    ["Niveau 8 (le plus bas)","Donner le cœur lourd et avec regret"],
+    ["Un sourire","C’est aussi de la tsedaka"]
+  ],
+  questions:[
+    {s:"mitsva",t:"qcm",q:"Combien de Mitsvot ce chapitre comporte-t-il ?",c:["Deux","Une","Trois","Cinq"],e:"Deux Mitsvot : donner au pauvre, et ne pas ignorer ses besoins."},
+    {s:"mitsva",t:"qcm",q:"Que demande la Mitsva n° 249 ?",c:["Donner la tsedaka aux gens pauvres","Apporter les premiers fruits","Ne pas porter de Cha’atnez","Prêter de l’argent avec intérêt"],e:"Mitsva 249 : la mitsva de donner la tsedaka."},
+    {s:"mitsva",t:"qcm",q:"Que demande la Mitsva n° 250 ?",c:["Ne pas s’empêcher de donner au pauvre ce dont il a besoin","Donner un dixième de ses revenus","Manger les bikourim à Jérusalem","Remercier Hachem à voix haute"],e:"Mitsva 250 : ne pas ignorer les besoins du pauvre."},
+    {s:"mitsva",t:"trou",q:"« C’est pourquoi Je t’ordonne : ouvre ta ___ généreusement à ton frère pauvre. »",c:["main","porte","maison","bouche"],e:"Ouvre ta main généreusement (Devarim 15, 11)."},
+    {s:"mitsva",t:"trou",q:"« N’endurcis pas ton ___ et ne ferme pas ta main contre ton frère nécessiteux. »",c:["cœur","bras","visage","esprit"],e:"N’endurcis pas ton cœur (Devarim 15, 7)."},
+    {s:"mitsva",t:"vf",q:"La Mitsva de la tsedaka ne s’applique qu’en Terre d’Israël.",a:false,e:"Faux : à tout endroit et à toute époque."},
+    {s:"mitsva",t:"vf",q:"Les Mitsvot de la tsedaka concernent toute personne.",a:true,e:"Oui : toute personne."},
+    {s:"mitsva",t:"qcm",q:"Quelle punition pour la Mitsva n° 250 ?",c:["Pas de punition","Malkout","Une amende","Jeûner"],e:"Le pictogramme indique : pas de punition."},
+    {s:"mitsva",t:"assoc",q:"Relie chaque Mitsva à son contenu.",p:[["Mitsva 249","Donner la tsedaka"],["Mitsva 250","Ne pas ignorer le pauvre"],["Devarim 15, 11","Ouvre ta main"],["Devarim 15, 7","N’endurcis pas ton cœur"]],e:"Bravo !"},
+    {s:"mitsva",t:"qcm",q:"Comment dit-on « la mitsva de la tsedaka » en hébreu ?",c:["מִצְוַת צְדָקָה","מִצְוַת בִּכּוּרִים","מִצְוַת סוּכָּה","מִצְוַת צִיצִית"],e:"מִצְוַת צְדָקָה = la mitsva de la tsedaka."},
+    {s:"mitsva",t:"vf",q:"La Mitsva n° 249 est une mitsva positive (une chose à faire).",a:true,e:"Oui : donner, c’est une action à faire."},
+    {s:"mitsva",t:"vf",q:"La Mitsva n° 250 est une interdiction : ne pas fermer sa main au pauvre.",a:true,e:"Oui : c’est une mitsva négative."},
+
+    {s:"precisions",t:"vf",q:"Si un pauvre te demande de l’aide, tu peux le renvoyer sans rien lui donner.",a:false,e:"Non, tu n’as pas le droit de l’ignorer."},
+    {s:"precisions",t:"qcm",q:"Quand on donne la tsedaka, combien de Mitsvot accomplit-on ?",c:["Deux, en une seule action","Une seule","Trois","Aucune"],e:"La positive (aider) et la négative (ne pas ignorer)."},
+    {s:"precisions",t:"vf",q:"Le pauvre qui reçoit de la tsedaka doit lui aussi donner la tsedaka.",a:true,e:"Oui ! Chaque Juif a cette obligation."},
+    {s:"precisions",t:"qcm",q:"Qu’est-ce que le ma’assère ksafim ?",c:["Donner un dixième de ses revenus","Donner tout son argent","Donner une pièce par jour","Donner seulement aux voisins"],e:"Ma’assère ksafim = un dixième des revenus."},
+    {s:"precisions",t:"qcm",q:"Combien faut-il donner à la tsedaka ?",c:["Pas de mesure fixe : autant qu’on peut","Toujours exactement 10 pièces","La moitié de son argent","Rien si on est jeune"],e:"La tsedaka n’a pas de mesure fixe."},
+    {s:"precisions",t:"vf",q:"Celui qui est riche doit donner davantage que celui qui possède moins.",a:true,e:"Oui : plus on a, plus on donne."},
+    {s:"precisions",t:"vf",q:"Donner une toute petite somme, ce n’est pas accomplir la mitsva.",a:false,e:"Faux : même une toute petite somme, c’est la mitsva."},
+    {s:"precisions",t:"qcm",q:"Si tu ne peux pas aider le pauvre maintenant, comment dois-tu lui parler ?",c:["Calmement et gentiment","En élevant la voix","En l’ignorant","En te moquant"],e:"Avec des mots agréables, calmement."},
+    {s:"precisions",t:"qcm",q:"Que donne-t-on à un pauvre qui a faim ?",c:["À manger","Un livre","Un jouet","Rien"],e:"On lui donne ce dont il a besoin : à manger."},
+    {s:"precisions",t:"qcm",q:"Un pauvre était très riche avant. Que doit-on lui donner ?",c:["Remplacer ce à quoi il était habitué","Seulement du pain","Rien du tout","La même chose qu’à tout le monde"],e:"C’est considéré comme « ce dont il a besoin »."},
+    {s:"precisions",t:"vf",q:"On doit se charger tout seul de tous les besoins d’un pauvre.",a:false,e:"Non : on donne ce qu’on peut et on prévient les organisations charitables."},
+    {s:"precisions",t:"qcm",q:"Comment doit-on donner la tsedaka ?",c:["Avec gentillesse, heureux et de bon cœur","Le plus vite possible sans parler","En se plaignant","En le racontant à tout le monde"],e:"Avec des mots de réconfort, de bon cœur."},
+    {s:"precisions",t:"vf",q:"Celui qui donne une grosse somme avec un visage renfrogné garde tout le mérite de la mitsva.",a:false,e:"Faux : il perd le mérite de la mitsva."},
+    {s:"precisions",t:"qcm",q:"Quelle est une des plus grandes formes de tsedaka ?",c:["Aider au mariage d’une jeune fille pauvre, surtout orpheline","Acheter un cadeau à un ami","Donner à un riche en bonne santé","Prêter un stylo"],e:"Participer aux dépenses du mariage d’une jeune fille pauvre."},
+    {s:"precisions",t:"vf",q:"Un riche peut parfois avoir besoin de tsedaka.",a:true,e:"Oui : s’il tombe malade, ou cherche un objet que tu possèdes."},
+    {s:"precisions",t:"trou",q:"La tsedaka peut être juste des mots gentils ou un ___.",c:["sourire","billet","repas","cadeau"],e:"Même un sourire, c’est de la tsedaka !"},
+    {s:"precisions",t:"qcm",q:"Qui est prioritaire en premier pour la tsedaka ?",c:["Tes parents","Les pauvres d’une autre ville","Un voisin","Les pauvres de ta ville"],e:"L’ordre commence par tes parents."},
+    {s:"precisions",t:"qcm",q:"Qui passe en dernier dans l’ordre des priorités ?",c:["Les pauvres d’une autre ville","Tes enfants","Tes frères et sœurs","Un voisin"],e:"Les pauvres d’une autre ville viennent en dernier."},
+    {s:"precisions",t:"qcm",q:"Qui passe avant : un voisin ou les pauvres de ta ville ?",c:["Un voisin","Les pauvres de ta ville","C’est pareil","Ni l’un ni l’autre"],e:"Ordre : … famille, voisin, pauvres de ta ville…"},
+    {s:"precisions",t:"vf",q:"Les pauvres d’Eretz Israël passent avant les pauvres d’une autre ville.",a:true,e:"Oui."},
+    {s:"precisions",t:"vf",q:"Les membres de ta famille, même de lointains cousins, passent avant un voisin.",a:true,e:"Oui : la famille passe avant le voisin."},
+    {s:"precisions",t:"qcm",q:"Combien y a-t-il de niveaux dans la façon de donner la tsedaka ?",c:["Huit","Trois","Dix","Sept"],e:"Il existe huit niveaux."},
+    {s:"precisions",t:"qcm",q:"Quel est le niveau le plus élevé de tsedaka ?",c:["Aider l’autre à travailler et gagner sa vie","Mettre de l’argent dans une boîte","Donner avant qu’il demande","Donner une grosse somme"],e:"Prêt, partenariat, travail ou formation : il devient indépendant."},
+    {s:"precisions",t:"qcm",q:"Quel est le niveau le plus bas ?",c:["Donner le cœur lourd et avec regret","Donner moins qu’on devrait mais gentiment","Donner après qu’il a demandé","Donner avant qu’il demande"],e:"Niveau 8 : le cœur lourd, quel que soit le montant."},
+    {s:"precisions",t:"qcm",q:"Mettre de l’argent dans une boîte de tsedaka, c’est quel niveau ?",c:["Le niveau 2","Le niveau 1","Le niveau 5","Le niveau 8"],e:"Niveau 2 : ni le donneur ni le pauvre ne se connaissent."},
+    {s:"precisions",t:"vf",q:"On ne doit mettre de l’argent dans une boîte de tsedaka que si celui qui distribue est digne de confiance.",a:true,e:"Oui, c’est une condition."},
+    {s:"precisions",t:"qcm",q:"Des Sages déposaient secrètement de l’argent devant la porte des pauvres. Quel niveau ?",c:["Niveau 3 : le pauvre ne sait pas qui a donné","Niveau 1","Niveau 6","Niveau 8"],e:"Le donneur sait qui reçoit, mais pas l’inverse."},
+    {s:"precisions",t:"qcm",q:"Pourquoi des Sages laissaient-ils tomber des bourses derrière eux ?",c:["Pour que les pauvres n’aient pas honte","Parce qu’ils étaient distraits","Pour faire un jeu","Pour les perdre"],e:"Niveau 4 : le pauvre ne voit pas qui l’aide, il n’a pas honte."},
+    {s:"precisions",t:"vf",q:"Donner avant que le pauvre demande est mieux que donner après sa demande.",a:true,e:"Niveau 5 avant le niveau 6."},
+    {s:"precisions",t:"tri",q:"Niveau élevé ou niveau bas ?",bins:["⬆️ Plus élevé","⬇️ Plus bas"],items:[["Aider à trouver un travail",0],["Donner le cœur lourd",1],["Boîte de tsedaka",0],["Donner après la demande",1],["Donner moins mais gentiment",1],["Pauvre et donneur ne se connaissent pas",0]],e:"Les niveaux 1 à 4 sont les plus élevés ; 5 à 8 plus bas."},
+    {s:"precisions",t:"assoc",q:"Relie chaque niveau à sa description.",p:[["Niveau 1","Aider à gagner sa vie"],["Niveau 2","Boîte de tsedaka"],["Niveau 5","Avant qu’il demande"],["Niveau 8","Le cœur lourd"]],e:"Les huit niveaux, du plus haut au plus bas."},
+    {s:"precisions",t:"tri",q:"Est-ce que c’est de la tsedaka ?",bins:["✅ Oui","❌ Non"],items:[["Donner de la nourriture",0],["Un sourire",0],["Des mots gentils",0],["Crier sur celui qui demande",1],["Ignorer un pauvre",1],["Payer pour un mariage pauvre",0]],e:"La tsedaka, c’est tout ce que tu donnes avec gentillesse."}
+  ]
+},
+{
+  id:"ch112", numero:112, titre:"Les Bikourim", mitsva:"269·270·271",
+  hebreu:"מִצְוַת הֲבָאַת בִּכּוּרִים",
+  noms:{mitsva:"Les Mitsvot"},
+  fiches:{
+    mitsva:`
+      <p>Ce chapitre comporte <span class="key">trois Mitsvot</span> :</p>
+      <ul>
+        <li>Apporter les premières récoltes des <b>chiv’at haminim</b> (7 fruits de la terre d’Israël) au <b>Beth Hamikdach</b>.</li>
+        <li>Les <b>Cohanim</b> ne peuvent pas manger les bikourim <b>en dehors de Jérusalem</b>.</li>
+        <li><b>Remercier Hachem à haute voix</b> en apportant les bikourim.</li>
+      </ul>
+      <div class="verse">
+        <div class="heb">מִצְוַת הֲבָאַת בִּכּוּרִים</div>
+        <div><b>Apporter les prémices au Beth Hamikdach</b> · Mitsva n° 269</div>
+        <div class="note">(Chemot 23, 19)</div>
+        <div>« Apporte tes <b>premiers fruits</b> au Temple d’Hachem, ton D.ieu. »</div>
+        <div class="note">Toute personne · en Eretz Israël · à l’époque du Beth Hamikdach</div>
+      </div>
+      <div class="verse">
+        <div class="heb">שֶׁלֹּא יֹאכַל הַכֹּהֵן בִּכּוּרִים חוּץ לִירוּשָׁלַיִם</div>
+        <div><b>Un Cohen ne mange pas les bikourim en dehors de Jérusalem</b> · Mitsva n° 270</div>
+        <div class="note">(Devarim 12, 17)</div>
+        <div class="note">Cohanim · à tout endroit · à l’époque du Beth Hamikdach · <b>malkout</b></div>
+      </div>
+      <div class="verse">
+        <div class="heb">מִצְוַת קְרִיאָה עַל הַבִּכּוּרִים</div>
+        <div><b>Remercier Hachem pour les bikourim</b> · Mitsva n° 271</div>
+        <div class="note">(Devarim 26, 5)</div>
+        <div>« Un Araméen a voulu faire périr mon aïeul ; celui-ci est descendu en Égypte… il devint une nation grande, forte et nombreuse. »</div>
+        <div class="note">Hommes · dans le Beth Hamikdach · à l’époque du Beth Hamikdach</div>
+      </div>`,
+    precisions:`
+      <h3>🍇 Les prémices (בִּכּוּרִים)</h3>
+      <ul>
+        <li>Les <span class="key">sept espèces</span> (<span class="heb">שִׁבְעַת הַמִּינִים</span>) : <b>blé, orge, raisin, figue, grenade, olive, datte</b>.</li>
+        <li>Celui qui les fait pousser en <b>Eretz Israël</b> apporte ses premiers fruits au Beth Hamikdach et les donne au <b>Cohen</b>.</li>
+        <li>Ils viennent des <b>meilleurs</b> arbres et champs. Qui habite <b>près</b> de Jérusalem apporte des fruits <b>frais</b> ; qui habite <b>loin</b> peut apporter des fruits <b>secs</b>.</li>
+        <li>Quantité : la Torah ne précise pas, les ’Ha’hamim ont fixé <span class="key">au moins 1/60</span> de la production.</li>
+      </ul>
+      <h3>🗺️ De quel pays ?</h3>
+      <ul>
+        <li>Tout Eretz Israël, + l’autre rive du <b>Yarden</b> (conquise sur les rois <b>Si’hon et Og</b>), + <b>Sourya</b> (la Syrie).</li>
+      </ul>
+      <h3>🌾 Sélectionner et apporter</h3>
+      <ul>
+        <li>Quand les fruits commencent à mûrir, le propriétaire entoure un fruit d’un <span class="key">roseau</span> et déclare : « Ce sont les bikourim ».</li>
+        <li>On les apporte entre <span class="key">Chavou’ot et ’Hanoucca</span>.</li>
+        <li>Le mieux : <b>un panier par sorte</b> de fruit. Sinon, il faut les séparer (par exemple avec de grandes feuilles).</li>
+      </ul>
+      <h3>🗣️ Le récital (Mikra Bikourim)</h3>
+      <ul>
+        <li>Le propriétaire récite des versets pour <b>remercier Hachem</b> : c’est une mitsva en elle-même.</li>
+        <li>En <b>Lachone Hakodech</b> (hébreu), <b>une seule fois par an</b>.</li>
+        <li>On ne le dit que si les bikourim arrivent <span class="key">avant la fin de Souccot</span> : c’est le temps de la récolte et de la joie (« et tu te réjouiras pour tout le bien »).</li>
+      </ul>
+      <h3>🧺 Comment ça se passe ?</h3>
+      <ul>
+        <li>En entrant dans l’<b>’Azara</b>, il dit au Cohen le premier verset : « Je déclare aujourd’hui à Hachem… ».</li>
+        <li>Il enlève le panier de ses épaules. Le Cohen et lui tiennent le panier, <b>les mains du Cohen en dessous</b>, et l’<b>agitent</b> dans toutes les directions.</li>
+        <li>Il récite le reste à voix haute (Lavan voulait détruire Yaacov, l’Égypte, la sortie d’Égypte, le pays de lait et de miel).</li>
+        <li>Le panier est posé près de l’<span class="key">angle sud-ouest du Mizbéa’h</span>. Il se prosterne et se retire.</li>
+        <li><b>Se réjouir</b> : on apporte aussi un <b>korbane Chelamim</b> (sacrifice de paix).</li>
+      </ul>
+      <h3>👨‍🦳 Le Cohen</h3>
+      <ul>
+        <li>Les bikourim vont aux Cohanim de service <b>cette semaine-là</b>.</li>
+        <li>Le Cohen les mange <b>à Jérusalem</b>, pas avant qu’ils soient posés près du Mizbéa’h, et <b>en état de pureté</b>.</li>
+        <li>Il n’est pas obligé de les manger : il peut s’en servir pour acheter (serviteurs, terrain, animaux, Sefer Torah) ou payer ses dettes. Ils ne sont pas saints en eux-mêmes.</li>
+      </ul>
+      <h3>📅 De nos jours</h3>
+      <ul>
+        <li>Sans <b>Beth Hamikdach</b>, on n’apporte pas les bikourim et on ne les met pas de côté.</li>
+      </ul>
+      <div class="tip"><b>Fais le point :</b> comment un agriculteur accomplit-il les mitsvot des bikourim ?</div>`
+  },
+  cartes:[
+    ["Bikourim","Les prémices : les premiers fruits"],
+    ["Chiv’at haminim","Les 7 espèces : blé, orge, raisin, figue, grenade, olive, datte"],
+    ["Mitsva n° 269","Apporter les bikourim au Beth Hamikdach"],
+    ["Mitsva n° 270","Le Cohen ne mange pas les bikourim hors de Jérusalem"],
+    ["Mitsva n° 271","Remercier Hachem à haute voix (Mikra Bikourim)"],
+    ["Quelle quantité ?","Au moins un soixantième (1/60)"],
+    ["Le roseau","On l’attache autour du fruit qui commence à mûrir"],
+    ["Quand ?","Entre Chavou’ot et ’Hanoucca"],
+    ["Le récital","Seulement si on apporte avant la fin de Souccot"],
+    ["Dans quelle langue ?","Lachone Hakodech, l’hébreu"],
+    ["Le panier","Posé à l’angle sud-ouest du Mizbéa’h"],
+    ["Korbane Chelamim","Sacrifice de paix apporté avec les bikourim"],
+    ["Loin de Jérusalem","On peut apporter des fruits secs"],
+    ["De nos jours","Pas de Beth Hamikdach, pas de bikourim"]
+  ],
+  questions:[
+    {s:"mitsva",t:"qcm",q:"Combien de Mitsvot ce chapitre comporte-t-il ?",c:["Trois","Deux","Une","Sept"],e:"Trois Mitsvot : 269, 270 et 271."},
+    {s:"mitsva",t:"qcm",q:"Que sont les bikourim ?",c:["Les premiers fruits","Les derniers fruits","Les fruits abîmés","Des légumes"],e:"Bikourim = prémices, premiers fruits."},
+    {s:"mitsva",t:"qcm",q:"Où apporte-t-on les bikourim ?",c:["Au Beth Hamikdach","Au marché","Chez le voisin","À la synagogue de sa ville"],e:"Mitsva 269 : au Beth Hamikdach."},
+    {s:"mitsva",t:"qcm",q:"Que dit la Mitsva n° 270 ?",c:["Un Cohen ne mange pas les bikourim en dehors de Jérusalem","Il faut donner la tsedaka","On apporte les bikourim à Pessa’h","Les bikourim sont pour tout le monde"],e:"Interdit au Cohen de les manger hors de Jérusalem."},
+    {s:"mitsva",t:"qcm",q:"Que demande la Mitsva n° 271 ?",c:["Remercier Hachem à haute voix pour les bikourim","Manger les bikourim","Planter un arbre","Compter les fruits"],e:"Mikra Bikourim : remercier Hachem avec des mots."},
+    {s:"mitsva",t:"vf",q:"La Mitsva n° 269 concerne toute personne, en Eretz Israël, à l’époque du Beth Hamikdach.",a:true,e:"Exact."},
+    {s:"mitsva",t:"vf",q:"La Mitsva n° 270 concerne les Cohanim.",a:true,e:"Oui : c’est le Cohen qui reçoit et mange les bikourim."},
+    {s:"mitsva",t:"qcm",q:"Quelle est la punition pour un Cohen qui mange des bikourim hors de Jérusalem ?",c:["Malkout","Pas de punition","Une amende","Rien"],e:"Le pictogramme indique malkout."},
+    {s:"mitsva",t:"qcm",q:"Qui doit réciter le remerciement (Mitsva n° 271) ?",c:["Les hommes","Seulement les enfants","Seulement les Cohanim","Les femmes uniquement"],e:"Le pictogramme indique : hommes."},
+    {s:"mitsva",t:"trou",q:"« Apporte tes premiers ___ au Temple d’Hachem, ton D.ieu. »",c:["fruits","animaux","habits","livres"],e:"Chemot 23, 19."},
+    {s:"mitsva",t:"trou",q:"« Un Araméen a voulu faire périr mon aïeul ; celui-ci est descendu en ___. »",c:["Égypte","Syrie","Babylonie","Grèce"],e:"Devarim 26, 5."},
+    {s:"mitsva",t:"assoc",q:"Relie chaque Mitsva à son contenu.",p:[["Mitsva 269","Apporter les bikourim"],["Mitsva 270","Pas hors de Jérusalem"],["Mitsva 271","Remercier à voix haute"]],e:"Les trois Mitsvot des bikourim."},
+    {s:"mitsva",t:"vf",q:"La Mitsva d’apporter les bikourim s’applique aussi de nos jours.",a:false,e:"Non : seulement à l’époque du Beth Hamikdach."},
+
+    {s:"precisions",t:"qcm",q:"Combien y a-t-il d’espèces dans les chiv’at haminim ?",c:["Sept","Cinq","Dix","Trois"],e:"Chiv’at haminim = les sept espèces."},
+    {s:"precisions",t:"tri",q:"Fait-il partie des 7 espèces ?",bins:["✅ Oui","❌ Non"],items:[["Blé",0],["Pomme",1],["Figue",0],["Datte",0],["Banane",1],["Grenade",0],["Orange",1],["Olive",0]],e:"Blé, orge, raisin, figue, grenade, olive, datte."},
+    {s:"precisions",t:"vf",q:"L’orge et le raisin font partie des sept espèces.",a:true,e:"Oui."},
+    {s:"precisions",t:"qcm",q:"À qui le propriétaire donne-t-il les bikourim ?",c:["Au Cohen","Au roi","À un pauvre","À son voisin"],e:"Il les apporte au Beth Hamikdach et les donne au Cohen."},
+    {s:"precisions",t:"qcm",q:"D’où doivent venir les bikourim ?",c:["Des meilleurs arbres et champs","Des arbres malades","Du marché","De n’importe où"],e:"Exclusivement des meilleurs arbres et champs."},
+    {s:"precisions",t:"qcm",q:"Celui qui habite loin de Jérusalem peut apporter…",c:["Des fruits secs","Des fruits pourris","Seulement de l’argent","Rien"],e:"Près : fruits frais ; loin : fruits secs."},
+    {s:"precisions",t:"qcm",q:"Quelle quantité minimum les ’Ha’hamim ont-ils fixée ?",c:["Un soixantième de la production","La moitié","Un dixième","Un seul fruit"],e:"Au moins 1/60."},
+    {s:"precisions",t:"vf",q:"La Torah précise exactement la quantité de bikourim à apporter.",a:false,e:"Non, ce sont les ’Ha’hamim qui ont fixé 1/60."},
+    {s:"precisions",t:"qcm",q:"En plus d’Eretz Israël, d’où doit-on aussi apporter des bikourim ?",c:["De l’autre rive du Yarden et de Sourya","D’Égypte","De Babylonie","D’Europe"],e:"L’autre rive du Yarden (Si’hon et Og) et Sourya (la Syrie)."},
+    {s:"precisions",t:"qcm",q:"Sur quels rois a été conquise l’autre rive du Yarden ?",c:["Si’hon et Og","Pharaon et Lavan","David et Chlomo","Amalek et Balak"],e:"Les rois Si’hon et Og."},
+    {s:"precisions",t:"qcm",q:"Comment le propriétaire choisit-il ses bikourim ?",c:["Il entoure le fruit d’un roseau et déclare : « Ce sont les bikourim »","Il les peint en rouge","Il prend les plus petits","Il tire au sort"],e:"Un roseau autour du fruit qui commence à mûrir."},
+    {s:"precisions",t:"qcm",q:"Pendant quelle période peut-on apporter les bikourim ?",c:["Entre Chavou’ot et ’Hanoucca","Entre Pessa’h et Chavou’ot","Seulement à Roch Hachana","Toute l’année"],e:"De Chavou’ot à ’Hanoucca."},
+    {s:"precisions",t:"vf",q:"Le mieux est de mettre chaque sorte de fruits dans son propre panier.",a:true,e:"Oui. Sinon on les sépare, par exemple avec de grandes feuilles."},
+    {s:"precisions",t:"qcm",q:"Si plusieurs fruits sont dans le même panier, que faut-il faire ?",c:["Les séparer, par exemple avec de grandes feuilles","Les mélanger","En jeter la moitié","Rien"],e:"Il faut bien séparer les différentes catégories."},
+    {s:"precisions",t:"qcm",q:"Comment s’appelle le récital des bikourim ?",c:["Mikra Bikourim","Birkat Hamazone","Hallel","Kiddouch"],e:"מִקְרָא בִּכּוּרִים : la lecture des bikourim."},
+    {s:"precisions",t:"qcm",q:"Dans quelle langue récite-t-on le Mikra Bikourim ?",c:["En Lachone Hakodech (hébreu)","En français","En araméen","Dans n’importe quelle langue"],e:"En Lachone Hakodech, la langue sainte."},
+    {s:"precisions",t:"vf",q:"On peut réciter le Mikra Bikourim plusieurs fois par an, à chaque nouvelle sorte de fruit.",a:false,e:"Non : une seule fois dans l’année."},
+    {s:"precisions",t:"qcm",q:"Jusqu’à quand doit-on apporter les bikourim pour pouvoir réciter les versets ?",c:["Avant la fin de Souccot","Avant Pessa’h","Avant ’Hanoucca","Avant Pourim"],e:"Avant la fin de Souccot, période de joie des récoltes."},
+    {s:"precisions",t:"qcm",q:"Pourquoi ne récite-t-on les versets qu’avant la fin de Souccot ?",c:["C’est le temps des récoltes, on peut lire avec une vraie joie","Parce qu’il fait froid après","Parce que le Cohen part en vacances","Parce que les fruits sont pourris"],e:"« Et tu te réjouiras pour tout le bien qu’Hachem t’a donné »."},
+    {s:"precisions",t:"qcm",q:"Comment le Cohen et le propriétaire tiennent-ils le panier ?",c:["Ensemble, les mains du Cohen en dessous","Le Cohen seul","Le propriétaire seul, sur la tête","Ils le posent par terre"],e:"Puis ils l’agitent dans toutes les directions."},
+    {s:"precisions",t:"qcm",q:"Où pose-t-on le panier de bikourim ?",c:["Près de l’angle sud-ouest du Mizbéa’h","Devant la porte de Jérusalem","Chez le Cohen","Dans le champ"],e:"Pour montrer qu’ils sont donnés à Hachem."},
+    {s:"precisions",t:"qcm",q:"Dans le Mikra Bikourim, qui est l’Araméen qui voulait détruire Yaacov ?",c:["Lavan","Pharaon","Essav","Amalek"],e:"L’Araméen, c’est Lavan."},
+    {s:"precisions",t:"qcm",q:"Quel sacrifice apporte-t-on en même temps que les bikourim ?",c:["Un korbane Chelamim (sacrifice de paix)","Un korbane ’Hatat","Aucun","Un korbane Pessa’h"],e:"Pour se réjouir, comme pendant Yom Tov."},
+    {s:"precisions",t:"vf",q:"Après le récital, le propriétaire se prosterne puis se retire.",a:true,e:"Exact."},
+    {s:"precisions",t:"qcm",q:"Quels Cohanim reçoivent les bikourim ?",c:["Ceux qui officient au Beth Hamikdach cette semaine-là","Tous les Cohanim du monde","Le Cohen Gadol seulement","Le Cohen de sa ville"],e:"Ils sont répartis entre les Cohanim de service cette semaine."},
+    {s:"precisions",t:"vf",q:"Le Cohen peut manger les bikourim avant qu’ils soient placés à côté du Mizbéa’h.",a:false,e:"Non, seulement après."},
+    {s:"precisions",t:"vf",q:"Le Cohen et les fruits doivent être purs quand on les mange.",a:true,e:"Oui."},
+    {s:"precisions",t:"vf",q:"Le Cohen est obligé de manger les bikourim.",a:false,e:"Non : il peut les utiliser pour acheter ce qu’il veut ou payer ses dettes."},
+    {s:"precisions",t:"qcm",q:"Pourquoi le Cohen peut-il utiliser les bikourim pour payer ses dettes ?",c:["Ils ne sont pas saints en eux-mêmes","Parce qu’ils sont trop nombreux","Parce qu’ils sont abîmés","Il ne peut pas"],e:"Ils ne sont pas intrinsèquement saints."},
+    {s:"precisions",t:"vf",q:"De nos jours, on met de côté des fruits pour les bikourim.",a:false,e:"Non : sans Beth Hamikdach, on n’apporte pas et on ne met pas de côté."},
+    {s:"precisions",t:"assoc",q:"Relie chaque mot à son sens.",p:[["Bikourim","Premiers fruits"],["Mizbéa’h","L’autel du Temple"],["’Azara","La cour du Beth Hamikdach"],["Lachone Hakodech","L’hébreu"]],e:"Bravo !"},
+    {s:"precisions",t:"tri",q:"Avant ou après avoir posé le panier ?",bins:["1️⃣ Avant","2️⃣ Après"],items:[["Dire le premier verset au Cohen",0],["Agiter le panier avec le Cohen",0],["Se prosterner et se retirer",1],["Le Cohen mange les bikourim",1]],e:"Premier verset, agiter, réciter, poser le panier, se prosterner ; ensuite le Cohen peut manger."}
+  ]
 }
 ];
 
 /* ============================================================ */
-const SECTIONS = {mitsva:"La Mitsva", message:"Le message de la Mitsva", precisions:"Quelques précisions"};
+const SECTIONS = {mitsva:"La Mitsva", precisions:"Quelques précisions"};  /* « Le message de la Mitsva » n’est pas au programme */
 const TYPES = {qcm:"QCM", vf:"Vrai ou faux", trou:"Texte à trous", assoc:"Relier", tri:"Classer"};
 const LEVELS = ["Apprenti fileur","Petit berger","Fileur","Tisserand","Maître tisserand","Gardien du fil","Sage du Cha’atnez","Grand maître"];
-CHAPITRES.forEach(ch=>ch.questions.forEach((q,i)=>q.id=ch.id+"-"+i));
+CHAPITRES.forEach(ch=>{
+  ch.questions.forEach((q,i)=>q.id=ch.id+"-"+i);          // ids fixes (la progression enregistrée en dépend)
+  ch.questions=ch.questions.filter(q=>SECTIONS[q.s]);       // on garde seulement les sections au programme
+  ch.cartes=ch.cartes.map((c,i)=>Object.assign([c[0],c[1]],{k:i,hors:c[2]==="hors"})).filter(c=>!c.hors);
+});
+const secName=(ch,s)=>(ch&&ch.noms&&ch.noms[s])||SECTIONS[s];
 
-const KEY="mitsvot-jeu-v1";
-let S = load();
-function load(){
-  const d={xp:0,best:0,chap:CHAPITRES[0].id,qs:{},read:{},flips:{},badges:{},defiBest:{}};
-  try{const r=JSON.parse(localStorage.getItem(KEY)||"null"); if(r) return Object.assign(d,r);}catch(e){}
-  return d;
+/* Mémoire : un profil par prénom, enregistré dans ce navigateur */
+const KEY="mitsvot-jeu-v2", OLDKEY="mitsvot-jeu-v1";
+const fresh=()=>({xp:0,best:0,chap:CHAPITRES[0].id,qs:{},read:{},flips:{},badges:{},defiBest:{},autoRead:false});
+let DB=loadDB(), S=fresh();
+function loadDB(){
+  let db={current:null,profiles:{},legacy:null};
+  try{const r=JSON.parse(localStorage.getItem(KEY)||"null"); if(r) db=Object.assign(db,r);}catch(e){}
+  if(!Object.keys(db.profiles).length&&!db.legacy){ try{db.legacy=JSON.parse(localStorage.getItem(OLDKEY)||"null");}catch(e){} }
+  return db;
 }
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
+function save(){ if(DB.current){DB.profiles[DB.current]=Object.assign(S,{seen:Date.now()});} persist(); schedulePush(); }
+/* ---------- Sauvegarde en ligne (Supabase) ---------- */
+const SB={url:"https://qddkzkqhzbbwrfledovv.supabase.co",key:"sb_publishable_nPMIwWtnns93yIvKOQpkUg_6NZsyNCJ"};
+async function rpc(fn,args,opt={}){
+  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),opt.timeout||8000);
+  try{
+    const r=await fetch(SB.url+"/rest/v1/rpc/"+fn,{method:"POST",headers:{"apikey":SB.key,"Content-Type":"application/json"},body:JSON.stringify(args),keepalive:!!opt.keepalive,signal:ctl.signal});
+    const t=await r.text(); let j=null; try{j=t?JSON.parse(t):null;}catch(e){}
+    if(!r.ok) throw new Error((j&&j.message)||("Erreur "+r.status));
+    return j;
+  } finally{clearTimeout(to);}
+}
+let pushT=null, dirty=false;
+function schedulePush(){ if(!DB.current) return; dirty=true; clearTimeout(pushT); pushT=setTimeout(()=>pushNow(false),2500); }
+function pushNow(keep){
+  if(!dirty||!DB.current) return; dirty=false;
+  rpc("mitsvot_save",{p_name:DB.current,p_data:S},{keepalive:keep}).catch(()=>{dirty=true;});
+}
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") pushNow(true); });
+async function pullProfile(name){
+  try{
+    const r=await rpc("mitsvot_load",{p_name:name},{timeout:4000});
+    if(!r||!r.data) return false;
+    const local=DB.profiles[name];
+    if(!local||(r.data.seen||0)>(local.seen||0)){ DB.profiles[name]=r.data; persist(); return true; }
+  }catch(e){}
+  return false;
+}
+
+function useProfile(name){
+  if(!DB.profiles[name]){ DB.profiles[name]=Object.assign(fresh(),DB.legacy||{},{created:Date.now()}); DB.legacy=null; }
+  DB.current=name; S=Object.assign(fresh(),DB.profiles[name]); save();
+}
 
 const $=s=>document.querySelector(s);
 const view=$("#view");
@@ -418,11 +814,9 @@ function renderChapHead(){
       <span class="eyebrow">Chapitre ${ch.numero}</span>
       <h1>${esc(ch.titre)}</h1>
       <div class="heb">${ch.hebreu}</div>
-      ${CHAPITRES.length>1?`<select id="chapSel" aria-label="Choisir un chapitre">${CHAPITRES.map(c=>`<option value="${c.id}" ${c.id===ch.id?"selected":""}>Chapitre ${c.numero} · ${esc(c.titre)}</option>`).join("")}</select>`:""}
     </div>
-    <div class="seal"><div><small>MITSVA</small><b>${ch.mitsva}</b></div></div>
+    <div class="seal"><div><small>${String(ch.mitsva).length>3?"MITSVOT":"MITSVA"}</small><b style="${String(ch.mitsva).length>3?"font-size:"+(String(ch.mitsva).length>7?".78rem":"1rem"):""}">${ch.mitsva}</b></div></div>
     <div class="mastery"><small>Chapitre maîtrisé à ${m} %</small><div class="bar"><i style="width:${m}%"></i></div></div>`;
-  const sel=$("#chapSel"); if(sel) sel.onchange=()=>{S.chap=sel.value;save();renderChapHead();show(curView);};
 }
 
 /* ---------- badges ---------- */
@@ -431,27 +825,26 @@ function badgeDefs(ch){return [
   {id:"serie5",n:"Série de 5",d:"5 bonnes réponses d’affilée",i:"🔥"},
   {id:"serie10",n:"Bobine d’or",d:"10 bonnes réponses d’affilée",i:"🥇"},
   {id:"serie20",n:"Fil infini",d:"20 bonnes réponses d’affilée",i:"♾️"},
-  {id:ch.id+":lecteur",n:"Lecteur assidu",d:"Lire les 3 fiches",i:"📖"},
+  {id:ch.id+":lecteur",n:"Lecteur assidu",d:"Lire toutes les fiches",i:"📖"},
   {id:ch.id+":cartes",n:"Mémoire de fer",d:"Retourner toutes les cartes mémo",i:"🃏"},
   {id:"parfait",n:"Sans faute",d:"Un quiz de 10 questions ou plus sans erreur",i:"💯"},
   {id:"eclair",n:"Éclair",d:"12 bonnes réponses au défi éclair",i:"⚡"},
-  {id:ch.id+":mitsva",n:"Expert de la Mitsva",d:"Toutes les questions « La Mitsva » réussies",i:"📜"},
-  {id:ch.id+":message",n:"Expert du message",d:"Toutes les questions « Le message » réussies",i:"💡"},
+  {id:ch.id+":mitsva",n:"Expert de la Mitsva",d:"Toutes les questions « "+secName(ch,"mitsva")+" » réussies",i:"📜"},
   {id:ch.id+":precisions",n:"Expert des précisions",d:"Toutes les questions « Précisions » réussies",i:"🔍"},
   {id:ch.id+":tout",n:"Chapitre maîtrisé",d:"100 % des questions du chapitre réussies",i:"👑"}
 ];}
-function award(id){
+function award(id,label){
   if(S.badges[id]) return;
   S.badges[id]=Date.now(); save();
   const b=badgeDefs(chap()).find(x=>x.id===id);
-  toast(`${b?b.i:"🏅"} Nouveau trophée : ${b?b.n:id} !`); confetti();
+  toast(label?`Nouveau trophée : ${label} !`:`${b?b.i:"🏅"} Nouveau trophée : ${b?b.n:id} !`); if(!label) confetti();
 }
 function checkBadges(){
   const ch=chap();
-  ["mitsva","message","precisions"].forEach(s=>{if(secMastery(ch,s)===1)award(ch.id+":"+s);});
+  Object.keys(SECTIONS).forEach(s=>{if(secMastery(ch,s)===1)award(ch.id+":"+s);});
   if(secMastery(ch)===1) award(ch.id+":tout");
-  if(["mitsva","message","precisions"].every(s=>S.read[ch.id+":"+s])) award(ch.id+":lecteur");
-  if(ch.cartes.every((_,i)=>S.flips[ch.id+":"+i])) award(ch.id+":cartes");
+  if(Object.keys(SECTIONS).every(s=>S.read[ch.id+":"+s])) award(ch.id+":lecteur");
+  if(ch.cartes.every(c=>S.flips[ch.id+":"+c.k])) award(ch.id+":cartes");
 }
 
 /* ---------- lecture à voix haute ---------- */
@@ -473,7 +866,12 @@ const PRON=[
   [/Cha['’]atnez/gi,"Chaatnèze"],[/['’]Hok\b/g,"Rhok"],[/\bHok\b/g,"Rhok"],[/Malkout/gi,"Malkoute"],
   [/Miderabbanane/gi,"Midérabanane"],[/Mitsvot\b/g,"Mitsvote"],[/Hachem/g,"Hachème"],[/Devarim/g,"Dévarim"],
   [/Béréchit/g,"Béréchite"],[/Chemot/g,"Chémote"],[/Vayikra/g,"Vaïkra"],[/Chabbat/g,"Chabbate"],[/Tsitsit/g,"Tsitsite"],
-  [/Tefilin/g,"Téfiline"],[/Cohanim/g,"Coanime"],[/Hala['’]hot/g,"Halarote"],[/Harambam/gi,"Harambame"],[/Torah/g,"Tora"]
+  [/Tefilin/g,"Téfiline"],[/Cohanim/g,"Coanime"],[/Hala['’]hot/g,"Halarote"],[/Harambam/gi,"Harambame"],[/Torah/g,"Tora"],
+  [/[Tt]sedaka/g,"tsédaka"],[/[Bb]ikourim/g,"bikourime"],[/[Cc]hiv['’]?at haminim/g,"chivat haminime"],[/Beth Hamikdach/g,"Bèt Hamikdache"],
+  [/Cohanim/g,"Coanime"],[/Cohen/g,"Coène"],[/[Mm]a['’]ass[èe]re ksafim/g,"maassère ksafime"],[/Eretz/g,"Érets"],[/Yarden/g,"Yardène"],
+  [/Si['’]hon/g,"Sirone"],[/Chavou['’]ot/g,"Chavouote"],[/['’]Hanoucca/g,"Ranouka"],[/Souccot/g,"Soukote"],[/Lachone Hakodech/g,"Lachone Hakodèche"],
+  [/['’]Azara/g,"Azara"],[/Mizbéa['’]h/g,"Mizbéar"],[/['’]Ha['’]hamim/g,"Rarhamime"],[/Chelamim/gi,"Chélamime"],[/Mikra/g,"Mikra"],[/Sefer/g,"Séfère"],
+  [/Pessa['’]h/g,"Pessar"],[/Yaacov/g,"Yaakov"]
 ];
 function frClean(t){
   t=String(t);
@@ -534,7 +932,6 @@ function questionSpeech(){
 }
 function setAuto(v){S.autoRead=v;save();const b=$("#autoRead");b.setAttribute("aria-pressed",v);if(!v)stopSpeech();}
 $("#autoRead").onclick=()=>{setAuto(!S.autoRead);toast(S.autoRead?"🔊 Lecture automatique activée":"Lecture automatique désactivée");};
-$("#autoRead").setAttribute("aria-pressed",!!S.autoRead);
 
 /* ---------- vues ---------- */
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.v));
@@ -550,14 +947,14 @@ function viewLearn(){
   Object.keys(SECTIONS).map(s=>{
     const done=S.read[ch.id+":"+s], m=Math.round(secMastery(ch,s)*100);
     return `<article class="fiche s-${s}">
-      <header><h2>${SECTIONS[s]}</h2><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="say" data-say="${s}">🔊 Lire</button><span class="tag">Quiz réussi à ${m} %</span></div></header>
+      <header><h2>${secName(ch,s)}</h2><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="say" data-say="${s}">🔊 Lire</button><span class="tag">Quiz réussi à ${m} %</span></div></header>
       <div class="body">${ch.fiches[s]}
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="donebtn" data-s="${s}" ${done?"disabled":""}>${done?"✓ Fiche lue":"J’ai lu cette fiche (+20 ⭐)"}</button>
           <button class="go alt" data-quiz="${s}" style="font-size:1rem;padding:8px 14px">Me tester sur cette fiche →</button>
         </div>
       </div></article>`;}).join("")+`</div>`;
-  view.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(SECTIONS[b.dataset.say]+". "+nodeSpeech(b.closest(".fiche").querySelector(".body")),b));
+  view.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(secName(ch,b.dataset.say)+". "+nodeSpeech(b.closest(".fiche").querySelector(".body")),b));
   view.querySelectorAll(".donebtn").forEach(b=>b.onclick=()=>{
     S.read[ch.id+":"+b.dataset.s]=true; addXP(20); b.disabled=true; b.textContent="✓ Fiche lue"; toast("+20 ⭐ Bravo pour ta lecture !"); checkBadges();
   });
@@ -568,8 +965,8 @@ function viewCards(){
   const ch=chap();
   view.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
     <p class="note" style="margin:0">Lis le mot, essaie de te rappeler la réponse, puis touche la carte pour la retourner.</p>
-    <div class="cards">${ch.cartes.map((c,i)=>`<button class="card" data-i="${i}" aria-label="Carte ${i+1}">
-      <div class="in"><div class="face front">${isHeb(c[0])?`<span class="heb" style="font-size:1.6rem">${esc(c[0])}</span>`:esc(c[0])}<small>${S.flips[ch.id+":"+i]?"✓ déjà vue":"touche pour retourner"}</small></div>
+    <div class="cards">${ch.cartes.map((c,i)=>`<button class="card" data-i="${c.k}" aria-label="Carte ${i+1}">
+      <div class="in"><div class="face front">${isHeb(c[0])?`<span class="heb" style="font-size:1.6rem">${esc(c[0])}</span>`:esc(c[0])}<small>${S.flips[ch.id+":"+c.k]?"✓ déjà vue":"touche pour retourner"}</small></div>
       <div class="face back">${esc(c[1])}</div></div></button>`).join("")}</div>
     <button class="go alt" id="shuf">🔀 Mélanger les cartes</button></div>`;
   view.querySelectorAll(".card").forEach(c=>c.onclick=()=>{
@@ -584,7 +981,7 @@ function viewCards(){
 let Q=null, quizSec="all", quizLen=10;
 function viewQuizMenu(){
   const ch=chap(); const errs=ch.questions.filter(q=>S.qs[q.id]&&!S.qs[q.id].last);
-  const secs=[["all","Tout le chapitre"],["mitsva","La Mitsva"],["message","Le message"],["precisions","Les précisions"]];
+  const secs=[["all","Tout le chapitre"],["mitsva",secName(ch,"mitsva")],["precisions","Les précisions"]];
   view.innerHTML=`<div class="panel">
     <h2>Choisis ton quiz</h2>
     <div><b>Sur quoi ?</b><div class="choices" id="secC" style="margin-top:6px">${secs.map(([k,l])=>`<button class="chip" data-k="${k}" aria-pressed="${quizSec===k}">${l}</button>`).join("")}</div></div>
@@ -595,7 +992,7 @@ function viewQuizMenu(){
       ${errs.length?`<button class="go alt" id="errQ">🔁 Revoir mes erreurs (${errs.length})</button>`:""}
     </div></div>
     <div class="panel"><h2 style="font-size:1.2rem">Ma progression</h2>
-    ${Object.keys(SECTIONS).map(s=>{const qs=ch.questions.filter(q=>q.s===s),m=qs.filter(mastered).length;return `<div class="secrow"><div><span>${SECTIONS[s]}</span><span>${m} / ${qs.length}</span></div><div class="progress"><i style="width:${m/qs.length*100}%"></i></div></div>`}).join("")}
+    ${Object.keys(SECTIONS).map(s=>{const qs=ch.questions.filter(q=>q.s===s),m=qs.filter(mastered).length;return `<div class="secrow"><div><span>${secName(ch,s)}</span><span>${m} / ${qs.length}</span></div><div class="progress"><i style="width:${m/qs.length*100}%"></i></div></div>`}).join("")}
     </div>`;
   const bind=(id,set)=>view.querySelectorAll(`#${id} .chip`).forEach(b=>b.onclick=()=>{set(b.dataset.k);view.querySelectorAll(`#${id} .chip`).forEach(x=>x.setAttribute("aria-pressed",x===b));});
   bind("secC",k=>quizSec=k); bind("lenC",k=>quizLen=+k);
@@ -615,7 +1012,7 @@ function startQuiz(sec,len){
 function renderQ(){
   const q=Q.list[Q.i], n=Q.list.length;
   view.innerHTML=`<div class="panel" id="qp">
-    <div class="qhead"><span>Question ${Q.i+1} / ${n}</span><span class="qtype">${TYPES[q.t]} · ${SECTIONS[q.s]}</span>${Q.combo>=2?`<span class="combo">🔥 ×${Q.combo}</span>`:""}<button class="say" id="sayQ">🔊 Lire</button></div>
+    <div class="qhead"><span>Question ${Q.i+1} / ${n}</span><span class="qtype">${TYPES[q.t]} · ${secName(CHAPITRES.find(c=>c.questions.includes(q)),q.s)}</span>${Q.combo>=2?`<span class="combo">🔥 ×${Q.combo}</span>`:""}<button class="say" id="sayQ">🔊 Lire</button></div>
     <div class="progress"><i style="width:${Q.i/n*100}%"></i></div>
     <div class="qtext" id="qt"></div>
     <div id="qa"></div>
@@ -710,6 +1107,7 @@ function answered(q,ok){
   nx.onclick=()=>{stopSpeech();Q.i++; Q.i<Q.list.length?renderQ():endQuiz();};
 }
 function endQuiz(){
+  if(Q&&Q.eval!=null) return endEval();
   if(!Q) return show("quiz");
   const done=Q.i+(view.querySelector("#next")?1:0), n=Math.max(done,1), pct=Q.ok/n;
   const stars=pct>=.9?3:pct>=.7?2:pct>=.4?1:0;
@@ -790,12 +1188,12 @@ function viewTrophies(){
       <div class="stat"><b>${S.best}</b><small>Meilleure série</small></div>
     </div>
     <div class="badges">${defs.map(b=>`<div class="badge ${S.badges[b.id]?"on":""}"><div class="medal" style="font-size:1.6rem">${S.badges[b.id]?b.i:"🔒"}</div><b>${b.n}</b><small>${b.d}</small></div>`).join("")}</div>
-    <p class="note" style="margin:0">La progression est enregistrée sur cet appareil, dans ce navigateur.</p>
-    <div id="rz"><button class="danger" id="reset">Remettre ma progression à zéro</button></div></div>`;
+    <p class="note" style="margin:0">La progression de ${esc(DB.current)} est enregistrée sur cet appareil, dans ce navigateur.</p>
+    <div id="rz"><button class="danger" id="reset">Remettre la progression de ${esc(DB.current)} à zéro</button></div></div>`;
   $("#reset").onclick=()=>{
-    $("#rz").innerHTML=`<div class="feedback ko"><b>Tout effacer ?</b><span>Les étoiles, trophées et réponses seront supprimés.</span>
+    $("#rz").innerHTML=`<div class="feedback ko"><b>Tout effacer ?</b><span>Les étoiles, trophées et réponses de ${esc(DB.current)} seront supprimés. Les autres prénoms ne changent pas.</span>
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="go" id="yes" style="background:var(--bad);color:#fff;box-shadow:none">Oui, tout effacer</button><button class="go alt" id="no">Annuler</button></div></div>`;
-    $("#yes").onclick=()=>{S={autoRead:S.autoRead,xp:0,best:0,chap:S.chap,qs:{},read:{},flips:{},badges:{},defiBest:{}};save();renderTop();renderChapHead();show("trophees");toast("Progression remise à zéro");};
+    $("#yes").onclick=()=>{S=Object.assign(fresh(),{autoRead:S.autoRead,chap:S.chap});save();renderTop();renderChapHead();show("trophees");toast("Progression remise à zéro");};
     $("#no").onclick=()=>show("trophees");
   };
 }
@@ -819,7 +1217,258 @@ function confetti(){
   })();
 }
 
-renderTop(); renderChapHead(); show("apprendre");
+/* ---------- ÉCRANS : prénom, accueil, chapitre ---------- */
+const AVCOL=["#3446a8","#c8373f","#5f8a2c","#b7791f","#7b4b94","#1f7a8c"];
+const avColor=n=>AVCOL[[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%AVCOL.length];
+const LOGO="data:image/jpeg;base64,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";
+const SPOOL=`<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="3" width="22" height="5" rx="2" fill="#3446a8"/><rect x="5" y="24" width="22" height="5" rx="2" fill="#3446a8"/><rect x="8" y="8" width="16" height="16" fill="#e9a514"/><path d="M8 11h16M8 15h16M8 19h16" stroke="#1b2147" stroke-opacity=".35" stroke-width="1.5"/></svg>`;
+function screen(id){
+  stopTimer(); stopSpeech();
+  ["scrWho","scrHome","scrChap","scrParent"].forEach(x=>$("#"+x).hidden=x!==id);
+  $("#topbar").hidden=id==="scrWho"||id==="scrParent";
+  window.scrollTo({top:0});
+}
+function chapPct(ch){return Math.round(secMastery(ch)*100);}
+function profStats(p){
+  const n=Math.floor((p.xp||0)/150);
+  return `Niveau ${n+1} · ⭐ ${p.xp||0}`;
+}
+function showWho(){
+  const names=Object.keys(DB.profiles).sort((a,b)=>(DB.profiles[b].seen||0)-(DB.profiles[a].seen||0));
+  $("#scrWho").innerHTML=`
+    <div class="logo"><img src="${LOGO}" alt="Hidone 613" style="width:100%;height:100%;object-fit:contain;border-radius:24px"></div>
+    <h1>Qui étudie aujourd’hui ?</h1>
+    ${names.length?`<p>Touche ton prénom pour reprendre là où tu t’étais arrêté.</p>
+    <div class="profiles">${names.map(n=>`<button class="prof" data-n="${esc(n)}"><span class="av" style="background:${avColor(n)}">${esc([...n][0].toUpperCase())}</span><b>${esc(n)}</b><small>${profStats(DB.profiles[n])}</small></button>`).join("")}</div>
+    <p style="margin-top:6px">Ou commence avec un autre prénom :</p>`:`<p>Écris ton prénom pour commencer.</p>`}
+    ${legacyInfo()}
+    <form class="newname" id="newForm">
+      <input id="newName" maxlength="20" autocomplete="off" placeholder="Ton prénom" aria-label="Ton prénom">
+      <button class="go" type="submit">C’est parti !</button>
+    </form>
+    <button class="back" id="parentBtn" style="align-self:center;margin-top:10px">👨‍👩‍👧 Espace parent</button>`;
+  screen("scrWho");
+  $("#scrWho").querySelectorAll(".prof").forEach(b=>b.onclick=()=>login(b.dataset.n));
+  $("#parentBtn").onclick=()=>showParent();
+  $("#newForm").onsubmit=e=>{
+    e.preventDefault();
+    let n=$("#newName").value.trim().replace(/\s+/g," ");
+    if(!n){toast("Écris ton prénom 🙂");$("#newName").focus();return;}
+    n=n.charAt(0).toUpperCase()+n.slice(1);
+    login(n);
+  };
+}
+function legacyInfo(){
+  const L=DB.legacy; if(!L||!(L.xp||Object.keys(L.qs||{}).length)) return "";
+  const n=Object.keys(L.qs||{}).length;
+  return `<div class="feedback ok" style="max-width:440px;text-align:left"><b>🎒 Ta progression est bien gardée !</b>
+    <span>On a retrouvé ⭐ ${L.xp||0} étoiles, ${n} questions déjà vues et ${Object.keys(L.badges||{}).length} trophées. Écris ton prénom ci-dessous : tout sera rattaché à ce prénom.</span></div>`;
+}
+async function login(name){
+  document.querySelectorAll("#scrWho button").forEach(b=>b.disabled=true);
+  const wasNew=!DB.profiles[name];
+  const fromCloud=await pullProfile(name);
+  const hadLegacy=!DB.profiles[name]&&DB.legacy;
+  useProfile(name);
+  if(fromCloud&&wasNew) setTimeout(()=>toast(`☁️ Progression de ${name} retrouvée !`),400);
+  if(hadLegacy) setTimeout(()=>toast(`🎒 Ta progression est maintenant rattachée à ${name} !`),400);
+  $("#whoName").textContent=name;
+  $("#autoRead").setAttribute("aria-pressed",!!S.autoRead);
+  renderTop(); showHome(true);
+}
+function showHome(greet){
+  const name=DB.current, last=CHAPITRES.find(c=>c.id===S.chap)||CHAPITRES[0];
+  const totalQ=CHAPITRES.reduce((a,c)=>a+c.questions.length,0);
+  const doneQ=CHAPITRES.reduce((a,c)=>a+c.questions.filter(mastered).length,0);
+  const trophies=Object.keys(S.badges).length;
+  const started=Object.keys(S.qs).length>0;
+  $("#scrHome").innerHTML=`
+    <div class="hero ${greet?"pop":""}">
+      <h1>Bonjour ${esc(name)} ! <span class="wave">👋</span></h1>
+      <p>Prêt à étudier et relever les défis&nbsp;?</p>
+      <div class="row">
+        <span class="pill">⭐ ${S.xp} étoiles</span>
+        <span class="pill">🏆 ${trophies} trophée${trophies>1?"s":""}</span>
+        <span class="pill">✅ ${doneQ} / ${totalQ} questions réussies</span>
+      </div>
+      ${(()=>{const nx=nextExam();return nx?`<div class="row"><span class="pill">📅 ${nx.titre} ${countdown(nx)} · ${frDate(nx.date)}</span></div>`:"";})()}
+      <div class="row"><button class="go" id="contBtn">${started?`Continuer : ${esc(last.titre)} →`:"Oui, je commence ! →"}</button></div>
+    </div>
+    <h2 class="sectitle">Mon programme · ’Hidone HaRambam 5787</h2>
+    ${homeGrid()}`;
+  screen("scrHome");
+  $("#contBtn").onclick=()=>openChap(last.id);
+  $("#scrHome").querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>openChap(b.dataset.c));
+  $("#scrHome").querySelectorAll("[data-eval]").forEach(b=>b.onclick=()=>openEval(b.dataset.eval));
+  if(greet){ confetti(); speak(`Bonjour ${name} ! Prêt à étudier et relever les défis ?`); }
+}
+function chapCard(c){
+  const p=chapPct(c),st=p>=100?3:p>=60?2:p>=25?1:0;
+  return `<button class="chcard" data-c="${c.id}">
+    <span class="mini" style="${String(c.mitsva).length>3?"width:64px;height:64px;font-size:"+(String(c.mitsva).length>7?".58rem":".72rem"):""}"><span><small>${String(c.mitsva).length>3?"MITSVOT":"MITSVA"}</small>${c.mitsva}</span></span>
+    <span class="eyebrow">Chapitre ${c.numero}</span>
+    <h3 style="padding-right:70px">${esc(c.titre)}</h3>
+    <span class="heb">${c.hebreu}</span>
+    <span class="stars3">${[0,1,2].map(i=>`<span class="${i<st?"":"off"}">★</span>`).join("")}</span>
+    <span class="secrow" style="width:100%"><span style="display:flex;justify-content:space-between;font-weight:700"><span>Maîtrisé</span><span>${p} %</span></span><span class="progress"><i style="width:${p}%"></i></span></span>
+  </button>`;
+}
+/* ---------- PROGRAMME 'Hidone HaRambam 5787 : examens et chapitres ----------
+   Pour ajouter un chapitre : l’ajouter dans CHAPITRES avec le même numéro que ci-dessous. */
+const PROGRAMME=[
+  {id:"ex1",titre:"Examen 1",date:"2027-01-12",heb:"4 Chevat 5787",color:"#3446a8",size:20,groupes:[
+    {theme:"Zeraim",themeHeb:"זְרָעִים",chapitres:[[102,"Cha’atnez"],[105,"Tsedaka"],[112,"Bikourim"],[113,"’Halla"],[115,"Premiers-Nés"]]}]},
+  {id:"ex2",titre:"Examen 2",date:"2027-03-03",heb:"30 Adar I 5787",color:"#c8373f",size:20,groupes:[
+    {theme:"",chapitres:[[116,"Le repos de la terre pendant la Chemita et le Yovel"],[117,"Chemitat Kessafim"],[118,"Yovel"]]},
+    {theme:"Avodah",themeHeb:"עֲבוֹדָה",chapitres:[[122,"Construire le Beth Hamikdach"],[124,"Le Mizbéa’h extérieur"],[125,"L’autel en or"]]}]},
+  {id:"ex3",titre:"Examen 3",date:"2027-04-08",heb:"1 Nissan 5787",color:"#5f8a2c",size:20,groupes:[
+    {theme:"",chapitres:[[126,"Le Arone Hakodech"],[127,"Le Kiyor"],[128,"La Menorah"],[129,"Le Choul’hane"],[132,"Le service des Léviim"],[136,"Les vêtements des Cohanim"]]}]},
+  {id:"final",titre:"Examen final",date:"2027-05-10",heb:"3 Iyar 5787",color:"#b7791f",size:30,final:true,groupes:[]}
+];
+const examNums=ex=>ex.final?PROGRAMME.filter(e=>!e.final).flatMap(e=>e.groupes.flatMap(g=>g.chapitres.map(c=>c[0]))):ex.groupes.flatMap(g=>g.chapitres.map(c=>c[0]));
+const chapByNum=n=>CHAPITRES.find(c=>c.numero===n);
+const examChapters=ex=>examNums(ex).map(chapByNum).filter(Boolean);
+const examById=id=>PROGRAMME.find(e=>e.id===id);
+const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+function frDate(iso){const [y,m,d]=iso.split("-").map(Number);return `${d} ${MOIS[m-1]} ${y}`;}
+function daysTo(iso){const t=new Date(iso+"T09:00:00"), n=new Date();return Math.ceil((t-n)/86400000);}
+function countdown(ex){const d=daysTo(ex.date);return d>1?`dans ${d} jours`:d===1?"demain":d===0?"aujourd’hui":"passé";}
+function mention(n){return n>=18?"Excellent":n>=16?"Très bien":n>=13?"Bien":n>=10?"Assez bien":"À retravailler";}
+function evalCard(ex){
+  const chs=examChapters(ex), total=examNums(ex).length, r=(S.evals||{})[ex.id];
+  if(!chs.length) return `<div class="chcard eval locked"><span class="eyebrow">Évaluation · ${ex.titre}</span><h3>🔒 ${ex.final?"Tous les chapitres":"Bientôt"}</h3><span class="note">Elle s’ouvre dès que le premier chapitre de cet examen est disponible.</span></div>`;
+  return `<button class="chcard eval" data-eval="${ex.id}">
+    <span class="eyebrow">Évaluation · ${ex.titre}</span>
+    <h3>🎓 ${ex.final?"Révision de toute l’année":"Entraînement à l’examen"}</h3>
+    ${r?`<span class="score">${r.best} / 20</span><span style="font-weight:800">${mention(r.best)} · meilleure note</span>`:`<span style="font-weight:700">${ex.size} questions notées sur 20.</span>`}
+    <span class="note">${chs.length===total?`Porte sur les ${total} chapitres.`:`Porte pour l’instant sur ${chs.length} chapitre${chs.length>1?"s":""} sur ${total} : elle s’enrichira à chaque nouveau chapitre.`}</span>
+  </button>`;
+}
+function soonCard(n,t){return `<div class="chcard soon named"><span class="eyebrow">Chapitre ${n}</span><b>${esc(t)}</b><span>🔒 bientôt disponible</span></div>`;}
+function homeGrid(){
+  return PROGRAMME.map(ex=>`<section class="exam" style="--ex:${ex.color}">
+    <div class="examhead"><h2>${ex.titre}</h2><span>${frDate(ex.date)} · ${ex.heb}</span><span class="cd">📅 ${countdown(ex)}</span></div>
+    ${ex.final?`<p class="note" style="margin:0">Sur tous les chapitres de l’année.</p>`:""}
+    ${ex.groupes.map(g=>`${g.theme?`<div class="theme">${g.themeHeb?`<span class="heb">${g.themeHeb}</span> · `:""}${g.theme}</div>`:""}
+      <div class="chaps">${g.chapitres.map(([n,t])=>{const c=chapByNum(n);return c?chapCard(c):soonCard(n,t);}).join("")}</div>`).join("")}
+    <div class="chaps">${evalCard(ex)}</div>
+  </section>`).join("");
+}
+function nextExam(){return PROGRAMME.find(e=>daysTo(e.date)>=0);}
+function openEval(id){
+  const ex=examById(id), chs=examChapters(ex); if(!chs.length) return;
+  const size=ex.size, per=Math.floor(size/chs.length); let list=[];
+  chs.forEach((c,i)=>{ const n=Math.max(1,per+(i<size-per*chs.length?1:0)); list=list.concat(shuffle(c.questions).slice(0,n)); });
+  list=shuffle(list).slice(0,size);
+  S.chap=chs[0].id;
+  screen("scrChap"); $("#tabs").hidden=true; $("#backHome").textContent="← Quitter l’évaluation";
+  $("#chapHead").innerHTML=`<div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span class="eyebrow">Évaluation · ${ex.titre} · ${frDate(ex.date)}</span><h1>${ex.final?"Toute l’année":"Entraînement à l’examen"}</h1><div>${chs.map(c=>`Ch. ${c.numero} ${esc(c.titre)}`).join(" · ")}</div></div><div class="seal"><div><small>NOTE</small><b>/20</b></div></div>`;
+  Q={list,i:0,ok:0,combo:0,wrong:[],sec:"eval",gained:0,eval:id};
+  renderQ();
+}
+function endEval(){
+  const id=Q.eval, ex=examById(id), total=Q.list.length, done=Q.i+(view.querySelector("#next")?1:0);
+  const note=Math.round(Q.ok/total*20), complete=done>=total;
+  S.evals=S.evals||{};
+  if(complete){ const prev=S.evals[id]; S.evals[id]={best:Math.max(note,prev?prev.best:0),last:note,date:Date.now(),tries:(prev?prev.tries:0)+1}; save(); }
+  if(complete&&note>=16){ award("eval-"+id,"🎓 "+ex.titre+" réussi"); confetti(); }
+  const wrong=Q.wrong.slice(); Q=null;
+  view.innerHTML=`<div class="panel result">
+    <h2>${complete?`Résultat · ${ex.titre}`:"Évaluation interrompue"}</h2>
+    ${complete?`<div class="big">${note} / 20</div><p style="margin:0;font-weight:800;font-size:1.2rem">${mention(note)}</p>`:`<p style="margin:0">L’évaluation n’est pas terminée : la note n’est pas enregistrée.</p>`}
+    ${wrong.length?`<div style="text-align:left;width:100%"><b>À revoir :</b><ul>${wrong.map(q=>`<li>${txt(q.q)}<br><small class="note">${txt(q.e)}</small></li>`).join("")}</ul></div>`:""}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="go" id="evAgain">Recommencer</button><button class="go alt" id="evHome">Retour à l’accueil</button></div></div>`;
+  $("#evAgain").onclick=()=>openEval(id); $("#evHome").onclick=()=>showHome(false);
+}
+
+function openChap(id){
+  $("#tabs").hidden=false; $("#backHome").textContent="← Tous les chapitres";
+  S.chap=id; save();
+  screen("scrChap"); renderChapHead(); show("apprendre");
+}
+/* ---------- ESPACE PARENT ---------- */
+const PINKEY="mitsvot-parent-code";
+function ago(t){
+  const m=Math.round((Date.now()-new Date(t).getTime())/60000);
+  if(m<1) return "à l’instant"; if(m<60) return `il y a ${m} min`;
+  const h=Math.round(m/60); if(h<24) return `il y a ${h} h`;
+  const d=Math.round(h/24); return d===1?"hier":`il y a ${d} jours`;
+}
+function showParent(){
+  let pin=""; try{pin=localStorage.getItem(PINKEY)||"";}catch(e){}
+  screen("scrParent");
+  if(pin) return loadParent(pin);
+  parentLogin();
+}
+function parentLogin(err){
+  $("#scrParent").innerHTML=`
+    <button class="back" id="pBack">← Retour</button>
+    <div class="panel"><h2>👨‍👩‍👧 Espace parent</h2>
+      <p style="margin:0">Entre le code parent pour voir la progression de chaque prénom.</p>
+      ${err?`<div class="feedback ko"><span>${esc(err)}</span></div>`:""}
+      <form class="newname" id="pinForm" style="justify-content:flex-start">
+        <input id="pin" type="password" autocomplete="current-password" placeholder="Code parent" aria-label="Code parent">
+        <button class="go" type="submit">Voir</button>
+      </form></div>`;
+  $("#pBack").onclick=()=>showWho();
+  $("#pinForm").onsubmit=e=>{e.preventDefault();loadParent($("#pin").value.trim());};
+}
+async function loadParent(pin){
+  $("#scrParent").innerHTML=`<button class="back" id="pBack">← Retour</button><div class="panel"><p style="margin:0">Chargement des progressions…</p></div>`;
+  $("#pBack").onclick=()=>showWho();
+  let rows;
+  try{ rows=await rpc("mitsvot_dashboard",{p_pin:pin}); }
+  catch(e){
+    try{localStorage.removeItem(PINKEY);}catch(_){}
+    return parentLogin(/code/i.test(e.message)?"Code incorrect.":"Impossible de joindre le serveur. Vérifie la connexion internet et réessaie.");
+  }
+  try{localStorage.setItem(PINKEY,pin);}catch(e){}
+  renderParent(rows||[]);
+}
+function renderParent(rows){
+  const kid=r=>{
+    const d=r.data||{}, qs=d.qs||{}, lv=Math.floor((d.xp||0)/150)+1;
+    const ok=CHAPITRES.reduce((a,c)=>a+c.questions.filter(q=>qs[q.id]&&qs[q.id].last).length,0);
+    const tot=CHAPITRES.reduce((a,c)=>a+c.questions.length,0);
+    const chs=CHAPITRES.filter(c=>c.questions.some(q=>qs[q.id])||Object.keys(d.read||{}).some(k=>k.startsWith(c.id+":")));
+    const wrong=CHAPITRES.flatMap(c=>c.questions.filter(q=>qs[q.id]&&!qs[q.id].last).map(q=>({c,q})));
+    const evs=Object.entries(d.evals||{});
+    return `<article class="kid">
+      <header><span class="av" style="background:${avColor(r.name)}">${esc([...r.name][0].toUpperCase())}</span>
+        <div style="min-width:0"><h3>${esc(r.name)}</h3><small>Niveau ${lv} · dernière activité ${ago(r.updated_at)}</small></div></header>
+      <div class="kgrid">
+        <div><b>${d.xp||0}</b><small>étoiles</small></div>
+        <div><b>${ok}/${tot}</b><small>questions réussies</small></div>
+        <div><b>${Object.keys(d.badges||{}).length}</b><small>trophées</small></div>
+        <div><b>${d.best||0}</b><small>meilleure série</small></div>
+      </div>
+      ${evs.length?`<div class="kch"><div class="t"><span>🎓 Évaluations</span></div>${evs.map(([g,e])=>`<div style="display:flex;justify-content:space-between;font-weight:700"><span>${(examById(g)||{titre:"Évaluation"}).titre}</span><span>${e.best}/20 (dernière : ${e.last}/20, ${e.tries} essai${e.tries>1?"s":""})</span></div>`).join("")}</div>`:""}
+      ${chs.length?chs.map(c=>{const p=Math.round(c.questions.filter(q=>qs[q.id]&&qs[q.id].last).length/c.questions.length*100);
+        const read=Object.keys(SECTIONS).filter(s=>(d.read||{})[c.id+":"+s]).length;
+        return `<div class="kch"><div class="t"><span>Chapitre ${c.numero} · ${esc(c.titre)}</span><span>${p} %</span></div>
+        <div class="kbars">${Object.keys(SECTIONS).map(s=>{const qq=c.questions.filter(q=>q.s===s),m=qq.filter(q=>qs[q.id]&&qs[q.id].last).length;return `<div><small>${secName(c,s)} · ${m}/${qq.length}</small><div class="progress"><i style="width:${m/qq.length*100}%"></i></div></div>`;}).join("")}</div>
+        <small class="note">Fiches lues : ${read}/${Object.keys(SECTIONS).length} · Record défi éclair : ${(d.defiBest||{})[c.id]||0}</small></div>`;}).join(""):`<p class="note" style="margin:0">Pas encore de quiz commencé.</p>`}
+      ${wrong.length?`<details><summary>Questions à revoir (${wrong.length})</summary><ul>${wrong.map(({c,q})=>`<li>${txt(q.q)} <small class="note">(ch. ${c.numero})</small></li>`).join("")}</ul></details>`:""}
+    </article>`;
+  };
+  $("#scrParent").innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="back" id="pBack">← Retour</button>
+      <div style="display:flex;gap:8px"><button class="say" id="pRefresh">🔄 Actualiser</button><button class="say" id="pOut">🔒 Fermer</button></div>
+    </div>
+    <h1 style="font-size:clamp(1.7rem,6vw,2.3rem);color:var(--wool)">👨‍👩‍👧 Espace parent</h1>
+    <p class="note" style="margin:0">${rows.length} prénom${rows.length>1?"s":""} enregistré${rows.length>1?"s":""}. La progression est envoyée en ligne automatiquement pendant le jeu (connexion internet nécessaire).</p>
+    ${rows.length?rows.map(kid).join(""):`<div class="panel"><p style="margin:0">Aucune progression enregistrée pour l’instant.</p></div>`}`;
+  $("#pBack").onclick=()=>showWho();
+  $("#pRefresh").onclick=()=>{let p="";try{p=localStorage.getItem(PINKEY)||"";}catch(e){} p?loadParent(p):parentLogin();};
+  $("#pOut").onclick=()=>{try{localStorage.removeItem(PINKEY);}catch(e){} showWho();};
+}
+
+$("#homeBtn").onclick=()=>showHome(false);
+$("#backHome").onclick=()=>{Q=null;showHome(false);};
+$("#whoBtn").onclick=()=>showWho();
+
+showWho();
 </script>
 
 </body></html>
