@@ -13,9 +13,10 @@ export type Sub = {
   repeat_every: number;
   morning_window: number;
   hefsek_reminder: boolean;
+  show_bediavad?: boolean; // afficher aussi l'horaire bediavad (dès alot hachahar)
 };
 
-export type Zmanim = { alot: string; netz: string; minhaKetana: string; shkia: string };
+export type Zmanim = { alot: string; netz: string; hatsot: string; minhaKetana: string; shkia: string };
 export type Slot = {
   id: string; // 2026-11-12-soir
   day: string;
@@ -38,7 +39,9 @@ export function zmanimFor(day: string, s: Pick<Sub, 'lat' | 'lon' | 'tz'>): Zman
   // Minha kétana selon le Gaon de Vilna (9 h ½ « heures proportionnelles » après le lever du soleil)
   const minhaK = cal.getMinchaKetana(netz, shkia);
   if (!alot || !netz || !shkia || !minhaK) return null;
-  return { alot: alot.toUTC().toISO(), netz: netz.toUTC().toISO(), minhaKetana: minhaK.toUTC().toISO(), shkia: shkia.toUTC().toISO() };
+  // hatsot : milieu entre lever et coucher (au niveau de la mer)
+  const hatsot = new Date((netz.toMillis() + shkia.toMillis()) / 2).toISOString();
+  return { alot: alot.toUTC().toISO(), netz: netz.toUTC().toISO(), hatsot, minhaKetana: minhaK.toUTC().toISO(), shkia: shkia.toUTC().toISO() };
 }
 
 export function addDays(day: string, n: number): string {
@@ -63,8 +66,8 @@ export function buildPlan(s: Sub): Slot[] {
     if (!z) continue;
     const shkia = Date.parse(z.shkia);
     for (const kind of d.kinds) {
-      // un seul rappel : le matin (par défaut 10 min) avant alot hachahar, l'après-midi à Minha kétana
-      const at = kind === 'matin' ? Date.parse(z.alot) - s.before_alot * MIN : Date.parse(z.minhaKetana);
+      // un seul rappel : le matin X min avant le début (nets, ou alot si bediavad affiché), l'après-midi au début de la plage
+      const at = kind === 'matin' ? Date.parse(s.show_bediavad ? z.alot : z.netz) - s.before_alot * MIN : Date.parse(z.minhaKetana);
       out.push({
         id: `${d.day}-${kind}`,
         day: d.day,
@@ -72,7 +75,7 @@ export function buildPlan(s: Sub): Slot[] {
         label: d.label,
         zmanim: z,
         times: [new Date(at).toISOString()],
-        end: new Date(shkia).toISOString(),
+        end: kind === 'matin' ? z.hatsot : new Date(shkia).toISOString(),
       });
     }
   }
@@ -100,19 +103,16 @@ const W: Record<string, [string, string]> = {
 };
 const he = (k: string) => `\u2068${W[k][0]}\u2069 (${W[k][1]})`;
 
-export function message(slot: Slot, _index: number, _at: number, tz: string) {
+export function message(slot: Slot, _index: number, _at: number, tz: string, showBediavad = false) {
   const z = slot.zmanim;
   if (slot.kind === 'matin') {
-    return {
-      title: `${he('bedika')} du matin · ${slot.label}`,
-      body: `${he('bediavad')} : dès ${he('alot')} ${hhmm(z.alot, tz, 'debut')}\n${he('lehatehila')} : dès ${he('netz')} ${hhmm(z.netz, tz, 'debut')}`,
-      tag: slot.id,
-      slot: slot.id,
-    };
+    let body = `Depuis ${hhmm(z.netz, tz, 'debut')} jusqu'à ${hhmm(z.hatsot, tz, 'fin')}.\nL'idéal : pile à ${hhmm(z.netz, tz, 'debut')}.`;
+    if (showBediavad) body += `\n${he('bediavad')} : dès ${hhmm(z.alot, tz, 'debut')}.`;
+    return { title: `${he('bedika')} du matin · ${slot.label}`, body, tag: slot.id, slot: slot.id };
   }
   return {
     title: slot.kind === 'hefsek' ? he('hefsek') : `${he('bedika')} de l'après-midi · ${slot.label}`,
-    body: `À partir de ${he('minha')} : ${hhmm(z.minhaKetana, tz, 'debut')}\nAvant la ${he('shkia')} : ${hhmm(z.shkia, tz, 'fin')}`,
+    body: `Depuis ${hhmm(z.minhaKetana, tz, 'debut')} jusqu'à ${hhmm(z.shkia, tz, 'fin')}.\nL'idéal : le plus près possible de ${hhmm(z.shkia, tz, 'fin')}, sans dépasser.`,
     tag: slot.id,
     slot: slot.id,
   };

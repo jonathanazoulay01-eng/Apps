@@ -82,6 +82,16 @@
   .opt .what { grid-column: 1; font-size: 14px; color: var(--soft); }
   .opt .what .he { font-size: 15px; color: var(--ink); }
   .opt .t { grid-row: 1 / span 2; grid-column: 2; font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .range { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px; border-radius: 14px; background: var(--accent-soft); }
+  .range div { text-align: center; flex: 1; }
+  .range small { display: block; font-size: 13px; color: var(--soft); }
+  .range b { font-size: 28px; font-variant-numeric: tabular-nums; }
+  .range .arrow { flex: none; color: var(--faint); font-size: 20px; }
+  .ideal { margin-top: 8px; padding: 12px 14px; border-radius: 14px; background: var(--gold-soft); font-size: 15px; }
+  .ideal b { font-variant-numeric: tabular-nums; }
+  .bdv { margin-top: 8px; padding: 10px 14px; border-radius: 14px; border: 1px dashed var(--faint); font-size: 14px; color: var(--soft); }
+  .bdv .he { font-size: 15px; color: var(--ink); }
+  .note p { margin: 0 0 10px; font-size: 15px; } .note p:last-child { margin: 0; }
   .left { margin-top: 10px; font-size: 14px; color: var(--soft); }
 
   button { font: inherit; border: 0; cursor: pointer; }
@@ -153,6 +163,18 @@
     <div class="dots" id="dots" hidden></div>
   </header>
 
+  <section class="card install" id="installAndroid" hidden>
+    <h2>Installer l'app sur Android</h2>
+    <p class="soft">Pour avoir l'app sur l'écran d'accueil, comme une vraie application.</p>
+    <button class="btn" id="installBtn" hidden>Installer l'application</button>
+    <ol>
+      <li>Ouvre ce lien dans <b>Chrome</b>.</li>
+      <li>Appuie sur le menu <b>⋮</b> en haut à droite.</li>
+      <li>Choisis <b>« Installer l'application »</b> (ou « Ajouter à l'écran d'accueil »), puis <b>Installer</b>.</li>
+      <li>Ouvre <b>Bedikot</b> depuis l'écran d'accueil et active les notifications.</li>
+    </ol>
+  </section>
+
   <section class="card install" id="install" hidden>
     <h2>Installer l'app sur l'iPhone</h2>
     <p class="soft">Les rappels ne marchent que si l'app est sur l'écran d'accueil.</p>
@@ -173,10 +195,6 @@
 
   <section class="card now" id="current" hidden></section>
 
-  <section class="card" id="zcard" hidden>
-    <h2>Horaires d'aujourd'hui</h2>
-    <div id="zlist"></div>
-  </section>
 
   <section class="card" id="seven">
     <h2 id="sevenTitle"></h2>
@@ -205,12 +223,21 @@
   <button class="link" id="toggleSet">⚙︎ Réglages</button>
   <section class="card" id="settings" hidden>
     <div class="set"><span id="hefsekRemLbl"></span><input type="checkbox" id="hefsekRem"></div>
+    <div class="set"><span id="bdvLbl"></span><input type="checkbox" id="bdvBox"></div>
     <div class="set"><span id="alotLbl"></span><div class="step" data-k="before_alot" data-step="5" data-min="-120" data-max="60"><button>−</button><output></output><button>+</button></div></div>
     <button class="sbtn" id="gpsBtn">📍 Mettre à jour ma position</button>
     <button class="sbtn" id="bonneuilBtn">Utiliser Bonneuil-sur-Marne</button>
     <button class="sbtn" id="testBtn">🔔 Envoyer une notification d'essai</button>
     <p class="hint" id="testTxt"></p>
-    <p class="hint" id="methodTxt"></p>
+  </section>
+
+  <section class="card note" id="note">
+    <h2>À savoir</h2>
+    <p><b>Le matin</b>, la <span id="nBed1"></span> se fait du lever du soleil jusqu'au milieu de la journée. L'idéal est de la faire pile à l'heure du début.</p>
+    <p><b>L'après-midi</b>, elle se fait de la fin d'après-midi jusqu'au coucher du soleil. L'idéal est de la faire le plus près possible de l'heure de fin, sans jamais la dépasser.</p>
+    <p id="nBdv"></p>
+    <p>Les heures sont arrondies prudemment : un début à la minute d'après, une fin à la minute d'avant. Elles sont calculées pour l'endroit où tu es, selon la méthode de Roger Stioui (la même que Torah-Box).</p>
+    <p>Un seul rappel le matin et un seul l'après-midi. Touche « C'est fait » pour cocher la <span id="nBed2"></span>.</p>
   </section>
 </main>
 
@@ -237,6 +264,9 @@ let S = null; // état renvoyé par le serveur
 let focusSlot = new URLSearchParams(location.search).get('slot');
 
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = /android/i.test(navigator.userAgent);
+let installEvt = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installEvt = e; const b = document.getElementById('installBtn'); if (b) b.hidden = false; });
 const standalone = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
 const pushOK = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 
@@ -254,7 +284,7 @@ const fmtDay = (k) => { const [y, m, d] = k.split('-').map(Number); const dt = n
 const shortDay = (k) => { const [y, m, d] = k.split('-').map(Number); const dt = new Date(Date.UTC(y, m - 1, d, 12)); return `${JOURS[dt.getUTCDay()].slice(0, 3)}. ${d}`; };
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const tz = () => (S && S.tz) || 'Europe/Paris';
-// arrondi strict : un début (alot, nets, Minha kétana) à la minute supérieure, une fin (chkia) à la minute inférieure
+// arrondi strict : un début à la minute supérieure, une fin (chkia) à la minute inférieure
 const hhmm = (iso, mode = 'fin') => {
   let t = Date.parse(iso);
   t = mode === 'debut' ? Math.ceil(t / 60000) * 60000 : Math.floor(t / 60000) * 60000;
@@ -267,31 +297,33 @@ const fmtDur = (m) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m
 
 // textes fixes avec les termes hébreux
 $('sevenTitle').innerHTML = T('nekiim');
-$('offHint').innerHTML = `Le jour du ${T('hefsek')}, fait l'après-midi avant la ${T('shkia')}, est la veille du décompte. Le 1er des 7 jours commence le lendemain.`;
+$('offHint').innerHTML = `Le jour du ${T('hefsek')}, fait l'après-midi avant le coucher du soleil, est la veille du décompte. Le 1er des 7 jours commence le lendemain.`;
 $('startToday').innerHTML = `J'ai fait le <span class="he" lang="he">${W.hefsek[0]}</span> cet après-midi<br><span style="font-size:13px;font-weight:500;opacity:.85">(${W.hefsek[1]})</span>`;
 $('pickLbl').innerHTML = `Ou choisis le jour du ${T('hefsek')}, fait l'après-midi :`;
 $('changeLbl').innerHTML = `Corriger le jour du ${T('hefsek')} :`;
 $('hefsekRemLbl').innerHTML = `Rappel le jour du ${T('hefsek')}`;
-$('methodTxt').innerHTML = `Horaires selon Roger Stioui (comme Torah-Box) : ${T('shkia')} au niveau de la mer, ${T('alot')} à 16,1°, ${T('minha')} selon le Gaon de Vilna. Un seul rappel le matin et un seul l'après-midi.`;
-
-function zrow(icon, k, iso, mode, end) {
-  return `<div class="zrow${end ? ' end' : ''}"><div class="zicon">${icon}</div>
-    <div class="zname"><span class="he" lang="he">${W[k][0]}</span><span class="tr">${W[k][1]}</span></div>
-    <div class="ztime">${iso ? hhmm(iso, mode) : '--:--'}</div></div>`;
+$('bdvLbl').innerHTML = `Afficher aussi l'horaire ${T('bediavad')} du matin`;
+$('nBed1').innerHTML = T('bedika'); $('nBed2').innerHTML = T('bedika');
+$('nBdv').innerHTML = `Le ${T('bediavad')} (si on n'a pas pu faire à temps) du matin commence plus tôt, à l'aube. Il ne s'affiche que si la case est cochée dans les réglages.`;
+// plage « depuis … jusqu'à … » + l'idéal
+function rangeHTML(sl) {
+  const z = sl.zmanim;
+  const m = sl.kind === 'matin';
+  const a = hhmm(m ? z.netz : z.minhaKetana, 'debut'), b = hhmm(m ? z.hatsot : z.shkia);
+  let h = `<div class="range"><div><small>Depuis</small><b>${a}</b></div><span class="arrow">→</span><div><small>Jusqu'à</small><b>${b}</b></div></div>
+    <div class="ideal">⭐ L'idéal : ${m ? `pile à <b>${a}</b>` : `le plus près possible de <b>${b}</b>, sans dépasser`}</div>`;
+  if (m && S.settings.show_bediavad) h += `<div class="bdv">${T('bediavad')} : dès <b>${hhmm(z.alot, 'debut')}</b></div>`;
+  return h;
 }
 
 function render() {
   $('install').hidden = !(isIOS && !standalone);
+  $('installAndroid').hidden = !(isAndroid && !standalone);
   $('enable').hidden = !(standalone || !isIOS) || (S && S.has_push) || !pushOK;
   if (!pushOK && standalone) { $('enable').hidden = false; $('enableBtn').hidden = true; showErr("Ce téléphone ne permet pas les notifications web (iOS 16.4 minimum)."); }
   if (!S) return;
 
   $('where').textContent = `📍 ${S.place} · ${fmtDay(todayKey())}`;
-  const z = S.zmanim_today;
-  if (z) {
-    $('zcard').hidden = false;
-    $('zlist').innerHTML = zrow('🌅', 'alot', z.alot, 'debut') + zrow('☀️', 'netz', z.netz, 'debut') + zrow('🌤️', 'minha', z.minhaKetana, 'debut') + zrow('🌇', 'shkia', z.shkia, 'fin', true);
-  }
 
   const now = Date.now();
   const today = todayKey();
@@ -337,16 +369,8 @@ function render() {
     const moment = cur.kind === 'matin' ? 'du matin' : cur.kind === 'hefsek' ? '' : "de l'après-midi";
     const head = cur.kind === 'hefsek' ? T('hefsek') : `${T('bedika')} <span>${moment}</span>`;
     const badge = cur.kind === 'hefsek' ? '' : `<span class="badge">${cur.label}</span>`;
-    let body;
-    if (cur.kind === 'matin') {
-      body = `<div class="opt"><div class="lbl">${T('bediavad')}</div><div class="what">dès ${T('alot')}</div><div class="t">${hhmm(zz.alot, 'debut')}</div></div>
-        <div class="opt best"><div class="lbl">${T('lehatehila')}</div><div class="what">dès ${T('netz')}</div><div class="t">${hhmm(zz.netz, 'debut')}</div></div>`;
-    } else {
-      const left = Math.round((Date.parse(zz.shkia) - now) / 60000);
-      body = `<div class="opt best"><div class="lbl">À partir de</div><div class="what">${T('minha')}</div><div class="t">${hhmm(zz.minhaKetana, 'debut')}</div></div>
-        <div class="opt"><div class="lbl">Avant la</div><div class="what">${T('shkia')}</div><div class="t">${hhmm(zz.shkia)}</div></div>
-        <div class="left">${left > 0 ? `⏳ Encore ${fmtDur(left)} avant la ${T('shkia')}` : `La ${T('shkia')} est passée.`}</div>`;
-    }
+    const left = Math.round((Date.parse(cur.end) - now) / 60000);
+    const body = rangeHTML(cur) + `<div class="left">${left > 0 ? `⏳ Encore ${fmtDur(left)}` : 'Le temps est passé.'}</div>`;
     $('current').innerHTML = `<div class="title">${head}${badge}</div>${body}<button class="btn" id="curDone">C'est fait ✓</button>`;
     $('curDone').onclick = () => setDone(cur.id, true);
   }
@@ -367,10 +391,10 @@ function render() {
       const b = document.createElement('button');
       b.className = 'slot' + (done ? ' done' : missed ? ' missed' : '');
       const zz = sl.zmanim;
+      const m = sl.kind === 'matin';
       const l1 = sl.kind === 'hefsek' ? T('hefsek') : sl.kind === 'matin' ? `☀️ ${T('bedika')} du matin` : `🌇 ${T('bedika')} de l'après-midi`;
-      const l2 = sl.kind === 'matin'
-        ? `${T('alot')} ${hhmm(zz.alot, 'debut')} · ${T('netz')} ${hhmm(zz.netz, 'debut')}`
-        : `${T('minha')} ${hhmm(zz.minhaKetana, 'debut')} → ${T('shkia')} ${hhmm(zz.shkia)}`;
+      const l2 = `Depuis ${hhmm(m ? zz.netz : zz.minhaKetana, 'debut')} jusqu'à ${hhmm(m ? zz.hatsot : zz.shkia)}`
+        + (m && S.settings.show_bediavad ? ` · ${T('bediavad')} dès ${hhmm(zz.alot, 'debut')}` : '');
       b.innerHTML = `<span class="check">${done ? '✓' : missed ? '!' : ''}</span><span><div class="l1">${l1}</div><div class="l2">${l2}</div></span>`;
       b.onclick = () => setDone(sl.id, !done);
       el.appendChild(b);
@@ -384,7 +408,8 @@ function render() {
     const v = S.settings[st.dataset.k];
     st.querySelector('output').textContent = `${Math.abs(v)} min`;
   });
-  $('alotLbl').innerHTML = `Rappel du matin ${S.settings.before_alot >= 0 ? 'avant' : 'après'} ${T('alot')}`;
+  $('bdvBox').checked = !!S.settings.show_bediavad;
+  $('alotLbl').textContent = `Rappel du matin ${S.settings.before_alot >= 0 ? 'avant' : 'après'} l'heure du début`;
 }
 
 function showErr(t) { $('enableErr').hidden = !t; $('enableErr').textContent = t || ''; }
@@ -445,6 +470,7 @@ async function save(patch) {
 }
 
 $('enableBtn').onclick = enable;
+$('installBtn').onclick = async () => { if (!installEvt) return; installEvt.prompt(); await installEvt.userChoice; installEvt = null; $('installBtn').hidden = true; };
 $('startToday').onclick = () => save({ hefsek_date: todayKey() });
 function previewPick() {
   const v = $('pickDate').value;
@@ -456,6 +482,7 @@ $('startPicked').onclick = () => { const v = $('pickDate').value; if (v) save({ 
 $('changeDate').onchange = (e) => { if (e.target.value) save({ hefsek_date: e.target.value }); };
 $('stopBtn').onclick = () => { if (confirm('Arrêter les rappels des 7 jours ?')) save({ hefsek_date: null }); };
 $('toggleSet').onclick = () => { $('settings').hidden = !$('settings').hidden; $('toggleSet').textContent = $('settings').hidden ? '⚙︎ Réglages' : 'Masquer les réglages'; };
+$('bdvBox').onchange = (e) => save({ show_bediavad: e.target.checked });
 $('hefsekRem').onchange = (e) => save({ hefsek_reminder: e.target.checked });
 document.querySelectorAll('.step').forEach((st) => {
   const [minus, , plus] = st.children;

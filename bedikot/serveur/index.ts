@@ -15,7 +15,7 @@ const cors = {
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
-const SETTINGS = ['before_shkia', 'before_alot', 'repeat_every', 'morning_window', 'hefsek_reminder'] as const;
+const SETTINGS = ['before_shkia', 'before_alot', 'repeat_every', 'morning_window', 'hefsek_reminder', 'show_bediavad'] as const;
 const UUID = /^[0-9a-f-]{36}$/i;
 
 let vapid: { publicKey: string; privateKey: string } | null = null;
@@ -88,7 +88,7 @@ async function tick() {
       if (idx < 0) continue;
       const due = slot.times[idx];
       if (last[slot.id] && last[slot.id] >= due) continue;
-      if (await send(row, { ...message(slot, idx, Date.parse(due), row.tz), url: './?slot=' + slot.id })) sent++;
+      if (await send(row, { ...message(slot, idx, Date.parse(due), row.tz, !!row.show_bediavad), url: './?slot=' + slot.id })) sent++;
       last[slot.id] = due;
       changed = true;
     }
