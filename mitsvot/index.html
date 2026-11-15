@@ -455,47 +455,80 @@ function checkBadges(){
 }
 
 /* ---------- lecture à voix haute ---------- */
-const TTS={ok:"speechSynthesis" in window, voice:null, btn:null};
+const TTS={ok:"speechSynthesis" in window, fr:null, he:null, btn:null, run:0};
+const GOODVOICE=/premium|enhanced|améliorée|amelioree|natural|neural|online|siri/i;
+function bestVoice(list,names){
+  return list.find(x=>GOODVOICE.test(x.name)&&names.test(x.name))||list.find(x=>GOODVOICE.test(x.name))||list.find(x=>names.test(x.name))||list[0]||null;
+}
 function pickVoice(){
   if(!TTS.ok) return;
-  const v=speechSynthesis.getVoices().filter(x=>/^fr/i.test(x.lang));
-  TTS.voice=v.find(x=>/fr.FR/i.test(x.lang)&&/Amélie|Amelie|Audrey|Marie|Thomas|Google|Denise|Julie/i.test(x.name))||v.find(x=>/fr.FR/i.test(x.lang))||v[0]||null;
+  const all=speechSynthesis.getVoices();
+  const fr=all.filter(x=>/^fr[-_]FR/i.test(x.lang)); const fr2=fr.length?fr:all.filter(x=>/^fr/i.test(x.lang));
+  TTS.fr=bestVoice(fr2,/Amélie|Amelie|Audrey|Marie|Thomas|Denise|Henri|Google/i);
+  TTS.he=bestVoice(all.filter(x=>/^(he|iw)/i.test(x.lang)),/Carmit|Hila|Avri|Google/i);
 }
 if(TTS.ok){pickVoice(); speechSynthesis.onvoiceschanged=pickVoice;}
-function cleanSpeech(t){
-  return String(t)
-    .replace(/[֐-׿יִ-ﭏ]+/g," ")
-    .replace(/\p{Extended_Pictographic}|️/gu," ")
-    .replace(/[’‘]/g,"'").replace(/’Hok|'Hok/g,"Hok")
-    .replace(/\s*\+\s*/g," et ").replace(/\s=\s/g," : ").replace(/n°/g,"numéro").replace(/___/g,"blanc")
-    .replace(/[«»()\[\]·•✔✘✓✗]/g," ").replace(/\s*\/\s*/g," ")
-    .replace(/\s*:\s*\./g,".").replace(/\s+/g," ").trim();
+/* prononciation à la française des mots hébreux écrits en lettres latines */
+const PRON=[
+  [/Cha['’]atnez/gi,"Chaatnèze"],[/['’]Hok\b/g,"Rhok"],[/\bHok\b/g,"Rhok"],[/Malkout/gi,"Malkoute"],
+  [/Miderabbanane/gi,"Midérabanane"],[/Mitsvot\b/g,"Mitsvote"],[/Hachem/g,"Hachème"],[/Devarim/g,"Dévarim"],
+  [/Béréchit/g,"Béréchite"],[/Chemot/g,"Chémote"],[/Vayikra/g,"Vaïkra"],[/Chabbat/g,"Chabbate"],[/Tsitsit/g,"Tsitsite"],
+  [/Tefilin/g,"Téfiline"],[/Cohanim/g,"Coanime"],[/Hala['’]hot/g,"Halarote"],[/Harambam/gi,"Harambame"],[/Torah/g,"Tora"]
+];
+function frClean(t){
+  t=String(t);
+  PRON.forEach(([r,v])=>t=t.replace(r,v));
+  return t.replace(/\p{Extended_Pictographic}|️/gu," ")
+    .replace(/[’‘]/g,"'").replace(/\s*\+\s*/g," et ").replace(/\s*=\s*/g," : ").replace(/\s*[()·]\s*/g,", ").replace(/n°\s*/g,"numéro ").replace(/_{2,}/g,"…")
+    .replace(/[«»\[\]•✔✘✓✗]/g," ").replace(/\s*\/\s*/g,", ")
+    .replace(/\s+([.,!?;:])/g,"$1").replace(/,+([.,!?;:])/g,"$1").replace(/([.!?;:])[.\s]*\./g,"$1").replace(/([:;!?,])(?=[^\s\d…])/g,"$1 ")
+    .replace(/\s+/g," ").replace(/^[\s.,;:!?]+/,"").trim();
 }
-function stopSpeech(){ if(TTS.ok) speechSynthesis.cancel(); if(TTS.btn){TTS.btn.classList.remove("speaking");TTS.btn=null;} }
+/* découpe en morceaux : texte français par blocs de phrases, mots hébreux à part (voix hébraïque) */
+function segments(text){
+  const out=[]; const re=/([֐-׿יִ-ﭏ][֐-׿יִ-ﭏ\s׳״'"־,]*)/g;
+  String(text).split(re).forEach((part,i)=>{
+    if(!part||!part.trim()) return;
+    if(i%2){ if(TTS.he) out.push({he:true,t:part.replace(/[,\s]+$/,"")}); return; }
+    const t=frClean(part); if(!t.replace(/[^\p{L}\p{N}]/gu,"").length) return;
+    // regroupe les phrases en morceaux d’environ 220 caractères pour une lecture fluide
+    let cur="";
+    t.split(/(?<=[.!?])\s+/).forEach(s=>{ if((cur+" "+s).length>220&&cur){out.push({t:cur});cur=s;} else cur=cur?cur+" "+s:s; });
+    if(cur) out.push({t:cur});
+  });
+  return out;
+}
+function stopSpeech(){ TTS.run++; if(TTS.ok) speechSynthesis.cancel(); if(TTS.btn){TTS.btn.classList.remove("speaking");TTS.btn=null;} }
 function speak(text,btn){
   if(!TTS.ok){toast("La lecture à voix haute n’est pas disponible sur cet appareil");return;}
   const same=btn&&TTS.btn===btn; stopSpeech(); if(same) return;
-  const parts=cleanSpeech(text).split(/(?<=[.!?;:])\s+/).filter(x=>x.replace(/[^\p{L}\p{N}]/gu,"").length);
-  if(!parts.length) return;
+  const segs=segments(text); if(!segs.length) return;
   if(btn){TTS.btn=btn;btn.classList.add("speaking");}
-  parts.forEach((t,i)=>{
-    const u=new SpeechSynthesisUtterance(t); u.lang="fr-FR"; if(TTS.voice)u.voice=TTS.voice; u.rate=.95;
-    if(i===parts.length-1) u.onend=u.onerror=()=>{if(TTS.btn===btn&&btn){btn.classList.remove("speaking");TTS.btn=null;}};
+  const run=TTS.run;
+  segs.forEach((s,i)=>{
+    const u=new SpeechSynthesisUtterance(s.t);
+    if(s.he){u.lang="he-IL";u.voice=TTS.he;u.rate=.9;}
+    else{u.lang="fr-FR";if(TTS.fr)u.voice=TTS.fr;u.rate=1;}
+    if(i===segs.length-1) u.onend=u.onerror=()=>{if(run===TTS.run&&TTS.btn===btn&&btn){btn.classList.remove("speaking");TTS.btn=null;}};
     speechSynthesis.speak(u);
   });
 }
 function nodeSpeech(el){
   const c=el.cloneNode(true);
-  c.querySelectorAll(".heb,button,small,.icons svg,script,style").forEach(n=>n.remove());
-  c.querySelectorAll("li,p,h3,div,.verse").forEach(n=>n.append(". "));
-  return c.textContent;
+  c.querySelectorAll("button,small,svg,script,style").forEach(n=>n.remove());
+  c.querySelectorAll(".blank").forEach(n=>n.textContent=" … ");
+  c.querySelectorAll("li,p,h2,h3,.verse>div,.icons>div,.tip").forEach(n=>n.append("\u2029"));
+  return c.textContent.replace(/\s*\u2029[\s\u2029]*/g,"\u2029")
+    .replace(/([.!?:;…])?\s*\u2029/g,(m,p)=>p?p+" ":". ").trim();
 }
 function questionSpeech(){
   const qt=$("#qt"); if(!qt) return "";
-  let t=nodeSpeech(qt);
+  let t=nodeSpeech(qt); if(!/[.!?…]$/.test(t)) t+=".";
+  if(document.querySelector("#qa .vf")) return t+" Vrai, ou faux ?";
   const opts=[...document.querySelectorAll("#qa .opts .opt, #qa .choices .opt")];
-  if(opts.length&&!document.querySelector("#qa .vf")) t+=" "+opts.map(o=>{const l=o.querySelector(".l");return (l?l.textContent+" : ":"")+nodeSpeech(o.querySelector("span:last-child")||o).replace(/\.\s*$/,"");}).join(". ")+".";
-  if(document.querySelector("#qa .vf")) t+=" Vrai ou faux ?";
+  if(opts.length) t+=" "+opts.map(o=>{const l=o.querySelector(".l");return (l?l.textContent+", ":"")+nodeSpeech(o.querySelector("span:last-child")||o).replace(/[.\s]+$/,"");}).join(". ")+".";
+  const L=[...document.querySelectorAll("#qa [data-l]")], R=[...document.querySelectorAll("#qa [data-r]")];
+  if(L.length) t+=" À gauche : "+L.map(nodeSpeech).join(", ")+". À droite : "+R.map(nodeSpeech).join(", ")+".";
   const si=$("#si"); if(si) t+=" À classer : "+si.textContent+".";
   return t;
 }
