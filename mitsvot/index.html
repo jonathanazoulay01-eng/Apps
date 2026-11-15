@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mitsvot en jeu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&family=Noto+Serif+Hebrew:wght@500;700&display=swap">
+<style>
+/* Layout: une colonne centrée façon "carnet de jeu", barre de score collante, onglets en pastilles */
+:root{
+  --bg:#eef1fa; --surface:#ffffff; --surface2:#e3e8f7; --fg:#1b2147; --muted:#5b6390;
+  --wool:#3446a8; --wool-soft:#d9dffa; --flax:#5f8a2c; --flax-soft:#e1edd0; --gold:#e9a514; --gold-soft:#fcefc9;
+  --bad:#c8373f; --bad-soft:#fbdfe0; --good:#2f8f4e; --good-soft:#d8f1e0; --line:#cdd4ee;
+  --shadow:0 2px 0 #c3cbe8;
+  --f-display:"Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --f-body:"Nunito", "Segoe UI", system-ui, sans-serif;
+  --f-heb:"Noto Serif Hebrew", "David", "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12152b; --surface:#1c2142; --surface2:#262c55; --fg:#eef0ff; --muted:#a7aed6;
+  --wool:#8d9dff; --wool-soft:#2b3470; --flax:#a6d06a; --flax-soft:#2a3a1c; --gold:#f5c04a; --gold-soft:#4a3a12;
+  --bad:#ff7b82; --bad-soft:#4a1d22; --good:#6fd893; --good-soft:#1b3d27; --line:#353c6e; --shadow:0 2px 0 #0b0d1f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12152b; --surface:#1c2142; --surface2:#262c55; --fg:#eef0ff; --muted:#a7aed6;
+  --wool:#8d9dff; --wool-soft:#2b3470; --flax:#a6d06a; --flax-soft:#2a3a1c; --gold:#f5c04a; --gold-soft:#4a3a12;
+  --bad:#ff7b82; --bad-soft:#4a1d22; --good:#6fd893; --good-soft:#1b3d27; --line:#353c6e; --shadow:0 2px 0 #0b0d1f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.55;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 40px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--bg)}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;margin:0;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.opt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.heb{font-family:var(--f-heb);direction:rtl;unicode-bidi:isolate}
+
+/* barre du haut */
+.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:var(--bg);padding-block:10px 8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--line)}
+.brand{font-family:var(--f-display);font-weight:800;font-size:1.3rem;color:var(--wool);display:flex;align-items:center;gap:8px;margin-right:auto}
+.spool{width:28px;height:28px;flex:none}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--surface);border:2px solid var(--line);font-weight:800;font-variant-numeric:tabular-nums;font-size:.95rem}
+.pill.xp{border-color:var(--gold);background:var(--gold-soft)}
+.lvl{display:flex;flex-direction:column;gap:3px;min-width:140px}
+.lvl small{font-weight:700;color:var(--muted);font-size:.78rem}
+.bar{height:9px;border-radius:9px;background:var(--surface2);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--gold);border-radius:9px;transition:width .4s}
+
+/* entête chapitre */
+.chap{background:var(--wool);color:#fff;border-radius:22px;padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center}
+.chap .eyebrow{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem;opacity:.85}
+.chap h1{font-size:clamp(1.7rem,5vw,2.3rem);color:#fff}
+.chap .heb{font-size:1.35rem;color:#fff}
+.chap select{font:inherit;font-weight:700;border-radius:12px;border:0;padding:6px 10px;background:#ffffff;color:#1b2147;max-width:100%}
+.seal{width:84px;height:84px;border-radius:50%;background:#c8373f;color:#fff;display:grid;place-items:center;text-align:center;font-family:var(--f-display);font-weight:800;line-height:1;border:4px solid #f3d27a;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.seal small{display:block;font-size:.62rem;letter-spacing:.1em}
+.seal b{font-size:1.6rem}
+.mastery{grid-column:1/-1;display:flex;flex-direction:column;gap:5px}
+.mastery .bar{background:rgba(255,255,255,.25);height:12px}
+.mastery .bar>i{background:#f5c04a}
+.mastery small{font-weight:700}
+
+/* onglets */
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:800;box-shadow:var(--shadow)}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* fiches */
+.fiche{background:var(--surface);border-radius:20px;border:2px solid var(--line);overflow:hidden}
+.fiche>header{padding:14px 20px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.fiche>header h2{font-size:1.45rem}
+.fiche.s-mitsva>header{background:var(--wool-soft)}
+.fiche.s-message>header{background:var(--gold-soft)}
+.fiche.s-precisions>header{background:var(--flax-soft)}
+.fiche .body{padding:6px 20px 20px;display:flex;flex-direction:column;gap:12px}
+.fiche h3{font-size:1.15rem;margin-top:8px;color:var(--wool)}
+.fiche p{margin:0;max-width:65ch}
+.fiche ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.key{background:var(--gold-soft);padding:0 4px;border-radius:5px;font-weight:800}
+.verse{border:2px dashed var(--line);border-radius:14px;padding:12px 16px;text-align:center;display:flex;flex-direction:column;gap:6px}
+.verse .heb{font-size:1.35rem}
+.icons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.icons div{background:var(--surface2);border-radius:14px;padding:10px 6px;text-align:center;font-weight:800;font-size:.85rem;line-height:1.2}
+.icons svg{width:30px;height:30px;display:block;margin:0 auto 4px;color:var(--wool)}
+.tip{background:var(--surface2);border-radius:14px;padding:10px 14px;font-size:.95rem}
+.tip b{color:var(--wool)}
+.donebtn{align-self:flex-start;border:2px solid var(--flax);background:var(--flax-soft);color:var(--fg);border-radius:12px;padding:8px 14px;font-weight:800}
+.donebtn[disabled]{opacity:.7;cursor:default}
+.tag{font-size:.78rem;font-weight:800;border-radius:999px;padding:2px 10px;background:var(--surface);border:2px solid var(--line)}
+
+/* cartes mémo */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.card{perspective:800px;height:170px;border:0;background:none;padding:0}
+.card .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.card.flip .in{transform:rotateY(180deg)}
+.card .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;border:2px solid var(--line);box-shadow:var(--shadow)}
+.card .front{background:var(--surface);font-family:var(--f-display);font-weight:800;font-size:1.35rem;color:var(--wool)}
+.card .front small{font-family:var(--f-body);font-size:.75rem;color:var(--muted);font-weight:700}
+.card .back{background:var(--wool);color:#fff;transform:rotateY(180deg);font-weight:700;font-size:.98rem;line-height:1.35}
+
+/* quiz */
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:800}
+.chip[aria-pressed="true"]{background:var(--wool);border-color:var(--wool);color:#fff}
+.go{border:0;background:var(--gold);color:#1b2147;font-family:var(--f-display);font-weight:800;font-size:1.2rem;border-radius:14px;padding:10px 22px;box-shadow:0 3px 0 #b77f05;align-self:flex-start}
+.go.alt{background:var(--surface2);color:var(--fg);box-shadow:var(--shadow)}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800;color:var(--muted);font-size:.9rem}
+.qtype{background:var(--surface2);border-radius:999px;padding:2px 10px}
+.qtext{font-size:1.25rem;font-weight:800;line-height:1.35}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;font-weight:700;box-shadow:var(--shadow);display:flex;gap:10px;align-items:center}
+.opt .l{flex:none;width:28px;height:28px;border-radius:8px;background:var(--surface2);display:grid;place-items:center;font-weight:800;font-family:var(--f-display)}
+.opt:hover:not([disabled]){border-color:var(--wool)}
+.opt.ok{background:var(--good-soft);border-color:var(--good)}
+.opt.ko{background:var(--bad-soft);border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.vf{grid-template-columns:1fr 1fr}
+.vf .opt{justify-content:center;font-size:1.2rem;font-family:var(--f-display)}
+.blank{display:inline-block;min-width:90px;border-bottom:3px solid var(--wool);text-align:center;color:var(--wool)}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match .col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.match .opt{padding:10px 12px;font-size:.95rem}
+.match .opt.sel{border-color:var(--gold);background:var(--gold-soft)}
+.match .opt.done{opacity:.55}
+.sortitem{font-family:var(--f-display);font-size:1.5rem;font-weight:800;text-align:center;background:var(--surface2);border-radius:16px;padding:14px}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border:3px dashed var(--line);border-radius:16px;padding:12px;min-height:120px;display:flex;flex-direction:column;gap:6px;background:var(--surface);text-align:left;min-width:0}
+.bin>b{font-family:var(--f-display);font-size:1.1rem}
+.bin:hover:not([disabled]){border-color:var(--wool)}
+.bin span{font-size:.85rem;font-weight:700;background:var(--surface2);border-radius:8px;padding:2px 8px}
+.bin span.ko{background:var(--bad-soft)}
+.feedback{border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.feedback.ok{background:var(--good-soft)}
+.feedback.ko{background:var(--bad-soft)}
+.feedback b{font-family:var(--f-display);font-size:1.2rem}
+.progress{height:10px;border-radius:10px;background:var(--surface2);overflow:hidden}
+.progress>i{display:block;height:100%;background:var(--wool);transition:width .3s}
+.combo{color:var(--gold);font-family:var(--f-display);font-weight:800}
+.result{text-align:center;align-items:center}
+.stars{font-size:2.6rem;letter-spacing:.1em;color:var(--gold)}
+.stars .off{color:var(--line)}
+.big{font-family:var(--f-display);font-size:3rem;font-weight:800;line-height:1;color:var(--wool)}
+.timer{font-family:var(--f-display);font-weight:800;font-size:1.4rem;font-variant-numeric:tabular-nums}
+.timer.low{color:var(--bad)}
+
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.badge{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}
+.badge .medal{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--muted)}
+.badge.on .medal{background:var(--gold);color:#1b2147;box-shadow:0 3px 0 #b77f05}
+.badge.on{border-color:var(--gold)}
+.badge:not(.on){opacity:.6}
+.badge b{font-family:var(--f-display)}
+.badge small{color:var(--muted);font-weight:600;line-height:1.3}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font-family:var(--f-display);font-size:1.8rem;color:var(--wool);font-variant-numeric:tabular-nums}
+.stat small{font-weight:700;color:var(--muted)}
+.secrow{display:flex;flex-direction:column;gap:4px}
+.secrow div{display:flex;justify-content:space-between;font-weight:700}
+.note{color:var(--muted);font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:14px;font-weight:800;z-index:20;max-width:calc(100% - 32px);text-align:center}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+.danger{border:0;background:none;color:var(--muted);text-decoration:underline;font-weight:700;align-self:flex-start;padding:0}
+
+@media (max-width:520px){
+  body{font-size:16px}
+  .chap{grid-template-columns:1fr}
+  .seal{width:66px;height:66px;grid-row:1;justify-self:end;margin-bottom:-60px}
+  .seal b{font-size:1.25rem}
+  .icons{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vf{grid-template-columns:1fr 1fr}
+  .match .opt{font-size:.85rem}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .lvl{min-width:110px}
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head><body>
+<canvas id="confetti" hidden></canvas>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <svg class="spool" viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="3" width="22" height="5" rx="2" fill="currentColor"/><rect x="5" y="24" width="22" height="5" rx="2" fill="currentColor"/><rect x="8" y="8" width="16" height="16" fill="var(--gold)"/><path d="M8 11h16M8 15h16M8 19h16" stroke="var(--fg)" stroke-opacity=".35" stroke-width="1.5"/></svg>
+      Mitsvot en jeu
+    </div>
+    <div class="lvl"><small id="lvlName">Niveau 1</small><div class="bar"><i id="lvlBar" style="width:0%"></i></div></div>
+    <span class="pill xp" title="Points d’expérience">⭐ <span id="xp">0</span></span>
+    <span class="pill" title="Meilleure série de bonnes réponses">🔥 <span id="best">0</span></span>
+  </div>
+
+  <section class="chap" id="chapHead"></section>
+
+  <nav class="tabs" role="tablist" id="tabs">
+    <button class="tab" role="tab" data-v="apprendre" aria-selected="true">📖 Apprendre</button>
+    <button class="tab" role="tab" data-v="cartes" aria-selected="false">🃏 Cartes mémo</button>
+    <button class="tab" role="tab" data-v="quiz" aria-selected="false">❓ Quiz</button>
+    <button class="tab" role="tab" data-v="defi" aria-selected="false">⚡ Défi éclair</button>
+    <button class="tab" role="tab" data-v="trophees" aria-selected="false">🏆 Trophées</button>
+  </nav>
+
+  <main id="view"></main>
+</div>
+
+<script>
+/* ============================================================
+   CONTENU DES CHAPITRES
+   Pour ajouter un chapitre : ajouter un objet à CHAPITRES
+   (même structure : fiches, cartes, questions).
+   Types de questions : qcm, vf, trou, assoc, tri
+   Sections : "mitsva", "message", "precisions"
+   ============================================================ */
+const CHAPITRES = [
+{
+  id:"ch1", numero:1, titre:"Le Cha’atnez", mitsva:237,
+  hebreu:"שֶׁלֹּא לִלְבּוֹשׁ שַׁעַטְנֵז",
+  fiches:{
+    mitsva:`
+      <div class="verse">
+        <div class="heb">שֶׁלֹּא לִלְבּוֹשׁ שַׁעַטְנֵז</div>
+        <div><b>Ne pas porter de Cha’atnez</b> · Mitsva n° 237</div>
+      </div>
+      <ul>
+        <li><b>Interdit :</b> porter un vêtement fait de <span class="key">laine + lin</span> tissés ensemble.</li>
+        <li><b>Source :</b> Devarim 22, 11 : <span class="heb">לֹא תִלְבַּשׁ שַׁעַטְנֵז צֶמֶר וּפִשְׁתִּים יַחְדָּו</span></li>
+        <li><b>Punition :</b> malkout (la bastonnade).</li>
+      </ul>
+      <div class="icons">
+        <div><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="5" r="2.5"/><circle cx="16" cy="5" r="2.5"/><path d="M5 9h6v7H9.5v6h-3v-6H5zM13 9h6l1.5 7H18v6h-4v-6h-2.5z"/></svg>Toute personne</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>À tout endroit</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>À toute époque</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20 18 6M15 4l5 5"/></svg>Malkout</div>
+      </div>
+      <div class="tip"><b>Vocabulaire :</b> צֶמֶר laine · פִּשְׁתִּים lin · יַחְדָּו ensemble</div>`,
+    message:`
+      <div class="verse"><div><b>Garde les éléments comme ils sont :<br>ce qui doit rester séparé… doit le rester !</b></div></div>
+      <ul>
+        <li>C’est un <span class="key">’Hok</span> : Hachem ne nous a pas donné la raison, mais nos Sages en tirent des leçons.</li>
+        <li>Hachem a donné à chaque création <b>sa place et son but</b> : elle doit rester <b>pure et unique</b>.</li>
+        <li>🐑 La laine vient d’un <span class="key">animal</span>, 🌱 le lin d’une <span class="key">plante</span> : on ne mélange pas ces deux domaines.</li>
+        <li>Mélanger ce qui doit rester séparé est incorrect, et peut même être <b>dangereux</b>.</li>
+      </ul>`,
+    precisions:`
+      <h3>📜 Selon la Torah</h3>
+      <ul>
+        <li>Interdit pour <b>s’habiller ou se couvrir</b>, donc aussi les <b>couvertures</b>.</li>
+        <li>Seulement <span class="key">laine de mouton + lin</span>, même <b>un seul fil</b> !</li>
+        <li><span class="heb">שַׁעַטְנֵז</span> = 3 mots : <span class="heb">שׁוּעַ</span> peigné · <span class="heb">טָווּי</span> filé · <span class="heb">נוּז</span> tissé. Même avec un <b>3e fil</b> pour les relier, c’est interdit.</li>
+      </ul>
+      <h3>🎓 Selon les Sages (par prudence)</h3>
+      <ul>
+        <li>Pas de <b>cuir cousu avec du fil de lin</b> sur un vêtement en laine.</li>
+        <li>Pas le droit de <span class="key">s’asseoir</span> dessus, même sur <b>10 épaisseurs</b> : un fil pourrait s’enrouler autour de nous.</li>
+        <li>Pas de ceinture en laine <b>sur</b> une ceinture en lin (même avec du cuir entre les deux) : les bouts finissent par se lier. À <b>deux endroits différents</b> (taille et hanches) : OK.</li>
+      </ul>
+      <h3>🧶 Quels matériaux ?</h3>
+      <ul>
+        <li>✅ <b>Soie</b> avec la laine : permis <b>de nos jours</b> (autrefois interdit car elle ressemble au lin).</li>
+        <li>✅ <b>Coton</b> avec la laine de mouton.</li>
+        <li>✅ Laine de <b>chameau, angora, cachemire</b> avec le lin.</li>
+        <li>✅ <b>Chanvre</b> (ressemble au lin) : permis de nos jours, car tout le monde sait que ce n’est pas du lin.</li>
+        <li>⛔ Laine d’une <b>brebis</b> (femelle du mouton) née d’une chèvre, avec du lin : interdit <span class="key">miderabbanane</span> (par les Sages), car elle ressemble à de la laine normale.</li>
+      </ul>
+      <h3>⚖️ Punition</h3>
+      <ul>
+        <li><b>Malkout</b> chaque fois qu’on porte le vêtement (ou si, averti, on l’enlève puis le remet).</li>
+        <li>On t’habille avec du Cha’atnez <b>sans que tu le saches</b> : c’est <b>l’autre</b> qui est puni. Si <b>tu le savais</b> : toi aussi.</li>
+      </ul>`
+  },
+  cartes:[
+    ["Cha’atnez","Mélange de laine (de mouton) et de lin dans un même vêtement"],
+    ["Mitsva n° 237","Ne pas porter de Cha’atnez"],
+    ["Devarim 22, 11","Le verset : « Tu ne porteras pas de Cha’atnez, laine et lin ensemble »"],
+    ["צֶמֶר","Laine"],
+    ["פִּשְׁתִּים","Lin"],
+    ["יַחְדָּו","Ensemble"],
+    ["’Hok","Mitsva dont Hachem ne nous a pas donné de raison que nous puissions comprendre"],
+    ["La leçon","Ce qui doit rester séparé… doit le rester !"],
+    ["Laine / Lin","Laine : vient des animaux. Lin : vient d’une plante"],
+    ["שׁוּעַ · טָווּי · נוּז","Peigné · filé · tissé : les 3 mots cachés dans שַׁעַטְנֵז"],
+    ["S’asseoir","Interdit par les Sages, même sur 10 épaisseurs de tissu"],
+    ["Deux ceintures","Interdit l’une sur l’autre ; permis à deux endroits différents"],
+    ["La soie","Permise avec la laine de nos jours, car on la reconnaît"],
+    ["Chameau, angora, cachemire","Peuvent être tissés avec du lin"],
+    ["Le chanvre","Permis de nos jours, car on sait que ce n’est pas du lin"],
+    ["Miderabbanane","Interdit par les Sages (et pas directement par la Torah)"],
+    ["Malkout","La bastonnade : punition pour celui qui porte du Cha’atnez"],
+    ["Brebis","La femelle du mouton"]
+  ],
+  questions:[
+    /* ---------- LA MITSVA ---------- */
+    {s:"mitsva",t:"qcm",q:"Qu’interdit la Mitsva de ce chapitre ?",c:["Porter un vêtement fait d’un mélange de lin et de laine","Porter un vêtement en soie","Porter des vêtements de couleurs différentes","Porter un vêtement en coton"],e:"La Mitsva interdit de porter un vêtement de Cha’atnez : un mélange de lin et de laine."},
+    {s:"mitsva",t:"qcm",q:"De quoi est composé le Cha’atnez ?",c:["De laine et de lin","De laine et de coton","De lin et de soie","De coton et de soie"],e:"Cha’atnez = laine + lin mélangés."},
+    {s:"mitsva",t:"qcm",q:"Quel est le numéro de cette Mitsva ?",c:["237","613","248","365"],e:"C’est la Mitsva n° 237 : ne pas porter de Cha’atnez."},
+    {s:"mitsva",t:"vf",q:"Le Cha’atnez est un mélange de laine et de lin.",a:true,e:"Exact : laine et lin mélangés dans un même vêtement."},
+    {s:"mitsva",t:"vf",q:"Le Cha’atnez est un mélange de laine et de coton.",a:false,e:"Non ! Le Cha’atnez, c’est laine et LIN."},
+    {s:"mitsva",t:"trou",q:"« Tu ne porteras pas un vêtement Cha’atnez, laine et ___ mélangés. »",c:["lin","coton","soie","cuir"],e:"Le verset dit : laine et lin mélangés dans un même vêtement."},
+    {s:"mitsva",t:"qcm",q:"Dans quel livre de la Torah se trouve le verset du Cha’atnez ?",c:["Devarim","Béréchit","Chemot","Vayikra"],e:"Devarim, chapitre 22, verset 11."},
+    {s:"mitsva",t:"qcm",q:"Qui doit respecter cette Mitsva ?",c:["Toute personne","Seulement les Cohanim","Seulement les adultes","Seulement les habitants d’Israël"],e:"Les pictogrammes indiquent : toute personne."},
+    {s:"mitsva",t:"vf",q:"Cette Mitsva ne s’applique qu’en Terre d’Israël.",a:false,e:"Faux : elle s’applique à tout endroit."},
+    {s:"mitsva",t:"vf",q:"Cette Mitsva s’applique à toute époque, donc aussi aujourd’hui.",a:true,e:"Oui : à toute époque."},
+    {s:"mitsva",t:"qcm",q:"Quelle punition est liée à cette Mitsva ?",c:["Malkout (la bastonnade)","Aucune punition","Une amende","Jeûner un jour"],e:"Celui qui porte du Cha’atnez est passible de malkout."},
+    {s:"mitsva",t:"assoc",q:"Relie chaque pictogramme à sa signification.",p:[["Toute personne","Hommes et femmes"],["À tout endroit","Partout dans le monde"],["À toute époque","Autrefois comme aujourd’hui"],["Malkout","La bastonnade"]],e:"La Mitsva concerne tout le monde, partout, tout le temps, et sa punition est malkout."},
+    {s:"mitsva",t:"trou",q:"Le nom de la Mitsva : « Ne pas porter de ___ ».",c:["Cha’atnez","Tsitsit","Tefilin","Kippa"],e:"שֶׁלֹּא לִלְבּוֹשׁ שַׁעַטְנֵז : ne pas porter de Cha’atnez."},
+    {s:"mitsva",t:"vf",q:"Il est interdit de porter un vêtement dont le tissu est fait de lin et de laine tissés ensemble.",a:true,e:"C’est exactement la définition de la Mitsva."},
+    {s:"mitsva",t:"qcm",q:"Comment dit-on « Ne pas porter de Cha’atnez » en hébreu ?",c:["שֶׁלֹּא לִלְבּוֹשׁ שַׁעַטְנֵז","שֶׁלֹּא לֶאֱכוֹל חָמֵץ","שֶׁלֹּא לַעֲשׂוֹת מְלָאכָה","שֶׁלֹּא לִגְנוֹב"],e:"שֶׁלֹּא לִלְבּוֹשׁ = ne pas porter ; שַׁעַטְנֵז = Cha’atnez."},
+    {s:"mitsva",t:"assoc",q:"Relie chaque mot hébreu du verset à sa traduction.",p:[["צֶמֶר","Laine"],["פִּשְׁתִּים","Lin"],["יַחְדָּו","Ensemble"],["לֹא תִלְבַּשׁ","Tu ne porteras pas"]],e:"לֹא תִלְבַּשׁ שַׁעַטְנֵז צֶמֶר וּפִשְׁתִּים יַחְדָּו."},
+    {s:"mitsva",t:"vf",q:"Le verset du Cha’atnez se trouve dans Devarim 22, 11.",a:true,e:"Oui : Devarim chapitre 22, verset 11."},
+
+    /* ---------- LE MESSAGE ---------- */
+    {s:"message",t:"qcm",q:"Quel est le titre du message de cette Mitsva ?",c:["Garde les éléments comme ils sont","Partage tes vêtements","Prends soin des animaux","Range ta chambre"],e:"« Garde les éléments comme ils sont »."},
+    {s:"message",t:"qcm",q:"Qu’est-ce qu’un ’Hok ?",c:["Une Mitsva dont Hachem ne nous a pas donné de raison que nous puissions comprendre","Une Mitsva qu’on fait seulement le Chabbat","Une règle inventée par les enfants","Un vêtement spécial"],e:"Un ’Hok est une Mitsva sans raison indiquée que nous puissions comprendre."},
+    {s:"message",t:"vf",q:"L’interdiction du Cha’atnez est un ’Hok.",a:true,e:"Oui, c’est un ’Hok."},
+    {s:"message",t:"vf",q:"Comme le Cha’atnez est un ’Hok, on ne peut en tirer aucune leçon.",a:false,e:"Faux : nos Sages en déduisent d’importantes leçons, comme pour toutes les Mitsvot."},
+    {s:"message",t:"qcm",q:"Selon le message, qu’est-ce qu’Hachem a donné à chaque objet créé ?",c:["Sa place unique et son but spécifique","Une couleur","Un prix","Un nom secret"],e:"Chaque création a sa place unique et son but spécifique."},
+    {s:"message",t:"trou",q:"« Ce qui doit rester séparé… doit le ___ ! »",c:["rester","devenir","mélanger","quitter"],e:"Ce qui doit rester séparé… doit le rester !"},
+    {s:"message",t:"qcm",q:"D’où vient la laine ?",c:["Des animaux","D’une plante","D’une pierre","De la mer"],e:"La laine provient des animaux (le mouton)."},
+    {s:"message",t:"qcm",q:"D’où vient le lin ?",c:["D’une plante","Des animaux","D’un insecte","D’une pierre"],e:"Le lin provient d’une plante."},
+    {s:"message",t:"tri",q:"Classe chaque matière selon son origine.",bins:["🐑 Animal","🌱 Plante"],items:[["Laine de mouton",0],["Lin",1],["Coton",1],["Laine de chameau",0],["Chanvre",1],["Cachemire",0]],e:"Laine, chameau, cachemire viennent d’animaux ; lin, coton, chanvre viennent de plantes."},
+    {s:"message",t:"vf",q:"Mélanger des éléments qui doivent rester séparés peut être dangereux.",a:true,e:"Oui : c’est incorrect et cela peut s’avérer dangereux."},
+    {s:"message",t:"trou",q:"Hachem veut que chaque élément demeure pur et ___.",c:["unique","mélangé","caché","coloré"],e:"Pur et unique."},
+    {s:"message",t:"vf",q:"Le Cha’atnez mélange deux sortes de créations : une animale et une végétale.",a:true,e:"La laine (animal) et le lin (plante)."},
+    {s:"message",t:"assoc",q:"Relie chaque mot à son explication.",p:[["Laine","Vient des animaux"],["Lin","Vient d’une plante"],["’Hok","Mitsva sans raison donnée"],["Les Sages","En déduisent des leçons"]],e:"Bravo, tu connais le vocabulaire du message !"},
+    {s:"message",t:"qcm",q:"Qui déduit des leçons de cette Mitsva ?",c:["Nos Sages","Les tailleurs","Les bergers","Personne"],e:"Nos Sages déduisent d’importantes leçons de chaque Mitsva."},
+    {s:"message",t:"qcm",q:"Quelle phrase résume le mieux la leçon du Cha’atnez ?",c:["Chaque chose a sa place, ce qui doit rester séparé doit le rester","Il faut toujours tout mélanger","Les vêtements doivent être neufs","La laine est plus belle que le lin"],e:"Garde les éléments comme ils sont !"},
+    {s:"message",t:"vf",q:"Hachem nous a expliqué clairement la raison de l’interdiction du Cha’atnez.",a:false,e:"Non, c’est un ’Hok : la raison ne nous a pas été donnée."},
+
+    /* ---------- QUELQUES PRÉCISIONS ---------- */
+    {s:"precisions",t:"qcm",q:"Selon la Torah, pour quels tissus le Cha’atnez est-il interdit ?",c:["Ceux qui servent à nous habiller ou à nous garder au chaud","Seulement les chapeaux","Seulement les habits de Chabbat","Seulement les chaussures"],e:"Les vêtements pour s’habiller ou se tenir chaud, donc aussi les couvertures."},
+    {s:"precisions",t:"vf",q:"Une couverture pour se réchauffer peut contenir du Cha’atnez.",a:false,e:"Faux : c’est aussi interdit pour les couvertures qui nous enveloppent."},
+    {s:"precisions",t:"qcm",q:"Quelle laine est concernée par le Cha’atnez ?",c:["La laine de mouton","La laine de chameau","L’angora","Le cachemire"],e:"Seule la laine de mouton ne doit pas être mélangée au lin."},
+    {s:"precisions",t:"vf",q:"Un seul fil de lin tissé dans un tissu en laine suffit pour rendre le vêtement interdit.",a:true,e:"Oui, même un seul fil !"},
+    {s:"precisions",t:"qcm",q:"Le mot שַׁעַטְנֵז est formé de combien de mots ?",c:["3","2","4","5"],e:"Trois mots : peigné, filé, tissé."},
+    {s:"precisions",t:"assoc",q:"Relie les 3 mots cachés dans שַׁעַטְנֵז à leur sens.",p:[["שׁוּעַ","Peigné"],["טָווּי","Filé"],["נוּז","Tissé"]],e:"Les 3 façons de mélanger des fibres."},
+    {s:"precisions",t:"trou",q:"Les trois façons de mélanger les fibres sont : peigné, filé et ___.",c:["tissé","lavé","teint","repassé"],e:"Peigné, filé et tissé."},
+    {s:"precisions",t:"vf",q:"Si on utilise un troisième fil (ni laine ni lin) pour tenir la laine et le lin ensemble, ce n’est pas du Cha’atnez.",a:false,e:"Faux : même avec un 3e fil, c’est du Cha’atnez."},
+    {s:"precisions",t:"qcm",q:"Pourquoi les Sages ont-ils interdit certains mélanges que la Torah tolère ?",c:["Ils craignaient qu’on mélange lin et laine de façon interdite par accident","Parce que ces tissus sont trop chers","Parce que ces tissus sont moins jolis","Pour faire plaisir aux tailleurs"],e:"Pour éviter un mélange interdit accidentel."},
+    {s:"precisions",t:"qcm",q:"Quel est l’exemple d’interdit des Sages donné dans la fiche ?",c:["Coudre un morceau de cuir avec une couture en lin sur un vêtement de laine","Porter un pull en coton","Porter une chemise en soie","Mettre une ceinture en cuir"],e:"Cuir + couture en lin sur un vêtement de laine : interdit par les Sages."},
+    {s:"precisions",t:"vf",q:"La Torah interdit seulement de porter du Cha’atnez ; les Sages ont aussi interdit de s’asseoir dessus.",a:true,e:"Exact."},
+    {s:"precisions",t:"qcm",q:"Pourquoi ne peut-on pas s’asseoir sur du Cha’atnez ?",c:["De peur qu’un fil s’enroule autour de nous","Parce que cela abîme le tissu","Parce que c’est inconfortable","Parce que c’est trop chaud"],e:"Il peut arriver qu’il vienne à s’envelopper autour de nous."},
+    {s:"precisions",t:"vf",q:"S’il y a dix épaisseurs de tissu entre nous et le Cha’atnez, on peut s’asseoir dessus.",a:false,e:"Non, même avec dix épaisseurs c’est interdit."},
+    {s:"precisions",t:"qcm",q:"Combien d’épaisseurs de tissu la fiche mentionne-t-elle (et ça reste interdit) ?",c:["Dix","Deux","Trois","Cent"],e:"Même dix épaisseurs ne suffisent pas."},
+    {s:"precisions",t:"vf",q:"On peut porter une ceinture en laine par-dessus une ceinture en lin s’il y a un morceau de cuir entre les deux.",a:false,e:"Faux : les extrémités finissent par se lier, cela devient du Cha’atnez."},
+    {s:"precisions",t:"qcm",q:"Quand une ceinture en laine et une ceinture en lin ne posent-elles pas de problème ?",c:["Quand elles sont à deux endroits différents (taille et hanches)","Quand elles ont la même couleur","Quand il y a du cuir entre elles","Quand l’une est neuve"],e:"À deux endroits différents, pas de problème."},
+    {s:"precisions",t:"qcm",q:"Pourquoi deux ceintures (laine et lin) l’une sur l’autre posent-elles problème ?",c:["Leurs extrémités finissent par se lier","Elles sont trop serrées","Elles se décolorent","Elles font du bruit"],e:"Les extrémités se lient : cela devient du Cha’atnez."},
+    {s:"precisions",t:"vf",q:"De nos jours, on a le droit de mélanger la soie avec de la laine.",a:true,e:"Oui, car tout le monde reconnaît la soie et ne la confond plus avec le lin."},
+    {s:"precisions",t:"qcm",q:"Pourquoi les Sages avaient-ils interdit autrefois la soie avec la laine ?",c:["Parce que la soie ressemble au lin","Parce que la soie ressemble à la laine","Parce que la soie était trop chère","Parce que la soie venait de loin"],e:"La soie ressemble au lin."},
+    {s:"precisions",t:"vf",q:"La laine de chameau ne peut pas être tissée avec du lin.",a:false,e:"Faux : seule la laine de mouton est interdite avec le lin."},
+    {s:"precisions",t:"tri",q:"Peut-on tisser cette matière avec du LIN ?",bins:["✅ Permis","⛔ Interdit"],items:[["Laine de mouton",1],["Laine de chameau",0],["Angora",0],["Cachemire",0],["Laine de brebis née d’une chèvre",1]],e:"Avec le lin, seule la laine de mouton est interdite (et celle de la brebis née d’une chèvre, par les Sages)."},
+    {s:"precisions",t:"tri",q:"Peut-on mélanger cette matière avec de la LAINE de mouton (de nos jours) ?",bins:["✅ Permis","⛔ Interdit"],items:[["Lin",1],["Coton",0],["Soie",0],["Chanvre",0]],e:"Seul le lin est interdit avec la laine de mouton. Soie et chanvre sont permis de nos jours."},
+    {s:"precisions",t:"vf",q:"On a le droit de tisser du coton avec de la laine de mouton.",a:true,e:"Oui, le coton est permis."},
+    {s:"precisions",t:"qcm",q:"Une brebis née d’une mère chèvre et d’un père mouton : peut-on mélanger sa laine avec du lin ?",c:["Non, c’est interdit par les Sages car elle ressemble à de la laine normale","Oui, c’est totalement permis","Non, c’est interdit directement par la Torah","Seulement en hiver"],e:"Interdit miderabbanane (par les Sages), car cela ressemble à de la laine normale."},
+    {s:"precisions",t:"qcm",q:"Que veut dire « miderabbanane » ?",c:["Par les Sages","Par la Torah","Par les parents","Par le roi"],e:"Miderabbanane = interdit par les Sages."},
+    {s:"precisions",t:"qcm",q:"Qu’est-ce qu’une brebis ?",c:["La femelle du mouton","Un petit chameau","Une chèvre","Une sorte de lin"],e:"La brebis est la femelle du mouton."},
+    {s:"precisions",t:"vf",q:"Le chanvre ressemble beaucoup au lin.",a:true,e:"Oui, c’est pour cela qu’il y avait une question."},
+    {s:"precisions",t:"qcm",q:"De nos jours, peut-on utiliser du chanvre pour coudre un vêtement en laine ?",c:["Oui, car il est fréquent et on sait que ce n’est pas du lin","Non, jamais","Seulement le Chabbat","Seulement s’il est teint en bleu"],e:"Aujourd’hui le chanvre est courant et reconnu : on peut l’utiliser."},
+    {s:"precisions",t:"trou",q:"Celui qui porte un vêtement avec du Cha’atnez est passible de malkout, c’est-à-dire de ___.",c:["bastonnade","amende","prison","jeûne"],e:"Malkout = bastonnade."},
+    {s:"precisions",t:"qcm",q:"Quand malkout serait-il administré ?",c:["Chaque fois qu’on porte le vêtement, ou si on l’enlève puis le remet après avoir été averti","Seulement la première fois","Seulement si on le porte le Chabbat","Jamais"],e:"Chaque fois qu’on le porte, ou si, averti, on l’enlève puis le remet."},
+    {s:"precisions",t:"vf",q:"Si quelqu’un te met exprès un vêtement Cha’atnez sans que tu le saches, c’est toi qui es passible de malkout.",a:false,e:"Non : c’est la personne qui t’a habillé qui est passible de malkout."},
+    {s:"precisions",t:"qcm",q:"Quelqu’un t’habille avec du Cha’atnez sans que tu le saches. Qui est passible de malkout ?",c:["La personne qui t’a habillé","Toi","Personne","Le vendeur du vêtement"],e:"Celui qui t’a habillé en le sachant."},
+    {s:"precisions",t:"vf",q:"Si tu savais que c’était du Cha’atnez, tu es passible de malkout même si quelqu’un d’autre te l’a mis.",a:true,e:"Oui : savoir rend responsable."},
+    {s:"precisions",t:"qcm",q:"Fais le point : quel vêtement est-il interdit de porter à cause du Cha’atnez ?",c:["Un vêtement où laine de mouton et lin sont mélangés","Un vêtement en coton et laine","Un vêtement en soie et laine","Un vêtement en cachemire et lin"],e:"Laine de mouton + lin = Cha’atnez."},
+    {s:"precisions",t:"assoc",q:"Relie chaque matière à sa règle.",p:[["Soie","Permise avec la laine car reconnue"],["Coton","Permis avec la laine de mouton"],["Laine de chameau","Peut être tissée avec du lin"],["Chanvre","Permis aujourd’hui car on sait que ce n’est pas du lin"]],e:"Tu maîtrises les matériaux !"},
+    {s:"precisions",t:"tri",q:"Interdit par la Torah ou par les Sages ?",bins:["📜 Torah","🎓 Les Sages"],items:[["Porter un vêtement laine + lin",0],["S’asseoir sur du Cha’atnez",1],["Cuir cousu avec du fil de lin sur un vêtement en laine",1],["Un seul fil de lin dans un tissu en laine",0],["Laine de brebis née d’une chèvre avec du lin",1],["Une couverture laine + lin pour se couvrir",0]],e:"La Torah interdit de porter (et se couvrir) ; les Sages ont ajouté des interdits par prudence."},
+    {s:"precisions",t:"vf",q:"Une ceinture à la taille et une autre sur les hanches, ce n’est pas un problème de Cha’atnez.",a:true,e:"Exact : elles sont à deux endroits différents."}
+  ]
+}
+];
+
+/* ============================================================ */
+const SECTIONS = {mitsva:"La Mitsva", message:"Le message de la Mitsva", precisions:"Quelques précisions"};
+const TYPES = {qcm:"QCM", vf:"Vrai ou faux", trou:"Texte à trous", assoc:"Relier", tri:"Classer"};
+const LEVELS = ["Apprenti fileur","Petit berger","Fileur","Tisserand","Maître tisserand","Gardien du fil","Sage du Cha’atnez","Grand maître"];
+CHAPITRES.forEach(ch=>ch.questions.forEach((q,i)=>q.id=ch.id+"-"+i));
+
+const KEY="mitsvot-jeu-v1";
+let S = load();
+function load(){
+  const d={xp:0,best:0,chap:CHAPITRES[0].id,qs:{},read:{},flips:{},badges:{},defiBest:{}};
+  try{const r=JSON.parse(localStorage.getItem(KEY)||"null"); if(r) return Object.assign(d,r);}catch(e){}
+  return d;
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+const $=s=>document.querySelector(s);
+const view=$("#view");
+let curView="apprendre";
+const chap=()=>CHAPITRES.find(c=>c.id===S.chap)||CHAPITRES[0];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const isHeb=s=>/[֐-׿]/.test(s);
+const txt=s=>isHeb(s)&&!/[a-zA-Z]/.test(s)?`<span class="heb">${esc(s)}</span>`:esc(s);
+
+/* ---------- progression ---------- */
+function mastered(q){const r=S.qs[q.id];return r&&r.last;}
+function secMastery(ch,sec){const qs=ch.questions.filter(q=>!sec||q.s===sec);return qs.length?qs.filter(mastered).length/qs.length:0;}
+function level(){const n=Math.floor(S.xp/150);return {n:n+1,name:LEVELS[Math.min(n,LEVELS.length-1)],pct:(S.xp%150)/150*100};}
+function addXP(n){S.xp+=n;save();renderTop();}
+function renderTop(){
+  const l=level();
+  $("#xp").textContent=S.xp; $("#best").textContent=S.best;
+  $("#lvlName").textContent=`Niveau ${l.n} · ${l.name}`; $("#lvlBar").style.width=l.pct+"%";
+}
+function renderChapHead(){
+  const ch=chap(), m=Math.round(secMastery(ch)*100);
+  $("#chapHead").innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <span class="eyebrow">Chapitre ${ch.numero}</span>
+      <h1>${esc(ch.titre)}</h1>
+      <div class="heb">${ch.hebreu}</div>
+      ${CHAPITRES.length>1?`<select id="chapSel" aria-label="Choisir un chapitre">${CHAPITRES.map(c=>`<option value="${c.id}" ${c.id===ch.id?"selected":""}>Chapitre ${c.numero} · ${esc(c.titre)}</option>`).join("")}</select>`:""}
+    </div>
+    <div class="seal"><div><small>MITSVA</small><b>${ch.mitsva}</b></div></div>
+    <div class="mastery"><small>Chapitre maîtrisé à ${m} %</small><div class="bar"><i style="width:${m}%"></i></div></div>`;
+  const sel=$("#chapSel"); if(sel) sel.onchange=()=>{S.chap=sel.value;save();renderChapHead();show(curView);};
+}
+
+/* ---------- badges ---------- */
+function badgeDefs(ch){return [
+  {id:"premier",n:"Premier fil",d:"Première bonne réponse",i:"🧵"},
+  {id:"serie5",n:"Série de 5",d:"5 bonnes réponses d’affilée",i:"🔥"},
+  {id:"serie10",n:"Bobine d’or",d:"10 bonnes réponses d’affilée",i:"🥇"},
+  {id:"serie20",n:"Fil infini",d:"20 bonnes réponses d’affilée",i:"♾️"},
+  {id:ch.id+":lecteur",n:"Lecteur assidu",d:"Lire les 3 fiches",i:"📖"},
+  {id:ch.id+":cartes",n:"Mémoire de fer",d:"Retourner toutes les cartes mémo",i:"🃏"},
+  {id:"parfait",n:"Sans faute",d:"Un quiz de 10 questions ou plus sans erreur",i:"💯"},
+  {id:"eclair",n:"Éclair",d:"12 bonnes réponses au défi éclair",i:"⚡"},
+  {id:ch.id+":mitsva",n:"Expert de la Mitsva",d:"Toutes les questions « La Mitsva » réussies",i:"📜"},
+  {id:ch.id+":message",n:"Expert du message",d:"Toutes les questions « Le message » réussies",i:"💡"},
+  {id:ch.id+":precisions",n:"Expert des précisions",d:"Toutes les questions « Précisions » réussies",i:"🔍"},
+  {id:ch.id+":tout",n:"Chapitre maîtrisé",d:"100 % des questions du chapitre réussies",i:"👑"}
+];}
+function award(id){
+  if(S.badges[id]) return;
+  S.badges[id]=Date.now(); save();
+  const b=badgeDefs(chap()).find(x=>x.id===id);
+  toast(`${b?b.i:"🏅"} Nouveau trophée : ${b?b.n:id} !`); confetti();
+}
+function checkBadges(){
+  const ch=chap();
+  ["mitsva","message","precisions"].forEach(s=>{if(secMastery(ch,s)===1)award(ch.id+":"+s);});
+  if(secMastery(ch)===1) award(ch.id+":tout");
+  if(["mitsva","message","precisions"].every(s=>S.read[ch.id+":"+s])) award(ch.id+":lecteur");
+  if(ch.cartes.every((_,i)=>S.flips[ch.id+":"+i])) award(ch.id+":cartes");
+}
+
+/* ---------- vues ---------- */
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.v));
+function show(v){
+  stopTimer(); curView=v;
+  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v===v));
+  ({apprendre:viewLearn,cartes:viewCards,quiz:viewQuizMenu,defi:viewDefiMenu,trophees:viewTrophies})[v]();
+}
+
+function viewLearn(){
+  const ch=chap();
+  view.innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">`+
+  Object.keys(SECTIONS).map(s=>{
+    const done=S.read[ch.id+":"+s], m=Math.round(secMastery(ch,s)*100);
+    return `<article class="fiche s-${s}">
+      <header><h2>${SECTIONS[s]}</h2><span class="tag">Quiz réussi à ${m} %</span></header>
+      <div class="body">${ch.fiches[s]}
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="donebtn" data-s="${s}" ${done?"disabled":""}>${done?"✓ Fiche lue":"J’ai lu cette fiche (+20 ⭐)"}</button>
+          <button class="go alt" data-quiz="${s}" style="font-size:1rem;padding:8px 14px">Me tester sur cette fiche →</button>
+        </div>
+      </div></article>`;}).join("")+`</div>`;
+  view.querySelectorAll(".donebtn").forEach(b=>b.onclick=()=>{
+    S.read[ch.id+":"+b.dataset.s]=true; addXP(20); b.disabled=true; b.textContent="✓ Fiche lue"; toast("+20 ⭐ Bravo pour ta lecture !"); checkBadges();
+  });
+  view.querySelectorAll("[data-quiz]").forEach(b=>b.onclick=()=>{curView="quiz";document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.v==="quiz"));startQuiz(b.dataset.quiz,10);window.scrollTo({top:0});});
+}
+
+function viewCards(){
+  const ch=chap();
+  view.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
+    <p class="note" style="margin:0">Lis le mot, essaie de te rappeler la réponse, puis touche la carte pour la retourner.</p>
+    <div class="cards">${ch.cartes.map((c,i)=>`<button class="card" data-i="${i}" aria-label="Carte ${i+1}">
+      <div class="in"><div class="face front">${isHeb(c[0])?`<span class="heb" style="font-size:1.6rem">${esc(c[0])}</span>`:esc(c[0])}<small>${S.flips[ch.id+":"+i]?"✓ déjà vue":"touche pour retourner"}</small></div>
+      <div class="face back">${esc(c[1])}</div></div></button>`).join("")}</div>
+    <button class="go alt" id="shuf">🔀 Mélanger les cartes</button></div>`;
+  view.querySelectorAll(".card").forEach(c=>c.onclick=()=>{
+    c.classList.toggle("flip"); const k=ch.id+":"+c.dataset.i;
+    if(!S.flips[k]){S.flips[k]=true;addXP(2);save();checkBadges();}
+  });
+  $("#shuf").onclick=()=>{const g=view.querySelector(".cards");shuffle([...g.children]).forEach(n=>{n.classList.remove("flip");g.appendChild(n);});};
+}
+
+/* ---------- QUIZ ---------- */
+let Q=null, quizSec="all", quizLen=10;
+function viewQuizMenu(){
+  const ch=chap(); const errs=ch.questions.filter(q=>S.qs[q.id]&&!S.qs[q.id].last);
+  const secs=[["all","Tout le chapitre"],["mitsva","La Mitsva"],["message","Le message"],["precisions","Les précisions"]];
+  view.innerHTML=`<div class="panel">
+    <h2>Choisis ton quiz</h2>
+    <div><b>Sur quoi ?</b><div class="choices" id="secC" style="margin-top:6px">${secs.map(([k,l])=>`<button class="chip" data-k="${k}" aria-pressed="${quizSec===k}">${l}</button>`).join("")}</div></div>
+    <div><b>Combien de questions ?</b><div class="choices" id="lenC" style="margin-top:6px">${[[10,"10"],[20,"20"],[999,"Toutes"]].map(([k,l])=>`<button class="chip" data-k="${k}" aria-pressed="${quizLen===k}">${l}</button>`).join("")}</div></div>
+    <p class="note" style="margin:0">${ch.questions.length} questions dans ce chapitre : QCM, vrai ou faux, textes à trous, mots à relier et objets à classer. Chaque bonne réponse rapporte 10 ⭐, plus un bonus pour les séries.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="go" id="startQ">C’est parti !</button>
+      ${errs.length?`<button class="go alt" id="errQ">🔁 Revoir mes erreurs (${errs.length})</button>`:""}
+    </div></div>
+    <div class="panel"><h2 style="font-size:1.2rem">Ma progression</h2>
+    ${Object.keys(SECTIONS).map(s=>{const qs=ch.questions.filter(q=>q.s===s),m=qs.filter(mastered).length;return `<div class="secrow"><div><span>${SECTIONS[s]}</span><span>${m} / ${qs.length}</span></div><div class="progress"><i style="width:${m/qs.length*100}%"></i></div></div>`}).join("")}
+    </div>`;
+  const bind=(id,set)=>view.querySelectorAll(`#${id} .chip`).forEach(b=>b.onclick=()=>{set(b.dataset.k);view.querySelectorAll(`#${id} .chip`).forEach(x=>x.setAttribute("aria-pressed",x===b));});
+  bind("secC",k=>quizSec=k); bind("lenC",k=>quizLen=+k);
+  $("#startQ").onclick=()=>startQuiz(quizSec,quizLen);
+  const e=$("#errQ"); if(e) e.onclick=()=>startQuiz("errors",999);
+}
+function startQuiz(sec,len){
+  const ch=chap(); let pool;
+  if(sec==="errors") pool=ch.questions.filter(q=>S.qs[q.id]&&!S.qs[q.id].last);
+  else pool=ch.questions.filter(q=>sec==="all"||q.s===sec);
+  // priorité aux questions pas encore réussies
+  const fresh=shuffle(pool.filter(q=>!mastered(q))), known=shuffle(pool.filter(mastered));
+  const list=fresh.concat(known).slice(0,len);
+  Q={list:shuffle(list),i:0,ok:0,combo:0,wrong:[],sec,gained:0};
+  renderQ();
+}
+function renderQ(){
+  const q=Q.list[Q.i], n=Q.list.length;
+  view.innerHTML=`<div class="panel" id="qp">
+    <div class="qhead"><span>Question ${Q.i+1} / ${n}</span><span class="qtype">${TYPES[q.t]} · ${SECTIONS[q.s]}</span>${Q.combo>=2?`<span class="combo">🔥 ×${Q.combo}</span>`:""}</div>
+    <div class="progress"><i style="width:${Q.i/n*100}%"></i></div>
+    <div class="qtext" id="qt"></div>
+    <div id="qa"></div>
+    <div id="fb"></div>
+    <button class="danger" id="quit">Arrêter le quiz</button></div>`;
+  $("#quit").onclick=()=>endQuiz();
+  const top=$("#tabs").getBoundingClientRect().top+scrollY-70; if(scrollY>top) window.scrollTo({top});
+  RENDER[q.t](q,$("#qt"),$("#qa"),ok=>answered(q,ok));
+}
+const RENDER={
+  qcm(q,t,a,done){
+    t.innerHTML=txt(q.q); const opts=shuffle(q.c); const L="ABCD";
+    a.innerHTML=`<div class="opts">${opts.map((c,i)=>`<button class="opt" data-c="${esc(c)}"><span class="l">${L[i]}</span><span>${txt(c)}</span></button>`).join("")}</div>`;
+    a.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.c===q.c[0];
+      a.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.dataset.c===q.c[0])x.classList.add("ok");});
+      if(!ok)b.classList.add("ko"); done(ok);
+    });
+  },
+  vf(q,t,a,done){
+    t.innerHTML=txt(q.q);
+    a.innerHTML=`<div class="opts vf"><button class="opt" data-v="1">✔ Vrai</button><button class="opt" data-v="0">✘ Faux</button></div>`;
+    a.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const v=b.dataset.v==="1", ok=v===q.a;
+      a.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if((x.dataset.v==="1")===q.a)x.classList.add("ok");});
+      if(!ok)b.classList.add("ko"); done(ok);
+    });
+  },
+  trou(q,t,a,done){
+    t.innerHTML=esc(q.q).replace("___",'<span class="blank" id="bl">?</span>');
+    a.innerHTML=`<div class="choices">${shuffle(q.c).map(c=>`<button class="opt" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>`;
+    a.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.c===q.c[0]; $("#bl").textContent=q.c[0];
+      a.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(x.dataset.c===q.c[0])x.classList.add("ok");});
+      if(!ok)b.classList.add("ko"); done(ok);
+    });
+  },
+  assoc(q,t,a,done){
+    t.innerHTML=esc(q.q)+`<div class="note" style="font-weight:600;font-size:.9rem">Touche un mot à gauche, puis sa réponse à droite.</div>`;
+    const left=shuffle(q.p.map((p,i)=>[p[0],i])), right=shuffle(q.p.map((p,i)=>[p[1],i]));
+    a.innerHTML=`<div class="match"><div class="col">${left.map(([s,i])=>`<button class="opt" data-l="${i}">${txt(s)}</button>`).join("")}</div>
+      <div class="col">${right.map(([s,i])=>`<button class="opt" data-r="${i}">${txt(s)}</button>`).join("")}</div></div>`;
+    let sel=null, errs=0, found=0;
+    a.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{a.querySelectorAll("[data-l]").forEach(x=>x.classList.remove("sel"));sel=b;b.classList.add("sel");});
+    a.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{
+      if(!sel){toast("Choisis d’abord un mot à gauche");return;}
+      if(sel.dataset.l===b.dataset.r){
+        [sel,b].forEach(x=>{x.classList.remove("sel");x.classList.add("ok","done");x.disabled=true;});
+        sel=null; found++;
+        if(found===q.p.length) done(errs===0);
+      }else{
+        errs++; b.classList.add("ko"); setTimeout(()=>b.classList.remove("ko"),500);
+      }
+    });
+  },
+  tri(q,t,a,done){
+    t.innerHTML=esc(q.q);
+    const items=shuffle(q.items); let k=0, errs=0;
+    a.innerHTML=`<div style="display:flex;flex-direction:column;gap:12px"><div class="sortitem" id="si"></div>
+      <div class="bins">${q.bins.map((b,i)=>`<button class="bin" data-b="${i}"><b>${esc(b)}</b></button>`).join("")}</div></div>`;
+    const si=$("#si"); si.textContent=items[0][0];
+    a.querySelectorAll(".bin").forEach(bin=>bin.onclick=()=>{
+      if(k>=items.length) return;
+      const [name,good]=items[k], ok=+bin.dataset.b===good;
+      if(!ok){errs++;toast(`Non, « ${name} » va dans ${q.bins[good]}`);}
+      const span=document.createElement("span"); span.textContent=(ok?"✓ ":"✗ ")+name; if(!ok)span.className="ko";
+      a.querySelector(`.bin[data-b="${good}"]`).appendChild(span);
+      k++;
+      if(k<items.length) si.textContent=items[k][0];
+      else{si.textContent=errs?`Terminé avec ${errs} erreur${errs>1?"s":""}`:"Parfait !";a.querySelectorAll(".bin").forEach(x=>x.disabled=true);done(errs===0);}
+    });
+  }
+};
+function answered(q,ok){
+  const r=S.qs[q.id]||{ok:0,ko:0};
+  if(ok){r.ok++;Q.ok++;Q.combo++;const g=10+(Q.combo>=3?5:0);Q.gained+=g;S.xp+=g;if(Q.combo>S.best)S.best=Q.combo;}
+  else{r.ko++;Q.combo=0;Q.wrong.push(q);}
+  r.last=ok; S.qs[q.id]=r; save(); renderTop();
+  if(ok) award("premier");
+  if(Q.combo>=5)award("serie5"); if(Q.combo>=10)award("serie10"); if(Q.combo>=20)award("serie20");
+  checkBadges();
+  const praise=["Bravo !","Super !","Excellent !","Génial !","Bien joué !","Parfait !"];
+  $("#fb").innerHTML=`<div class="feedback ${ok?"ok":"ko"}"><b>${ok?praise[Math.floor(Math.random()*praise.length)]+(Q.combo>=3?` 🔥 Série de ${Q.combo} !`:""):"Pas tout à fait…"}</b><span>${txt(q.e)}</span></div>
+    <button class="go" id="next" style="margin-top:12px">${Q.i+1<Q.list.length?"Question suivante →":"Voir mon résultat"}</button>`;
+  const nx=$("#next"); nx.focus({preventScroll:true});
+  nx.scrollIntoView({behavior:"smooth",block:"nearest"});
+  nx.onclick=()=>{Q.i++; Q.i<Q.list.length?renderQ():endQuiz();};
+}
+function endQuiz(){
+  if(!Q) return show("quiz");
+  const done=Q.i+(view.querySelector("#next")?1:0), n=Math.max(done,1), pct=Q.ok/n;
+  const stars=pct>=.9?3:pct>=.7?2:pct>=.4?1:0;
+  if(done>=10&&Q.ok===done) award("parfait");
+  if(stars===3) confetti();
+  const msg=stars===3?"Extraordinaire, tu es un vrai expert !":stars===2?"Très bien ! Encore un petit effort.":stars===1?"C’est un bon début, relis la fiche et réessaie.":"Relis la fiche tranquillement, puis retente ta chance !";
+  view.innerHTML=`<div class="panel result">
+    <h2>Résultat</h2>
+    <div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?"":"off"}">★</span>`).join("")}</div>
+    <div class="big">${Q.ok} / ${done}</div>
+    <p style="margin:0;font-weight:700">${msg}</p>
+    <span class="pill xp">+${Q.gained} ⭐ gagnées</span>
+    ${Q.wrong.length?`<div style="text-align:left;width:100%"><b>À revoir :</b><ul>${Q.wrong.map(q=>`<li>${txt(q.q)}<br><small class="note">${txt(q.e)}</small></li>`).join("")}</ul></div>`:""}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      <button class="go" id="again">Rejouer</button>
+      ${Q.wrong.length?`<button class="go alt" id="redo">🔁 Refaire mes erreurs</button>`:""}
+      <button class="go alt" id="menu">Menu des quiz</button>
+    </div></div>`;
+  const sec=Q.sec, wrong=Q.wrong.slice(); Q=null;
+  renderChapHead();
+  $("#again").onclick=()=>startQuiz(sec==="errors"?"all":sec,quizLen);
+  $("#menu").onclick=()=>show("quiz");
+  const r=$("#redo"); if(r) r.onclick=()=>{Q={list:shuffle(wrong),i:0,ok:0,combo:0,wrong:[],sec:"errors",gained:0};renderQ();};
+}
+
+/* ---------- DÉFI ÉCLAIR ---------- */
+let D=null, timerId=null;
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
+function viewDefiMenu(){
+  const ch=chap(), best=S.defiBest[ch.id]||0;
+  view.innerHTML=`<div class="panel result">
+    <h2>⚡ Défi éclair</h2>
+    <p style="margin:0;max-width:46ch">Tu as <b>60 secondes</b> pour répondre à un maximum de questions (vrai ou faux, QCM, textes à trous). Chaque bonne réponse : +5 ⭐. Une erreur fait perdre 3 secondes !</p>
+    <div class="stats" style="width:100%;max-width:360px;grid-template-columns:1fr 1fr">
+      <div class="stat"><b>${best}</b><small>Mon record</small></div>
+      <div class="stat"><b>12</b><small>Pour le trophée</small></div>
+    </div>
+    <button class="go" id="goD" style="align-self:center">Lancer le chrono</button></div>`;
+  $("#goD").onclick=startDefi;
+}
+function startDefi(){
+  const ch=chap();
+  D={pool:shuffle(ch.questions.filter(q=>["qcm","vf","trou"].includes(q.t))),k:0,ok:0,time:60};
+  renderDefi();
+  timerId=setInterval(()=>{D.time--;const t=$("#tm");if(t){t.textContent=D.time+" s";t.classList.toggle("low",D.time<=10);}if(D.time<=0)endDefi();},1000);
+}
+function renderDefi(){
+  if(D.k>=D.pool.length){D.pool=shuffle(D.pool);D.k=0;}
+  const q=D.pool[D.k];
+  view.innerHTML=`<div class="panel"><div class="qhead"><span class="timer ${D.time<=10?"low":""}" id="tm">${D.time} s</span><span class="pill xp">✓ ${D.ok}</span></div>
+    <div class="qtext" id="qt"></div><div id="qa"></div></div>`;
+  RENDER[q.t](q,$("#qt"),$("#qa"),ok=>{
+    if(ok){D.ok++;S.xp+=5;}else{D.time=Math.max(0,D.time-3);}
+    const r=S.qs[q.id]||{ok:0,ko:0}; ok?r.ok++:r.ko++; r.last=ok; S.qs[q.id]=r; save(); renderTop();
+    setTimeout(()=>{if(!timerId)return; if(D.time<=0)return endDefi(); D.k++; renderDefi();},ok?450:1100);
+  });
+}
+function endDefi(){
+  stopTimer(); const ch=chap();
+  const rec=D.ok>(S.defiBest[ch.id]||0); if(rec)S.defiBest[ch.id]=D.ok; save();
+  if(D.ok>=12) award("eclair"); checkBadges();
+  if(rec&&D.ok>0) confetti();
+  view.innerHTML=`<div class="panel result"><h2>Temps écoulé !</h2><div class="big">${D.ok}</div>
+    <p style="margin:0;font-weight:700">${rec&&D.ok>0?"🎉 Nouveau record !":"bonnes réponses"}</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="go" id="re">Rejouer</button><button class="go alt" id="bk">Retour</button></div></div>`;
+  $("#re").onclick=startDefi; $("#bk").onclick=()=>show("defi");
+  renderChapHead();
+}
+
+/* ---------- TROPHÉES ---------- */
+function viewTrophies(){
+  const ch=chap(), defs=badgeDefs(ch), got=defs.filter(b=>S.badges[b.id]).length;
+  const answered=Object.keys(S.qs).filter(k=>k.startsWith(ch.id+"-")).length;
+  view.innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
+    <div class="stats">
+      <div class="stat"><b>${got}/${defs.length}</b><small>Trophées</small></div>
+      <div class="stat"><b>${answered}/${ch.questions.length}</b><small>Questions vues</small></div>
+      <div class="stat"><b>${S.best}</b><small>Meilleure série</small></div>
+    </div>
+    <div class="badges">${defs.map(b=>`<div class="badge ${S.badges[b.id]?"on":""}"><div class="medal" style="font-size:1.6rem">${S.badges[b.id]?b.i:"🔒"}</div><b>${b.n}</b><small>${b.d}</small></div>`).join("")}</div>
+    <p class="note" style="margin:0">La progression est enregistrée sur cet appareil, dans ce navigateur.</p>
+    <div id="rz"><button class="danger" id="reset">Remettre ma progression à zéro</button></div></div>`;
+  $("#reset").onclick=()=>{
+    $("#rz").innerHTML=`<div class="feedback ko"><b>Tout effacer ?</b><span>Les étoiles, trophées et réponses seront supprimés.</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="go" id="yes" style="background:var(--bad);color:#fff;box-shadow:none">Oui, tout effacer</button><button class="go alt" id="no">Annuler</button></div></div>`;
+    $("#yes").onclick=()=>{S={xp:0,best:0,chap:S.chap,qs:{},read:{},flips:{},badges:{},defiBest:{}};save();renderTop();renderChapHead();show("trophees");toast("Progression remise à zéro");};
+    $("#no").onclick=()=>show("trophees");
+  };
+}
+
+/* ---------- effets ---------- */
+let toastT;
+function toast(m){
+  let t=$(".toast"); if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}
+  t.textContent=m; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,2400);
+}
+function confetti(){
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c=$("#confetti"), x=c.getContext("2d"); c.hidden=false;
+  c.width=innerWidth; c.height=innerHeight;
+  const cols=["#3446a8","#e9a514","#5f8a2c","#c8373f","#8d9dff"];
+  const P=Array.from({length:120},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:Math.random()*6,s:4+Math.random()*6,c:cols[Math.floor(Math.random()*cols.length)]}));
+  let f=0;(function tick(){
+    x.clearRect(0,0,c.width,c.height);
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(++f<150) requestAnimationFrame(tick); else {x.clearRect(0,0,c.width,c.height);c.hidden=true;}
+  })();
+}
+
+renderTop(); renderChapHead(); show("apprendre");
+</script>
+
+</body></html>
