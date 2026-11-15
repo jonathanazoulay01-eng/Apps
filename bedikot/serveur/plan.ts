@@ -15,7 +15,7 @@ export type Sub = {
   hefsek_reminder: boolean;
 };
 
-export type Zmanim = { alot: string; netz: string; shkia: string };
+export type Zmanim = { alot: string; netz: string; minhaKetana: string; shkia: string };
 export type Slot = {
   id: string; // 2026-11-12-soir
   day: string;
@@ -35,8 +35,10 @@ export function zmanimFor(day: string, s: Pick<Sub, 'lat' | 'lon' | 'tz'>): Zman
   const alot = cal.getSunriseOffsetByDegrees(90 + 16.1);
   const netz = cal.getSeaLevelSunrise();
   const shkia = cal.getSeaLevelSunset();
-  if (!alot || !netz || !shkia) return null;
-  return { alot: alot.toUTC().toISO(), netz: netz.toUTC().toISO(), shkia: shkia.toUTC().toISO() };
+  // Minha kétana selon le Gaon de Vilna (9 h ½ « heures proportionnelles » après le lever du soleil)
+  const minhaK = cal.getMinchaKetana(netz, shkia);
+  if (!alot || !netz || !shkia || !minhaK) return null;
+  return { alot: alot.toUTC().toISO(), netz: netz.toUTC().toISO(), minhaKetana: minhaK.toUTC().toISO(), shkia: shkia.toUTC().toISO() };
 }
 
 export function addDays(day: string, n: number): string {
@@ -51,7 +53,6 @@ export function todayIn(tz: string, now = new Date()): string {
 
 export function buildPlan(s: Sub): Slot[] {
   if (!s.hefsek_date) return [];
-  const every = Math.max(5, s.repeat_every) * MIN;
   const out: Slot[] = [];
   const days: { day: string; label: string; kinds: Slot['kind'][] }[] = [];
   if (s.hefsek_reminder) days.push({ day: s.hefsek_date, label: 'Hefsek tahara', kinds: ['hefsek'] });
@@ -60,26 +61,17 @@ export function buildPlan(s: Sub): Slot[] {
   for (const d of days) {
     const z = zmanimFor(d.day, s);
     if (!z) continue;
-    const alot = Date.parse(z.alot);
     const shkia = Date.parse(z.shkia);
     for (const kind of d.kinds) {
-      const times: number[] = [];
-      if (kind === 'matin') {
-        const start = alot - s.before_alot * MIN;
-        const end = Math.min(alot + s.morning_window * MIN, shkia - s.before_shkia * MIN);
-        for (let t = start; t <= end; t += every) times.push(t);
-      } else {
-        const start = shkia - s.before_shkia * MIN;
-        for (let t = start; t < shkia - MIN; t += every) times.push(t);
-      }
-      if (!times.length) continue;
+      // un seul rappel : le matin (par défaut 10 min) avant alot hachahar, l'après-midi à Minha kétana
+      const at = kind === 'matin' ? Date.parse(z.alot) - s.before_alot * MIN : Date.parse(z.minhaKetana);
       out.push({
         id: `${d.day}-${kind}`,
         day: d.day,
         kind,
         label: d.label,
         zmanim: z,
-        times: times.map((t) => new Date(t).toISOString()),
+        times: [new Date(at).toISOString()],
         end: new Date(shkia).toISOString(),
       });
     }
@@ -87,30 +79,28 @@ export function buildPlan(s: Sub): Slot[] {
   return out;
 }
 
-const hhmm = (iso: string, tz: string) =>
-  new Intl.DateTimeFormat('fr-FR', { timeZone: tz, hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+// Arrondi dans le sens strict : un début (alot, nets, Minha kétana) à la minute supérieure,
+// une fin (chkia) à la minute inférieure.
+export const hhmm = (iso: string, tz: string, mode: 'debut' | 'fin' = 'fin') => {
+  let t = Date.parse(iso);
+  t = mode === 'debut' ? Math.ceil(t / MIN) * MIN : Math.floor(t / MIN) * MIN;
+  return new Intl.DateTimeFormat('fr-FR', { timeZone: tz, hour: '2-digit', minute: '2-digit' }).format(new Date(t));
+};
 
-export function message(slot: Slot, index: number, at: number, tz: string) {
-  const title =
-    slot.kind === 'hefsek'
-      ? 'Hefsek tahara'
-      : `${slot.kind === 'matin' ? 'Bedika du matin' : 'Bedika du soir'} · ${slot.label}`;
-  let body: string;
+export function message(slot: Slot, _index: number, _at: number, tz: string) {
+  const z = slot.zmanim;
   if (slot.kind === 'matin') {
-    const alot = Date.parse(slot.zmanim.alot);
-    body =
-      at < alot
-        ? `Alot hachahar à ${hhmm(slot.zmanim.alot, tz)} (dans ${Math.round((alot - at) / MIN)} min).`
-        : index === 0
-          ? `C'est l'heure : alot hachahar était à ${hhmm(slot.zmanim.alot, tz)}.`
-          : `Rappel : la bedika du matin n'est pas encore validée.`;
-  } else {
-    const left = Math.round((Date.parse(slot.zmanim.shkia) - at) / MIN);
-    const what = slot.kind === 'hefsek' ? 'le hefsek tahara' : 'la bedika';
-    body =
-      index === 0
-        ? `Chkia à ${hhmm(slot.zmanim.shkia, tz)} (dans ${left} min). Pense à faire ${what}.`
-        : `Rappel : chkia dans ${left} min (${hhmm(slot.zmanim.shkia, tz)}). Ouvre l'app et appuie sur « C'est fait ».`;
+    return {
+      title: `Bedika du matin · ${slot.label}`,
+      body: `Bediavad : dès alot hachahar ${hhmm(z.alot, tz, 'debut')}\nLehatehila : dès nets hahama ${hhmm(z.netz, tz, 'debut')}`,
+      tag: slot.id,
+      slot: slot.id,
+    };
   }
-  return { title: index === 0 ? title : `⏰ ${title}`, body, tag: slot.id, slot: slot.id };
+  return {
+    title: slot.kind === 'hefsek' ? 'Hefsek tahara' : `Bedika de l'après-midi · ${slot.label}`,
+    body: `À partir de Minha kétana : ${hhmm(z.minhaKetana, tz, 'debut')}\nAvant la chkia : ${hhmm(z.shkia, tz, 'fin')}`,
+    tag: slot.id,
+    slot: slot.id,
+  };
 }

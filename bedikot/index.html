@@ -28,12 +28,12 @@
   .sub { color: var(--soft); margin: 0 0 4px; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
   .card.focus { border: 2px solid var(--accent); }
-  .soft { color: var(--soft); margin: 0 0 8px; }
+  .soft { color: var(--soft); margin: 0 0 8px; white-space: pre-line; }
   .hint { color: var(--soft); font-size: 13px; margin: 8px 0 0; }
   .big { font-size: 26px; font-weight: 700; color: var(--accent); margin: 0 0 2px; }
   .z { display: flex; justify-content: space-between; text-align: center; }
-  .z div { flex: 1; } .z small { color: var(--soft); font-size: 12px; display: block; }
-  .z b { font-size: 24px; } .z .acc { color: var(--accent); }
+  .z div { flex: 1; } .z small { color: var(--soft); font-size: 11px; display: block; }
+  .z b { font-size: 21px; } .z .acc { color: var(--accent); }
   button { font: inherit; border: 0; cursor: pointer; }
   .btn { width: 100%; background: var(--accent); color: #fff; font-size: 18px; font-weight: 700;
     border-radius: 14px; padding: 16px; margin-top: 8px; }
@@ -81,6 +81,7 @@
     <div class="z">
       <div><small>Alot hachahar</small><b id="zAlot">--:--</b></div>
       <div><small>Nets</small><b id="zNetz">--:--</b></div>
+      <div><small>Minha kétana</small><b id="zMinha">--:--</b></div>
       <div><small>Chkia</small><b class="acc" id="zShkia">--:--</b></div>
     </div>
   </section>
@@ -125,15 +126,12 @@
   <button class="link" id="toggleSet">Réglages</button>
   <section class="card" id="settings" hidden>
     <div class="set"><span>Rappel le jour du hefsek</span><input type="checkbox" id="hefsekRem"></div>
-    <div class="set"><span>Rappel du soir avant la chkia</span><div class="step" data-k="before_shkia" data-step="5" data-min="5" data-max="120"><button>−</button><output></output><button>+</button></div></div>
     <div class="set"><span id="alotLbl">Rappel du matin avant alot</span><div class="step" data-k="before_alot" data-step="5" data-min="-120" data-max="60"><button>−</button><output></output><button>+</button></div></div>
-    <div class="set"><span>Répéter toutes les</span><div class="step" data-k="repeat_every" data-step="5" data-min="5" data-max="60"><button>−</button><output></output><button>+</button></div></div>
-    <div class="set"><span>Répéter le matin pendant</span><div class="step" data-k="morning_window" data-step="30" data-min="0" data-max="360"><button>−</button><output></output><button>+</button></div></div>
     <button class="sbtn" id="gpsBtn">Mettre à jour ma position</button>
     <button class="sbtn" id="bonneuilBtn">Utiliser Bonneuil-sur-Marne</button>
     <button class="sbtn" id="testBtn">Envoyer une notification d'essai</button>
     <p class="hint" id="testTxt"></p>
-    <p class="hint">Horaires selon Roger Stioui (comme Torah-Box) : chkia au coucher du soleil, alot hachahar à 16,1°. Les rappels du soir s'arrêtent à la chkia.</p>
+    <p class="hint">Horaires selon Roger Stioui (comme Torah-Box) : chkia au coucher du soleil, alot hachahar à 16,1°. Minha kétana selon le Gaon de Vilna. Un seul rappel le matin (avant alot) et un seul l'après-midi (à Minha kétana).</p>
   </section>
 </main>
 
@@ -166,7 +164,12 @@ const MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août'
 const fmtDay = (k) => { const [y, m, d] = k.split('-').map(Number); const dt = new Date(Date.UTC(y, m - 1, d, 12)); return `${JOURS[dt.getUTCDay()]} ${d} ${MOIS[m - 1]}`; };
 const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 const tz = () => (S && S.tz) || 'Europe/Paris';
-const hhmm = (iso) => new Intl.DateTimeFormat('fr-FR', { timeZone: tz(), hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+// arrondi strict : un début (alot, nets, Minha kétana) à la minute supérieure, une fin (chkia) à la minute inférieure
+const hhmm = (iso, mode = 'fin') => {
+  let t = Date.parse(iso);
+  t = mode === 'debut' ? Math.ceil(t / 60000) * 60000 : Math.floor(t / 60000) * 60000;
+  return new Intl.DateTimeFormat('fr-FR', { timeZone: tz(), hour: '2-digit', minute: '2-digit' }).format(new Date(t));
+};
 const todayKey = () => new Intl.DateTimeFormat('en-CA', { timeZone: tz(), year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
 const addDays = (k, n) => { const d = new Date(k + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
 const diffDays = (a, b) => Math.round((Date.parse(a + 'T12:00:00Z') - Date.parse(b + 'T12:00:00Z')) / 864e5);
@@ -182,8 +185,9 @@ function render() {
   $('where').textContent = `📍 ${S.place} · ${fmtDay(todayKey())}`;
   if (S.zmanim_today) {
     $('zcard').hidden = false;
-    $('zAlot').textContent = hhmm(S.zmanim_today.alot);
-    $('zNetz').textContent = hhmm(S.zmanim_today.netz);
+    $('zAlot').textContent = hhmm(S.zmanim_today.alot, 'debut');
+    $('zNetz').textContent = hhmm(S.zmanim_today.netz, 'debut');
+    $('zMinha').textContent = S.zmanim_today.minhaKetana ? hhmm(S.zmanim_today.minhaKetana, 'debut') : '--:--';
     $('zShkia').textContent = hhmm(S.zmanim_today.shkia);
   }
 
@@ -206,16 +210,18 @@ function render() {
   // bedika en cours : aujourd'hui, pas faite, entre 1 h avant le 1er rappel et la chkia
   const plan = active ? S.plan : [];
   let cur = plan.find((p) => p.id === focusSlot && !S.done[p.id]);
-  if (!cur) cur = plan.find((p) => p.day === today && !S.done[p.id] && now >= Date.parse(p.times[0]) - 3600e3 && now <= Date.parse(p.end));
+  // si plusieurs sont possibles (matin pas validé et après-midi commencé), on montre la plus récente
+  if (!cur) cur = plan.filter((p) => p.day === today && !S.done[p.id] && now >= Date.parse(p.times[0]) - 3600e3 && now <= Date.parse(p.end)).pop();
   $('current').hidden = !cur;
   if (cur) {
-    const name = cur.kind === 'hefsek' ? 'Hefsek tahara' : cur.kind === 'matin' ? 'Bedika du matin' : 'Bedika du soir';
+    const name = cur.kind === 'hefsek' ? 'Hefsek tahara' : cur.kind === 'matin' ? 'Bedika du matin' : "Bedika de l'après-midi";
     $('curTitle').textContent = cur.kind === 'hefsek' ? name : `${name} · ${cur.label}`;
     if (cur.kind === 'matin') {
-      $('curTxt').textContent = now < Date.parse(cur.zmanim.alot) ? `À partir de alot hachahar, ${hhmm(cur.zmanim.alot)}.` : `Depuis alot hachahar (${hhmm(cur.zmanim.alot)}).`;
+      $('curTxt').textContent = `Bediavad : dès alot hachahar ${hhmm(cur.zmanim.alot, 'debut')}\nLehatehila : dès nets hahama ${hhmm(cur.zmanim.netz, 'debut')}`;
     } else {
       const left = Math.round((Date.parse(cur.zmanim.shkia) - now) / 60000);
-      $('curTxt').textContent = left > 0 ? `Avant la chkia à ${hhmm(cur.zmanim.shkia)} (dans ${fmtDur(left)}).` : 'La chkia est passée.';
+      const mk = cur.zmanim.minhaKetana ? `À partir de Minha kétana : ${hhmm(cur.zmanim.minhaKetana, 'debut')}\n` : '';
+      $('curTxt').textContent = left > 0 ? `${mk}Avant la chkia : ${hhmm(cur.zmanim.shkia)} (dans ${fmtDur(left)})` : 'La chkia est passée.';
     }
     $('curDone').onclick = () => setDone(cur.id, true);
   }
@@ -234,7 +240,9 @@ function render() {
       const past = !done && now > Date.parse(sl.end);
       const b = document.createElement('button');
       b.className = 'slot' + (done ? ' done' : '');
-      const what = sl.kind === 'matin' ? `Matin · rappel ${hhmm(sl.times[0])}, alot ${hhmm(sl.zmanim.alot)}` : `${sl.kind === 'hefsek' ? 'Hefsek' : 'Soir'} · rappel ${hhmm(sl.times[0])}, chkia ${hhmm(sl.zmanim.shkia)}`;
+      const what = sl.kind === 'matin'
+        ? `Matin · alot ${hhmm(sl.zmanim.alot, 'debut')}, nets ${hhmm(sl.zmanim.netz, 'debut')}`
+        : `${sl.kind === 'hefsek' ? 'Hefsek' : 'Après-midi'} · ${sl.zmanim.minhaKetana ? hhmm(sl.zmanim.minhaKetana, 'debut') : ''} → chkia ${hhmm(sl.zmanim.shkia)}`;
       b.innerHTML = `<i>${done ? '✓' : past ? '✗' : '○'}</i><span>${what}</span>`;
       b.onclick = () => setDone(sl.id, !done);
       el.appendChild(b);
