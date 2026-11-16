@@ -1,7 +1,7 @@
 {
-  "name": "Bedikot",
-  "short_name": "Bedikot",
-  "description": "Rappels des bedikot pendant les 7 jours propres",
+  "name": "Rappels",
+  "short_name": "Rappels",
+  "description": "Rappels",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",

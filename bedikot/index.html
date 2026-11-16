@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bedikot</title>
-<meta name="description" content="Rappels des bedikot pendant les 7 jours propres">
+<title>Rappels</title>
+<meta name="description" content="Rappels">
 <meta name="theme-color" content="#5E3473">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Bedikot">
+<meta name="apple-mobile-web-app-title" content="Rappels">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -173,7 +173,7 @@
       <li>Ouvre ce lien dans <b>Chrome</b>.</li>
       <li>Appuie sur le menu <b>⋮</b> en haut à droite.</li>
       <li>Choisis <b>« Installer l'application »</b> (ou « Ajouter à l'écran d'accueil »), puis <b>Installer</b>.</li>
-      <li>Ouvre <b>Bedikot</b> depuis l'écran d'accueil et active les notifications.</li>
+      <li>Ouvre <b>Rappels</b> depuis l'écran d'accueil et active les notifications.</li>
     </ol>
   </section>
 
@@ -184,7 +184,7 @@
       <li>Ouvre ce lien dans <b>Safari</b>.</li>
       <li>Appuie sur <b>Partager</b> (dans « ••• » sur les iOS récents).</li>
       <li>Choisis <b>« Sur l'écran d'accueil »</b>, puis <b>Ajouter</b>.</li>
-      <li>Ouvre <b>Bedikot</b> depuis l'écran d'accueil.</li>
+      <li>Ouvre <b>Rappels</b> depuis l'écran d'accueil.</li>
     </ol>
   </section>
 
@@ -466,7 +466,7 @@ async function enable() {
   $('enableBtn').textContent = 'Activation…';
   try {
     const perm = await Notification.requestPermission();
-    if (perm !== 'granted') throw new Error("Notifications refusées. Va dans Réglages › Notifications › Bedikot pour les autoriser.");
+    if (perm !== 'granted') throw new Error("Notifications refusées. Va dans Réglages › Notifications › Rappels pour les autoriser.");
     const reg = await navigator.serviceWorker.register('sw.js');
     await navigator.serviceWorker.ready;
     const { publicKey } = await api('vapid');
