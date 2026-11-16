@@ -90,30 +90,15 @@ export const hhmm = (iso: string, tz: string, mode: 'debut' | 'fin' = 'fin') => 
   return new Intl.DateTimeFormat('fr-FR', { timeZone: tz, hour: '2-digit', minute: '2-digit' }).format(new Date(t));
 };
 
-// Termes hébreux vocalisés + traduction (isolés pour garder le bon sens de lecture)
-const W: Record<string, [string, string]> = {
-  bedika: ['בְּדִיקָה', 'examen'],
-  hefsek: ['הֶפְסֵק טָהֳרָה', 'examen de fin des règles'],
-  alot: ['עֲלוֹת הַשַּׁחַר', 'aube'],
-  netz: ['הָנֵץ הַחַמָּה', 'lever du soleil'],
-  minha: ['מִנְחָה קְטַנָּה', "fin d'après-midi"],
-  shkia: ['שְׁקִיעָה', 'coucher du soleil'],
-  bediavad: ['בְּדִיעֲבַד', 'a posteriori'],
-  lehatehila: ['לְכַתְּחִלָּה', 'idéalement'],
-};
-const he = (k: string) => `\u2068${W[k][0]}\u2069 (${W[k][1]})`;
-
+// Notifications discrètes : titre « Rappel » et seulement les horaires (aucun mot qui révèle le sujet).
 export function message(slot: Slot, _index: number, _at: number, tz: string, showBediavad = false) {
   const z = slot.zmanim;
+  let body: string;
   if (slot.kind === 'matin') {
-    let body = `Depuis ${hhmm(z.netz, tz, 'debut')} jusqu'à ${hhmm(z.hatsot, tz, 'fin')}.\nL'idéal : pile à ${hhmm(z.netz, tz, 'debut')}.`;
-    if (showBediavad) body += `\n${he('bediavad')} : dès ${hhmm(z.alot, tz, 'debut')}.`;
-    return { title: `${he('bedika')} du matin · ${slot.label}`, body, tag: slot.id, slot: slot.id };
+    body = `Depuis ${hhmm(z.netz, tz, 'debut')} jusqu'à ${hhmm(z.hatsot, tz, 'fin')}.\nL'idéal : pile à ${hhmm(z.netz, tz, 'debut')}.`;
+    if (showBediavad) body += `\nAu plus tôt : ${hhmm(z.alot, tz, 'debut')}.`;
+  } else {
+    body = `Depuis ${hhmm(z.minhaKetana, tz, 'debut')} jusqu'à ${hhmm(z.shkia, tz, 'fin')}.\nL'idéal : le plus près possible de ${hhmm(z.shkia, tz, 'fin')}, sans dépasser.`;
   }
-  return {
-    title: slot.kind === 'hefsek' ? he('hefsek') : `${he('bedika')} de l'après-midi · ${slot.label}`,
-    body: `Depuis ${hhmm(z.minhaKetana, tz, 'debut')} jusqu'à ${hhmm(z.shkia, tz, 'fin')}.\nL'idéal : le plus près possible de ${hhmm(z.shkia, tz, 'fin')}, sans dépasser.`,
-    tag: slot.id,
-    slot: slot.id,
-  };
+  return { title: 'Rappel', body, tag: slot.id, slot: slot.id };
 }

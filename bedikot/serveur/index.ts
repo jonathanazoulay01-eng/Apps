@@ -151,7 +151,7 @@ Deno.serve(async (req) => {
       if (!row.sub) return json({ error: 'notifications non activées' }, 400);
       await getVapid();
       const ok = await send(row, {
-        title: 'Bedikot (essai)',
+        title: 'Rappel (essai)',
         body: "Ceci est un essai. Les vrais rappels arrivent une fois le matin et une fois l'après-midi.",
         tag: 'test',
         url: './',
