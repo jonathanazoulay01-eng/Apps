@@ -241,8 +241,8 @@
 
   <section class="card note" id="note">
     <h2>À savoir</h2>
-    <p><b>Le matin</b>, la <span id="nBed1"></span> se fait du lever du soleil jusqu'au milieu de la journée. L'idéal est de la faire pile à l'heure du début.</p>
-    <p><b>L'après-midi</b>, elle se fait de la fin d'après-midi jusqu'au coucher du soleil. L'idéal est de la faire le plus près possible de l'heure de fin, sans jamais la dépasser.</p>
+    <p><b>Le matin</b>, la <span id="nBed1"></span> se fait du lever du soleil jusqu'au milieu de la journée. L'idéal est de la faire dès l'heure du début.</p>
+    <p><b>L'après-midi</b>, elle se fait de la fin d'après-midi jusqu'au coucher du soleil. L'idéal est de la faire dans la dernière demi-heure, à partir de 30 min avant l'heure de fin, sans jamais la dépasser.</p>
     <p id="nBdv"></p>
     <p>Les heures sont arrondies prudemment : un début à la minute d'après, une fin à la minute d'avant. Elles sont calculées pour l'endroit où tu es, selon la méthode de Roger Stioui (la même que Torah-Box).</p>
     <p>Un seul rappel le matin et un seul l'après-midi. Touche « C'est fait » pour cocher la <span id="nBed2"></span>.</p>
@@ -319,7 +319,7 @@ function rangeHTML(sl) {
   const m = sl.kind === 'matin';
   const a = hhmm(m ? z.netz : z.minhaKetana, 'debut'), b = hhmm(m ? z.hatsot : z.shkia);
   let h = `<div class="range"><div><small>Depuis</small><b>${a}</b></div><span class="arrow">→</span><div><small>Jusqu'à</small><b>${b}</b></div></div>
-    <div class="ideal">⭐ L'idéal : ${m ? `pile à <b>${a}</b>` : `le plus près possible de <b>${b}</b>, sans dépasser`}</div>`;
+    <div class="ideal">⭐ L'idéal : à partir de <b>${m ? a : hhmm(new Date(Date.parse(z.shkia) - 30 * 60000).toISOString(), 'debut')}</b></div>`;
   if (m && S.settings.show_bediavad) h += `<div class="bdv">${T('bediavad')} : dès <b>${hhmm(z.alot, 'debut')}</b></div>`;
   return h;
 }

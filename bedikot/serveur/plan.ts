@@ -97,7 +97,9 @@ export function message(slot: Slot, _index: number, _at: number, tz: string, sho
   const m = slot.kind === 'matin';
   const debut = hhmm(m ? z.netz : z.minhaKetana, tz, 'debut');
   const fin = hhmm(m ? z.hatsot : z.shkia, tz, 'fin');
-  body = `Début : ${debut}\nFin : ${fin}\n⭐ L'idéal : ${m ? `pile à ${debut}` : `juste avant ${fin}`}`;
+  // idéal : le matin dès le début ; l'après-midi dans les 30 dernières minutes avant la fin
+  const ideal = m ? debut : hhmm(new Date(Date.parse(z.shkia) - 30 * MIN).toISOString(), tz, 'debut');
+  body = `Début : ${debut}\nFin : ${fin}\n⭐ L'idéal : à partir de ${ideal}`;
   if (m && showBediavad) body += `\nAu plus tôt : ${hhmm(z.alot, tz, 'debut')}`;
   return { title: 'Rappel', body, tag: slot.id, slot: slot.id };
 }

@@ -1,5 +1,5 @@
 // Service worker Bedikot : affiche les rappels envoyés par le serveur.
-const CACHE = 'rappels-v13';
+const CACHE = 'rappels-v14';
 const API = 'https://qddkzkqhzbbwrfledovv.supabase.co/functions/v1/bedikot';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './apple-touch-icon.png'];
 
