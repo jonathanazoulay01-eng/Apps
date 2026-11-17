@@ -94,11 +94,10 @@ export const hhmm = (iso: string, tz: string, mode: 'debut' | 'fin' = 'fin') => 
 export function message(slot: Slot, _index: number, _at: number, tz: string, showBediavad = false) {
   const z = slot.zmanim;
   let body: string;
-  if (slot.kind === 'matin') {
-    body = `Depuis ${hhmm(z.netz, tz, 'debut')} jusqu'à ${hhmm(z.hatsot, tz, 'fin')}.\nL'idéal : pile à ${hhmm(z.netz, tz, 'debut')}.`;
-    if (showBediavad) body += `\nAu plus tôt : ${hhmm(z.alot, tz, 'debut')}.`;
-  } else {
-    body = `Depuis ${hhmm(z.minhaKetana, tz, 'debut')} jusqu'à ${hhmm(z.shkia, tz, 'fin')}.\nL'idéal : le plus près possible de ${hhmm(z.shkia, tz, 'fin')}, sans dépasser.`;
-  }
+  const m = slot.kind === 'matin';
+  const debut = hhmm(m ? z.netz : z.minhaKetana, tz, 'debut');
+  const fin = hhmm(m ? z.hatsot : z.shkia, tz, 'fin');
+  body = `Début : ${debut}\nFin : ${fin}\n⭐ L'idéal : ${m ? `pile à ${debut}` : `juste avant ${fin}`}`;
+  if (m && showBediavad) body += `\nAu plus tôt : ${hhmm(z.alot, tz, 'debut')}`;
   return { title: 'Rappel', body, tag: slot.id, slot: slot.id };
 }

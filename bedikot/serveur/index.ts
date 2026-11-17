@@ -53,6 +53,7 @@ function state(row: any) {
     zmanim_today: zmanimFor(today, row),
     plan,
     done: row.done ?? {},
+    snooze: row.snooze ?? {},
   };
 }
 
@@ -67,6 +68,17 @@ async function send(row: any, payload: object) {
   }
 }
 
+// contenu de la notification + ce qu'il faut pour les boutons « C'est fait » / « Me rappeler dans 20 min »
+const payload = (row: any, slot: any) => ({
+  ...message(slot, 0, 0, row.tz, !!row.show_bediavad),
+  url: './?slot=' + slot.id,
+  id: row.id,
+  actions: [
+    { action: 'done', title: "C'est fait ✓" },
+    { action: 'snooze', title: 'Me rappeler dans 20 min' },
+  ],
+});
+
 async function tick() {
   await getVapid();
   const since = addDays(new Date().toISOString().slice(0, 10), -9);
@@ -76,9 +88,18 @@ async function tick() {
   for (const row of rows ?? []) {
     const done = row.done ?? {};
     const last = { ...(row.sent ?? {}) };
+    const snooze = { ...(row.snooze ?? {}) };
     let changed = false;
+    let snoozeChanged = false;
     for (const slot of buildPlan(row as Sub)) {
       if (done[slot.id]) continue;
+      // « Me rappeler dans 20 min » : on renvoie le rappel à l'heure demandée (tant que la plage n'est pas finie)
+      if (snooze[slot.id] && Date.parse(snooze[slot.id]) <= now) {
+        delete snooze[slot.id];
+        snoozeChanged = true;
+        if (now < Date.parse(slot.end) && (await send(row, payload(row, slot)))) sent++;
+        continue;
+      }
       // dernier rappel prévu déjà passé (moins de 8 min de retard toléré)
       let idx = -1;
       slot.times.forEach((t, i) => {
@@ -88,11 +109,11 @@ async function tick() {
       if (idx < 0) continue;
       const due = slot.times[idx];
       if (last[slot.id] && last[slot.id] >= due) continue;
-      if (await send(row, { ...message(slot, idx, Date.parse(due), row.tz, !!row.show_bediavad), url: './?slot=' + slot.id })) sent++;
+      if (await send(row, payload(row, slot))) sent++;
       last[slot.id] = due;
       changed = true;
     }
-    if (changed) await db.from('bedikot_subs').update({ sent: last }).eq('id', row.id);
+    if (changed || snoozeChanged) await db.from('bedikot_subs').update({ sent: last, snooze }).eq('id', row.id);
   }
   return { ok: true, checked: rows?.length ?? 0, sent };
 }
@@ -141,10 +162,23 @@ Deno.serve(async (req) => {
 
     if (action === 'done') {
       const done = { ...(row.done ?? {}) };
+      const snooze = { ...(row.snooze ?? {}) };
       if (body.value === false) delete done[body.slot];
-      else done[body.slot] = new Date().toISOString();
-      const { data } = await db.from('bedikot_subs').update({ done }).eq('id', row.id).select().single();
+      else {
+        done[body.slot] = new Date().toISOString();
+        delete snooze[body.slot];
+      }
+      const { data } = await db.from('bedikot_subs').update({ done, snooze }).eq('id', row.id).select().single();
       return json(state(data));
+    }
+
+    if (action === 'snooze') {
+      if (typeof body.slot !== 'string' || !/^\d{4}-\d{2}-\d{2}-(matin|soir|hefsek)$/.test(body.slot)) return json({ error: 'créneau inconnu' }, 400);
+      const minutes = Math.min(120, Math.max(5, Number(body.minutes) || 20));
+      const at = new Date(Date.now() + minutes * 60_000).toISOString();
+      const snooze = { ...(row.snooze ?? {}), [body.slot]: at };
+      const { data } = await db.from('bedikot_subs').update({ snooze }).eq('id', row.id).select().single();
+      return json({ ...state(data), snoozed: { slot: body.slot, at } });
     }
 
     if (action === 'test') {
@@ -152,9 +186,15 @@ Deno.serve(async (req) => {
       await getVapid();
       const ok = await send(row, {
         title: 'Rappel (essai)',
-        body: "Ceci est un essai. Les vrais rappels arrivent une fois le matin et une fois l'après-midi.",
+        body: 'Début : 08:00\nFin : 12:30\n⭐ Ceci est un essai.',
         tag: 'test',
         url: './',
+        id: row.id,
+        slot: 'test',
+        actions: [
+          { action: 'done', title: "C'est fait ✓" },
+          { action: 'snooze', title: 'Me rappeler dans 20 min' },
+        ],
       });
       return json({ ok });
     }

@@ -101,6 +101,7 @@
     border-radius: 16px; padding: 16px; margin-top: 14px; box-shadow: 0 6px 16px rgba(123, 75, 148, .3); }
   .btn .he { font-size: 20px; }
   .btn:active, .sbtn:active, .slot:active { transform: scale(.98); }
+  .sbtn.wide { width: 100%; padding: 14px; font-size: 16px; }
   .sbtn { background: var(--accent-soft); color: var(--accent); font-weight: 600; border-radius: 12px; padding: 10px 14px; margin-top: 10px; }
 
   /* Cycle */
@@ -389,8 +390,15 @@ function render() {
     const status = toStart > 0
       ? `<div class="left">🕒 ${when}Prochaine ${cur.kind === 'hefsek' ? 'étape' : 'bedika'} : commence dans ${fmtDur(toStart)}</div>`
       : `<div class="left">${left > 0 ? `⏳ Encore ${fmtDur(left)}` : 'Le temps est passé.'}</div>`;
-    $('current').innerHTML = `<div class="title">${head}${badge}</div>${rangeHTML(cur)}${status}${toStart > 0 ? '' : `<button class="btn" id="curDone">C'est fait ✓</button>`}`;
+    const sn = S.snooze && S.snooze[cur.id] && Date.parse(S.snooze[cur.id]) > now ? S.snooze[cur.id] : null;
+    const actions = toStart > 0 ? '' : `<button class="btn" id="curDone">C'est fait ✓</button>`
+      + (S.has_push ? (sn ? `<p class="hint" style="text-align:center">🔔 Nouveau rappel prévu à ${hhmm(sn)}</p>` : `<button class="sbtn wide" id="curSnooze">⏰ Me rappeler dans 20 min</button>`) : '');
+    $('current').innerHTML = `<div class="title">${head}${badge}</div>${rangeHTML(cur)}${status}${actions}`;
     if ($('curDone')) $('curDone').onclick = () => setDone(cur.id, true);
+    if ($('curSnooze')) $('curSnooze').onclick = async () => {
+      $('curSnooze').disabled = true; $('curSnooze').textContent = 'Un instant…';
+      try { S = await api('snooze', { slot: cur.id, minutes: 20 }); render(); } catch (e) { alert('Pas de connexion : réessaie dans un instant.'); render(); }
+    };
   }
 
   // programme
