@@ -1,5 +1,5 @@
 // Service worker Kol Bo : l'app marche hors ligne et se met à jour toute seule.
-const CACHE = 'kolbo-v1';
+const CACHE = 'kolbo-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
